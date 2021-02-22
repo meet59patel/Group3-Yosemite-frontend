@@ -6,6 +6,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -33,7 +34,9 @@ export default function Header() {
         >
           This is empty space
         </Typography>
-        <Button href="/login">Log In</Button>
+        <Link to="/login">
+          <Button>Log In</Button>
+        </Link>
       </Toolbar>
     </AppBar>
   );
