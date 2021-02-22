@@ -1,16 +1,16 @@
-import logo from './logo.svg';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
+import LandingPage from './views/LandingPage';
+import LoginPage from './views/LoginPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Yosemite</h1>
-        <h3>Automatic Answer Checker</h3>
-        <h6>IT314 - Group 3</h6>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/" component={LandingPage}></Route>
+        <Route exact path="/login" component={LoginPage}></Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
 
