@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, AppBar, Toolbar } from '@material-ui/core';
 import { GoogleLogout } from 'react-google-login';
 
-import { useUserDispatch, signOut } from '../../components/context/UserContext';
+import { useUserDispatch, signOut } from '../../context/UserContext';
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
 
 export default function Dashboard(props) {

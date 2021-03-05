@@ -13,10 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import GoogleLogin from 'react-google-login';
-import {
-  useUserDispatch,
-  loginUser,
-} from '../../components/context/UserContext';
+import { useUserDispatch, loginUser } from '../../context/UserContext';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
 
