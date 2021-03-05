@@ -12,6 +12,13 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import GoogleLogin from 'react-google-login';
+import {
+  useUserDispatch,
+  loginUser,
+} from '../../components/context/UserContext';
+
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
 
 function Copyright() {
   return (
@@ -59,8 +66,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+export default function SignInSide(props) {
   const classes = useStyles();
+  var userDispatch = useUserDispatch();
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -126,6 +134,15 @@ export default function SignInSide() {
               <Copyright />
             </Box>
           </form>
+
+          <GoogleLogin
+            clientId={GOOGLE_CLIENT_ID}
+            buttonText="Sign In with Google"
+            onSuccess={(response) => {
+              loginUser(userDispatch, props.history, response);
+            }}
+            onFailure={console.log}
+          />
         </div>
       </Grid>
     </Grid>
