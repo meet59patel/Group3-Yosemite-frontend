@@ -6,25 +6,25 @@ import HeroImg from '../../assets/img/hero-img.png';
 import Header from '../../components/Header/index.js';
 
 export default function LandingPage() {
-  return (
-    <div className="App">
-      <Header />
-      <Grid container>
-        <Grid item md={6}>
-          <h1>Automated Solution For Evaluating Assignments</h1>
-        </Grid>
-        <Grid item md={6}>
-          <img src={HeroImg} width="100%" />
-        </Grid>
-      </Grid>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Yosemite</h1>
-        <h3>Automatic Answer Checker</h3>
-        <Button variant="outlined" color="inherit">
-          IT314 - Group 3
-        </Button>
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Header />
+            <Grid container>
+                <Grid item md={6}>
+                    <h1>Automated Solution For Evaluating Assignments</h1>
+                </Grid>
+                <Grid item md={6}>
+                    <img src={HeroImg} width="100%" />
+                </Grid>
+            </Grid>
+            <header className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <h1>Yosemite</h1>
+                <h3>Automatic Answer Checker</h3>
+                <Button variant="outlined" color="inherit">
+                    IT314 - Group 3
+                </Button>
+            </header>
+        </div>
+    );
 }
