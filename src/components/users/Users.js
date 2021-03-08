@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PageHeader from "../PageHeader";
 import useTable from "../useTable";
 import * as userService from "./UserService";
 import Controls from "../controls/Controls";
