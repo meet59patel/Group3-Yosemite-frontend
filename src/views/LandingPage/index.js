@@ -3,7 +3,7 @@ import logo from '../../logo.svg';
 import Button from '@material-ui/core/Button';
 import { Grid } from '@material-ui/core';
 import HeroImg from '../../assets/img/hero-img.png';
-import Header from '../../components/Header';
+import Header from '../../components/Header/index.js';
 
 export default function LandingPage() {
   return (
