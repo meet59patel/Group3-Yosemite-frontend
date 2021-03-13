@@ -34,6 +34,9 @@ export default function Header() {
         >
           This is empty space
         </Typography>
+        <Link to="/dashboard">
+          <Button>Dashboard</Button>
+        </Link>
         <Link to="/login">
           <Button>Log In</Button>
         </Link>
