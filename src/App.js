@@ -3,6 +3,7 @@ import './App.css';
 import LandingPage from './views/LandingPage';
 import LoginPage from './views/LoginPage';
 import Dashboard from './views/Dashboard';
+import SetAssignment from './views/SetAssignment';
 
 import { useUserState } from './components/context/UserContext';
 
@@ -12,7 +13,7 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={LandingPage} />
+        <Route exact path="/" component={SetAssignment} />
         <Route path="/login" component={LoginPage} />
         <Route path="/dashboard" component={Dashboard} />
       </Switch>
