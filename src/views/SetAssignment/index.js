@@ -6,6 +6,8 @@ import {
     Grid,
     TextField,
     IconButton,
+    Button,
+    InputAdornment  
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         display: `inline-block`,
         wdith: `80%`,
         margin: `10px`,
-        border: `1px solid ${theme.palette.primary.main}`,
+        border: `2px solid ${theme.palette.primary.main}`,
         borderRadius: `5px`,
         padding: `10px`
     },
@@ -44,8 +46,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SetAssignment(){
     const classes = useStyles();
-    const [form, setForm] = useState([{id: nextId()}])
+    const [form, setForm] = useState([{id: "id0"}])
     const start=1;
+
+    const onPressDelete = (id) =>{
+        console.log(id);
+        setForm(form.filter((item) => item.id !== id));
+    }
 
     return(
         <div className={classes.setAssignment} >
@@ -76,32 +83,47 @@ export default function SetAssignment(){
                             />
                             <TextField 
                                 label="Date and Time"
+                                type="datetime-local"
+                                defaultValue=""
                                 className={classes.Details}
+                                InputLabelProps={{ shrink: true }}
                             />
                             <TextField 
                                 label="Duration"
                                 className={classes.Details}
+                                InputProps={{
+                                    endAdornment: <InputAdornment >Minutes</InputAdornment>,
+                                }}
                             />
                         </div>
-                        {
-                            form.map((e)=>{
-                                var i=start;
+
+                        {form.map((e)=>{
+                            var i=start;
                             return(
                                 <li key={e.id} style={{
                                     listStyle:`none`
                                 }}>
-                                    <QuestionBoiler/>
+                                    <QuestionBoiler id={e.id} onDelete={(e)=>onPressDelete(e)}/>
                                 </li>
                             )
                         })}
+                        
                         <IconButton onClick={() => {
-                            setForm([...form,{id: nextId()}]);
-
-                            }}>
+                            console.log("pressed");
+                            setForm([...form,{id: nextId()}]);}}>
+                                
                             <AddIcon/>
                         </IconButton>
-
-                        {JSON.stringify(form)}
+                        {/* {JSON.stringify(form)} */}
+                        
+                        <hr/>
+                        
+                        <Button 
+                            variant="contained" 
+                            color="primary"
+                            onClick={()=>{alert("Submitted the form!")}}>
+                            Submit
+                        </Button>
                     </div>
                 </Grid>
             </Grid>

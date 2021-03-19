@@ -1,20 +1,21 @@
 import React from 'react';
 
-import {
-    TextField,
-    IconButton,
-    Button
-} from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-import DeleteIcon from '@material-ui/icons/Delete'
-
+import Slide from '@material-ui/core/Slide';
+import DeleteIcon from '@material-ui/icons/Delete';
+import {
+    TextField,
+    IconButton,
+    Button
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+
+//styling
 const useStyles = makeStyles((theme) => ({
     main:{
         border: `2px solid ${theme.palette.action.disabled}`,
@@ -23,25 +24,30 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: `5px`,
         textAlign:`left`
     },
-    del:{
+    MaxScoreDelete:{
         display:`flex`,
         justifyContent:`space-between`,
         alignItems:`center`
     }
 }));
 
+//transition for delete modal
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
 export default function QuestionBoiler(props){
     const classes=useStyles();
 
     //for Modal Component on Delete
     const [open, setOpen] = React.useState(false);
-
     const handleClickOpen = () => {
         setOpen(true);
     };
-
     const handleClose = () => {
         setOpen(false);
+        props.onDelete(props.id);
     };
     /************************************ */
 
@@ -65,10 +71,11 @@ export default function QuestionBoiler(props){
                     width:`98%`,
                 }}
             />
-            <div className={classes.del}>
+            <div className={classes.MaxScoreDelete}>
                 <TextField
                     variant="outlined"
                     label= "Max Score"
+                    type="number"
                     style={{
                         margin: `1%`,
                         width:`15%`,
@@ -79,14 +86,15 @@ export default function QuestionBoiler(props){
                 </IconButton>
                 <Dialog
                     open={open}
+                    TransitionComponent={Transition}
                     onClose={handleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                 >
-                <DialogTitle id="alert-dialog-title">{"Delete this question?"}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Delete this question?</DialogTitle>
                 <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Are you sure you want to delete this question?
+                    Are you sure you want to remove this question from the Assignment?
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
