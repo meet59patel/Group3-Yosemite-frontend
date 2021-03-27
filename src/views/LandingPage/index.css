@@ -46,7 +46,7 @@ a:link {
 }
 
 #hero .btn-get-code:hover {
-    background: #209dd8;
+    background: #1c2022;
 }
 #hero .animated {
     animation: up-down 2s ease-in-out infinite alternate-reverse both;
