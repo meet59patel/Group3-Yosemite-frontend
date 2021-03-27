@@ -67,7 +67,7 @@ export default function LandingPage() {
         <div className="App">
             <Header />
             <Grid container id="hero" alignItems="center">
-                <Grid item md={6} justifyContent="center">
+                <Grid item md={6}>
                     <h1>Automated Solution For Evaluating Assignments</h1>
                     <Link to="/login">
                         <Button variant="contained" className="btn-get-started">
@@ -80,13 +80,7 @@ export default function LandingPage() {
                         </Button>
                     </Link>
                 </Grid>
-                <Grid
-                    item
-                    md={6}
-                    className="hero-img"
-                    justifyContent="center"
-                    alignItems="center"
-                >
+                <Grid item md={6} className="hero-img">
                     <img
                         src={HeroImg}
                         className="img-fluid animated"
@@ -99,15 +93,15 @@ export default function LandingPage() {
                     <h2>About Us</h2>
                 </div>
                 <Grid container alignItems="center">
-                    <p>
+                    <span>
                         <b>
                             <i>Yosemite</i>
                         </b>{' '}
                         is an Automatic Answer Checker application that checks
                         and evaluates written answers
-                    </p>
-                    <Grid item md={6} mr={2} justifyContent="center">
-                        <List dense="true">
+                    </span>
+                    <Grid item md={7} mr={2}>
+                        <List>
                             <ListItem>
                                 <ListItemIcon>
                                     <DoneAllSharpIcon
@@ -139,8 +133,8 @@ export default function LandingPage() {
                             </ListItem>
                         </List>
                     </Grid>
-                    <Grid item md={6} justifyContent="center">
-                        <List dense="true">
+                    <Grid item md={5}>
+                        <List>
                             <ListItem>
                                 <ListItemIcon>
                                     <DoneAllSharpIcon
@@ -240,24 +234,18 @@ export default function LandingPage() {
                         </AccordionDetails>
                     </Accordion>
                 </Grid>
-                <Grid
-                    item
-                    md={4}
-                    className="img"
-                    justifyContent="center"
-                    alignContent="center"
-                >
+                <Grid item md={4} className="img">
                     <img src={Whyus} className="img" />
                 </Grid>
             </Grid>
             <Grid container className="services section-bg" alignItems="center">
                 <Container>
-                    <div class="section-title">
+                    <div className="section-title">
                         <h2>Features</h2>
-                        <p>
+                        <span>
                             This are the some of the main features of our
                             webapp.
-                        </p>
+                        </span>
                     </div>
                 </Container>
                 <Grid item xs={12} sm={6} md={3} className="icon-box">
@@ -337,7 +325,7 @@ export default function LandingPage() {
                 alignItems="center"
             >
                 <Container>
-                    <div class="section-title">
+                    <div className="section-title">
                         <h2>Team</h2>
                     </div>
                 </Container>
@@ -361,7 +349,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801188</span>
-                                <p>201801188@daiict.ac.in</p>
+                                <span>201801188@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -386,7 +374,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801408</span>
-                                <p>201801408@daiict.ac.in</p>
+                                <span>201801408@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -411,7 +399,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801252</span>
-                                <p>201801252@daiict.ac.in</p>
+                                <span>201801252@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -436,7 +424,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801426</span>
-                                <p>201801426@daiict.ac.in</p>
+                                <span>201801426@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -461,7 +449,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801043</span>
-                                <p>201801043@daiict.ac.in</p>
+                                <span>201801043@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -486,7 +474,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801069</span>
-                                <p>201801069@daiict.ac.in</p>
+                                <span>201801069@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -511,7 +499,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801415</span>
-                                <p>201801415@daiict.ac.in</p>
+                                <span>201801415@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -536,7 +524,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801047</span>
-                                <p>201801047@daiict.ac.in</p>
+                                <span>201801047@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -561,7 +549,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801006</span>
-                                <p>201801006@daiict.ac.in</p>
+                                <span>201801006@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
@@ -586,7 +574,7 @@ export default function LandingPage() {
                                 component="p"
                             >
                                 <span>201801095</span>
-                                <p>201801095@daiict.ac.in</p>
+                                <span>201801095@daiict.ac.in</span>
                             </Typography>
                         </CardContent>
                     </Card>
