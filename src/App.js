@@ -3,6 +3,7 @@ import './App.css';
 import LandingPage from './views/LandingPage';
 import LoginPage from './views/LoginPage';
 import Dashboard from './views/Dashboard';
+import SetAssignment from './views/SetAssignment';
 
 import { useUserState } from './components/context/UserContext';
 
@@ -15,6 +16,7 @@ function App() {
                 <Route exact path="/" component={LandingPage} />
                 <Route path="/login" component={LoginPage} />
                 <Route path="/dashboard" component={Dashboard} />
+                <Route path="/setassignment" component={SetAssignment} />
                 <Route
                     path="/github"
                     component={() => {
@@ -27,5 +29,6 @@ function App() {
         </BrowserRouter>
     );
 }
+
 
 export default App;
