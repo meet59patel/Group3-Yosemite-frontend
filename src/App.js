@@ -13,9 +13,10 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={SetAssignment} />
+        <Route exact path="/" component={LandingPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path="/setassignment" component={SetAssignment} />
       </Switch>
     </BrowserRouter>
   );
