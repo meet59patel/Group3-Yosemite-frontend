@@ -22,7 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment Vars
+# Environment Var
 .env
 .env.dev
 .env.prod
