@@ -17,9 +17,18 @@ function App() {
         <Route path="/login" component={LoginPage} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/setassignment" component={SetAssignment} />
+        <Route
+          path="/github"
+          component={() => {
+            window.location.href =
+              'https://github.com/meet59patel/Group3-Yosemite-frontend';
+            return null;
+          }}
+        />
       </Switch>
     </BrowserRouter>
   );
 }
+
 
 export default App;
