@@ -1,62 +1,106 @@
-import React, {useState} from 'react';
-import nextId from "react-id-generator";
-
-//material ui
+import React, { useState } from 'react';
+import nextId from 'react-id-generator';
+import axios from 'axios';
 import {
     Grid,
     TextField,
     IconButton,
     Button,
-    InputAdornment  
+    Input,
+    InputAdornment,
+    CircularProgress,
+    Snackbar,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 
-//componenets
+// Components
 import Header from '../../components/Header';
 import QuestionBoiler from '../../components/QuestionBoiler';
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
+
 const useStyles = makeStyles((theme) => ({
     setAssignment: {
-        textAlign: `center`
+        textAlign: `center`,
     },
-    questionForm:{
+    questionForm: {
         display: `inline-block`,
         wdith: `80%`,
         margin: `10px`,
         border: `2px solid ${theme.palette.primary.main}`,
         borderRadius: `5px`,
-        padding: `10px`
+        padding: `10px`,
     },
-    questionDescription:{
+    questionDescription: {
         border: `3px solid rgba(0, 0, 0, 0.38)`,
         padding: `5px`,
         margin: `10px`,
-        borderRadius: `5px`
+        borderRadius: `5px`,
     },
-    Title:{
+    Title: {
         width: `98%`,
-        margin:`1%`
-        
+        margin: `1%`,
     },
-    Details:{
-        margin: `5px 10px`
-    } 
+    Details: {
+        margin: `5px 10px`,
+    },
 }));
 
-export default function SetAssignment(){
-    const classes = useStyles();
-    const [form, setForm] = useState([{id: "id0"}])
-    const start=1;
+async function handleSubmit(e, setSubmitted, setSnackbarOpen) {
+    e.preventDefault();
+    setSubmitted(false);
+    let result = {};
+    let total_marks = 0;
+    for (let field of e.target.elements) {
+        if (field.name) {
+            result[field.name] = field.value;
+            if (field.name.includes('-max_score')) {
+                total_marks += parseInt(field.value);
+            }
+        }
+    }
+    result['total_marks'] = total_marks;
+    console.log(result);
+    axios
+        .post(`${SERVER_URL}questionpaper/savepaper/`, result)
+        .then((res) => {
+            setSnackbarOpen(1); // Snackbar Success Alert
+            console.log(res);
+            setSubmitted(true); // Disable Loader
+            // setTimeout(() => {
+            //     window.location.reload(); // Reload to Re-render form
+            // TODO: Redirect to view assignment view on successful submit
+            // }, 6000);
+        })
+        .catch((e) => {
+            setSnackbarOpen(2); // Snackbar Error Alert
+            console.error(e);
+            setSubmitted(true); // Disable Loader
+        });
+    // console.log(e.target.course.value);
+}
 
-    const onPressDelete = (id) =>{
+export default function SetAssignment() {
+    const classes = useStyles();
+    const [form, setForm] = useState([{ id: 'id0' }]);
+    const [submitted, setSubmitted] = useState(true); // Control Loader
+    const [snackbarOpen, setSnackbarOpen] = useState(0); // Control Snackbar
+
+    const onPressDelete = (id) => {
         console.log(id);
         setForm(form.filter((item) => item.id !== id));
-    }
+    };
 
-    return(
-        <div className={classes.setAssignment} >
-            <Header/>
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(0);
+    };
+
+    return (
+        <div className={classes.setAssignment}>
+            <Header />
             <h1>Set Assignment Page</h1>
             <Grid container>
                 <Grid item md={3} xs={12}>
@@ -64,69 +108,132 @@ export default function SetAssignment(){
                     <h4>Courses</h4>
                     Other links
                 </Grid>
-                <Grid item md={9} >
+                <Grid item md={9}>
                     <h1>Form</h1>
-                    <div className={classes.questionForm}>
-                        <div className={classes.questionDescription}>
-                            <TextField 
-                                variant="filled" 
-                                label="Assignment Title"
-                                className={classes.Title}
-                            />
-                            <TextField 
-                                label="Assignment Description"
-                                className={classes.Title}
-                            />
-                            <TextField 
-                                label="Course"
-                                className={classes.Details}
-                            />
-                            <TextField 
-                                label="Date and Time"
-                                type="datetime-local"
-                                defaultValue=""
-                                className={classes.Details}
-                                InputLabelProps={{ shrink: true }}
-                            />
-                            <TextField 
-                                label="Duration"
-                                className={classes.Details}
-                                InputProps={{
-                                    endAdornment: <InputAdornment >Minutes</InputAdornment>,
-                                }}
-                            />
-                        </div>
+                    <form
+                        onSubmit={(e) => {
+                            handleSubmit(e, setSubmitted, setSnackbarOpen);
+                        }}
+                    >
+                        <div className={classes.questionForm}>
+                            <div className={classes.questionDescription}>
+                                <TextField
+                                    variant="filled"
+                                    label="Assignment Title"
+                                    name="assignment_title"
+                                    className={classes.Title}
+                                    required
+                                />
+                                <TextField
+                                    label="Assignment Description"
+                                    name="assignment_description"
+                                    className={classes.Title}
+                                />
+                                <TextField
+                                    label="Faculty ID"
+                                    name="facultyID"
+                                    className={classes.Title}
+                                    required
+                                />
+                                <TextField
+                                    label="Course"
+                                    name="course"
+                                    className={classes.Details}
+                                    required
+                                />
+                                <TextField
+                                    label="Date and Time"
+                                    name="date_time"
+                                    type="datetime-local"
+                                    className={classes.Details}
+                                    InputLabelProps={{ shrink: true }}
+                                    required
+                                />
+                                <TextField
+                                    label="Duration"
+                                    name="duration"
+                                    className={classes.Details}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment>
+                                                Minutes
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </div>
 
-                        {form.map((e)=>{
-                            var i=start;
-                            return(
-                                <li key={e.id} style={{
-                                    listStyle:`none`
-                                }}>
-                                    <QuestionBoiler id={e.id} onDelete={(e)=>onPressDelete(e)}/>
-                                </li>
-                            )
-                        })}
-                        
-                        <IconButton onClick={() => {
-                            console.log("pressed");
-                            setForm([...form,{id: nextId()}]);}}>
-                                
-                            <AddIcon/>
-                        </IconButton>
-                        {/* {JSON.stringify(form)} */}
-                        
-                        <hr/>
-                        
-                        <Button 
-                            variant="contained" 
-                            color="primary"
-                            onClick={()=>{alert("Submitted the form!")}}>
-                            Submit
-                        </Button>
-                    </div>
+                            {form.map((e) => {
+                                return (
+                                    <li
+                                        key={e.id}
+                                        style={{
+                                            listStyle: `none`,
+                                        }}
+                                    >
+                                        <QuestionBoiler
+                                            id={e.id}
+                                            onDelete={(e) => onPressDelete(e)}
+                                        />
+                                    </li>
+                                );
+                            })}
+
+                            <IconButton
+                                onClick={() => {
+                                    setForm([...form, { id: nextId() }]);
+                                }}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                            {/* {JSON.stringify(form)} */}
+
+                            <hr />
+
+                            {!submitted ? (
+                                <Grid
+                                    container
+                                    spacing={3}
+                                    justify="center"
+                                    alignItems="center"
+                                    style={{
+                                        height: '10vh',
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    <Grid item>
+                                        <CircularProgress size={30} />
+                                    </Grid>
+                                </Grid>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
+                                >
+                                    Submit
+                                </Button>
+                            )}
+                        </div>
+                    </form>
                 </Grid>
             </Grid>
+            <Snackbar
+                open={snackbarOpen != 0}
+                autoHideDuration={10000}
+                onClose={handleSnackbarClose}
+            >
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity={snackbarOpen > 0 ? 'success' : 'error'}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {snackbarOpen === 1
+                        ? 'Form Submitted Successfully!'
+                        : 'Error submitting form!'}
+                </Alert>
+            </Snackbar>
         </div>
-    )
+    );
 }

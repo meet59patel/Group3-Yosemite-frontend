@@ -57,6 +57,8 @@ export default function QuestionBoiler(props){
                 multiline
                 variant="outlined"
                 label= "Question"
+                required
+                name={props.id+'-question'}
                 style={{
                     margin: `1%`,
                     width:`98%`
@@ -66,6 +68,8 @@ export default function QuestionBoiler(props){
                 multiline
                 variant="outlined"
                 label= "Referral Answer"
+                required
+                name={props.id+'-ref_answer'}
                 style={{
                     margin: `1%`,
                     width:`98%`,
@@ -76,6 +80,8 @@ export default function QuestionBoiler(props){
                     variant="outlined"
                     label= "Max Score"
                     type="number"
+                    required
+                    name={props.id+'-max_score'}
                     style={{
                         margin: `1%`,
                         width:`15%`,
