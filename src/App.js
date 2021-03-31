@@ -6,6 +6,7 @@ import AdminRoutes from './views/admin/AdminRoutes';
 import FacultyRoutes from './views/faculty/FacultyRoutes';
 import StudentRoutes from './views/Student/StudentRoutes';
 import { CssBaseline, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import SetAssignment from './views/SetAssignment';
 import { useUserState } from './components/context/UserContext';
 import AdminDashboard from './views/admin/AdminDashboard';
 
@@ -50,6 +51,7 @@ function App() {
                     <Route path="/admin" component={AdminDashboard} />
                     <Route path="/faculty" component={FacultyRoutes} />
                     <Route path="/student" component={StudentRoutes} />
+                    <Route path="/setassignment" component={SetAssignment} />
                 </Switch>
             </BrowserRouter>
         </ThemeProvider>
