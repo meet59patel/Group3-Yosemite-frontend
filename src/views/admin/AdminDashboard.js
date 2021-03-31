@@ -2,9 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
-import Users from '../../components/Users/Users';
+import Users from '../../components/users/Users';
 import { Route, Switch } from 'react-router';
-import Assignments from '../../components/Assignments/Assignments';
+import Assignments from '../../components/assignments/Assignments';
 
 const useStyles = makeStyles({
     appMain: {
@@ -31,11 +31,11 @@ function AdminDashboard(props) {
                     <SideMenu.SmallProfile user={USER}></SideMenu.SmallProfile>
                     <SideMenu.NavButton
                         text="Users"
-                        to="admin/users"
+                        to="/admin/users"
                     ></SideMenu.NavButton>
                     <SideMenu.NavButton
                         text="Assignments"
-                        to="admin/assignments"
+                        to="/admin/assignments"
                     ></SideMenu.NavButton>
                 </SideMenu>
                 <Users />

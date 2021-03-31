@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,7 +42,9 @@ export default function Header({ children, headerTitle = "" }) {
             <Toolbar>
                 <Grid container alignItems="center">
                     <Grid item>
-                        <div className={classes.logo}>Yosemite</div>
+                        <Link to='/'>
+                            <div className={classes.logo}>Yosemite</div>
+                        </Link>
                     </Grid>
                     <Grid item sm>
                         <div className={classes.navlist}>
