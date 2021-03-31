@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
-import Assignments from '../../components/assignments/Assignments';
+import Assignments from '../../components/Assignments/Assignments';
 
 const useStyles = makeStyles({
     appMain: {

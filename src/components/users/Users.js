@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import useTable from "../useTable";
-import * as userService from "./UserService";
-import Controls from "../controls/Controls";
-import Popup from "../Popup";
-import Notification from "../Notification";
-import ConfirmDialog from "../ConfirmDialog";
-import PeopleOutlineTwoToneIcon from "@material-ui/icons/PeopleOutlineTwoTone";
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import useTable from '../useTable';
+import UserForm from './UserForm';
+import Controls from '../controls/Controls';
+import Popup from '../Popup';
+import Notification from '../Notification';
+import ConfirmDialog from '../ConfirmDialog';
+import PeopleOutlineTwoToneIcon from '@material-ui/icons/PeopleOutlineTwoTone';
 import {
     Paper,
     makeStyles,
@@ -14,13 +15,11 @@ import {
     TableCell,
     Toolbar,
     InputAdornment,
-} from "@material-ui/core";
-import { Search } from "@material-ui/icons";
-import AddIcon from "@material-ui/icons/Add";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import CloseIcon from "@material-ui/icons/Close";
-// import StudentForm from "./UserForm";
-import UserForm from "./UserForm";
+} from '@material-ui/core';
+import { Search } from '@material-ui/icons';
+import AddIcon from '@material-ui/icons/Add';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -28,40 +27,64 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(3),
     },
     searchInput: {
-        width: "75%",
+        width: '75%',
     },
     newButton: {
-        position: "absolute",
-        right: "10px",
+        position: 'absolute',
+        right: '10px',
     },
 }));
 
 const headCells = [
-    { id: "fullName", label: "Full Name" },
-    { id: "email", label: "Email Address (Personal)" },
-    { id: "department", label: "Department" },
-    { id: "actions", label: "Actions", disableSorting: true },
+    { id: 'username', label: 'User Name' },
+    { id: 'email', label: 'Email Address (Personal)' },
+    { id: 'role', label: 'Role' },
+    { id: 'actions', label: 'Actions', disableSorting: true },
 ];
 
-export default function Users() {
+function Users() {
     const classes = useStyles();
-    const [recordForEdit, setRecordForEdit] = useState(null);
-    const [records, setRecords] = useState(userService.getAllUsers());
+
+    // handling modal and notif bar
+    const [openPopup, setOpenPopup] = useState(false);
+    const [notify, setNotify] = useState({
+        isOpen: false,
+        message: '',
+        type: '',
+    });
+    const [confirmDialog, setConfirmDialog] = useState({
+        isOpen: false,
+        title: '',
+        subTitle: '',
+    });
+
+    // fetching user data
+    const [userList, setUserList] = useState([]);
+    const fetchUserList = useCallback(() => {
+        axios({
+            method: 'GET',
+            url: 'https://yosemite-sen.herokuapp.com/users',
+            headers: {},
+            params: {
+                language_code: 'en',
+            },
+        })
+            .then((response) => {
+                setUserList(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
+    useEffect(() => {
+        fetchUserList();
+    }, [fetchUserList]);
+
+    // For table part
     const [filterFn, setFilterFn] = useState({
         fn: (items) => {
             return items;
         },
-    });
-    const [openPopup, setOpenPopup] = useState(false);
-    const [notify, setNotify] = useState({
-        isOpen: false,
-        message: "",
-        type: "",
-    });
-    const [confirmDialog, setConfirmDialog] = useState({
-        isOpen: false,
-        title: "",
-        subTitle: "",
     });
 
     const {
@@ -69,33 +92,81 @@ export default function Users() {
         TblHead,
         TblPagination,
         recordsAfterPagingAndSorting,
-    } = useTable(records, headCells, filterFn);
+    } = useTable(userList, headCells, filterFn);
 
     const handleSearch = (e) => {
         let target = e.target;
         setFilterFn({
             fn: (items) => {
-                if (target.value === "") return items;
+                if (target.value === '') return items;
                 else
-                    return items.filter((x) =>
-                        x.fullName.toLowerCase().includes(target.value)
+                    return items.filter(
+                        (x) =>
+                            x.username.toLowerCase().includes(target.value) ||
+                            x.email.toLowerCase().includes(target.value) ||
+                            x.role.toLowerCase().includes(target.value)
                     );
             },
         });
     };
 
+    const [recordForEdit, setRecordForEdit] = useState(null);
+
     const addOrEdit = (user, resetForm) => {
-        if (user.id === 0) userService.insertUser(user);
-        else userService.updateUser(user);
+        if (user.id === 0) {
+            axios({
+                method: 'POST',
+                url: 'https://yosemite-sen.herokuapp.com/users',
+                headers: {},
+                data: user,
+                params: {
+                    language_code: 'en',
+                },
+            })
+                .then((response) => {
+                    setNotify({
+                        isOpen: true,
+                        message: `Created Successfully`,
+                        type: 'success',
+                    });
+                    fetchUserList();
+                })
+                .catch((error) => {
+                    setNotify({
+                        isOpen: true,
+                        message: 'Error to Create',
+                        type: 'error',
+                    });
+                });
+        } else {
+            axios({
+                method: 'PUT',
+                url: `https://yosemite-sen.herokuapp.com/users/${user._id}`,
+                headers: {},
+                data: user,
+                params: {
+                    language_code: 'en',
+                },
+            })
+                .then((response) => {
+                    setNotify({
+                        isOpen: true,
+                        message: `Edited Successfully`,
+                        type: 'success',
+                    });
+                    fetchUserList();
+                })
+                .catch((error) => {
+                    setNotify({
+                        isOpen: true,
+                        message: 'Error to Edit',
+                        type: 'error',
+                    });
+                });
+        }
         resetForm();
         setRecordForEdit(null);
         setOpenPopup(false);
-        setRecords(userService.getAllUsers());
-        setNotify({
-            isOpen: true,
-            message: "Submitted Successfully",
-            type: "success",
-        });
     };
 
     const openInPopup = (item) => {
@@ -103,109 +174,137 @@ export default function Users() {
         setOpenPopup(true);
     };
 
-    const onDelete = (id) => {
+    const onDelete = (email) => {
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false,
         });
-        userService.deleteUser(id);
-        setRecords(userService.getAllUsers());
-        setNotify({
-            isOpen: true,
-            message: "Deleted Successfully",
-            type: "error",
-        });
+        axios({
+            method: 'DELETE',
+            url: `https://yosemite-sen.herokuapp.com/users/${email}`,
+            headers: {},
+            params: {
+                language_code: 'en',
+            },
+        })
+            .then((response) => {
+                setNotify({
+                    isOpen: true,
+                    message: 'Deleted Successfully',
+                    type: 'error',
+                });
+                fetchUserList();
+            })
+            .catch((error) => {
+                setNotify({
+                    isOpen: true,
+                    message: 'Error to delete',
+                    type: 'error',
+                });
+                console.log(error);
+            });
     };
 
     return (
-        <>
-            {/* <PageHeader
-                title="New User"
-                subTitle="Form design with validation"
-                icon={<PeopleOutlineTwoToneIcon fontSize="large" />}
-            /> */}
-            <Paper className={classes.pageContent}>
-                <Toolbar>
-                    <Controls.Input
-                        label="Search Users"
-                        className={classes.searchInput}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Search />
-                                </InputAdornment>
-                            ),
-                        }}
-                        onChange={handleSearch}
+        <div>
+            <div>
+                <div>
+                    <Paper className={classes.pageContent}>
+                        <Toolbar>
+                            <Controls.Input
+                                label="Search Users"
+                                className={classes.searchInput}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Search />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                onChange={handleSearch}
+                            />
+                            <Controls.Button
+                                text="Add New"
+                                variant="outlined"
+                                startIcon={<AddIcon />}
+                                className={classes.newButton}
+                                onClick={() => {
+                                    setOpenPopup(true);
+                                    setRecordForEdit(null);
+                                }}
+                            />
+                        </Toolbar>
+                        <TblContainer>
+                            <TblHead />
+                            <TableBody>
+                                {userList &&
+                                    recordsAfterPagingAndSorting().map(
+                                        (item) => (
+                                            <TableRow key={item._id}>
+                                                <TableCell>
+                                                    {item.username}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.email}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.role}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Controls.ActionButton
+                                                        color="primary"
+                                                        onClick={() => {
+                                                            openInPopup(item);
+                                                        }}
+                                                    >
+                                                        <EditOutlinedIcon fontSize="small" />
+                                                    </Controls.ActionButton>
+                                                    <Controls.ActionButton
+                                                        color="secondary"
+                                                        onClick={() => {
+                                                            setConfirmDialog({
+                                                                isOpen: true,
+                                                                title:
+                                                                    'Are you sure to delete this user?',
+                                                                subTitle:
+                                                                    "You can't undo this operation",
+                                                                onConfirm: () => {
+                                                                    onDelete(
+                                                                        item.email
+                                                                    );
+                                                                },
+                                                            });
+                                                        }}
+                                                    >
+                                                        <CloseIcon fontSize="small" />
+                                                    </Controls.ActionButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    )}
+                            </TableBody>
+                        </TblContainer>
+                        <TblPagination />
+                    </Paper>
+                    <Popup
+                        title="User Form"
+                        openPopup={openPopup}
+                        setOpenPopup={setOpenPopup}
+                    >
+                        <UserForm
+                            recordForEdit={recordForEdit}
+                            addOrEdit={addOrEdit}
+                        />
+                    </Popup>
+                    <Notification notify={notify} setNotify={setNotify} />
+                    <ConfirmDialog
+                        confirmDialog={confirmDialog}
+                        setConfirmDialog={setConfirmDialog}
                     />
-                    <Controls.Button
-                        text="Add New"
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        className={classes.newButton}
-                        onClick={() => {
-                            setOpenPopup(true);
-                            setRecordForEdit(null);
-                        }}
-                    />
-                </Toolbar>
-                <TblContainer>
-                    <TblHead />
-                    <TableBody>
-                        {recordsAfterPagingAndSorting().map((item) => (
-                            <TableRow key={item.id}>
-                                <TableCell>{item.fullName}</TableCell>
-                                <TableCell>{item.email}</TableCell>
-                                <TableCell>{item.department}</TableCell>
-                                <TableCell>
-                                    <Controls.ActionButton
-                                        color="primary"
-                                        onClick={() => {
-                                            openInPopup(item);
-                                        }}
-                                    >
-                                        <EditOutlinedIcon fontSize="small" />
-                                    </Controls.ActionButton>
-                                    <Controls.ActionButton
-                                        color="secondary"
-                                        onClick={() => {
-                                            setConfirmDialog({
-                                                isOpen: true,
-                                                title:
-                                                    "Are you sure to delete this record?",
-                                                subTitle:
-                                                    "You can't undo this operation",
-                                                onConfirm: () => {
-                                                    onDelete(item.id);
-                                                },
-                                            });
-                                        }}
-                                    >
-                                        <CloseIcon fontSize="small" />
-                                    </Controls.ActionButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </TblContainer>
-                <TblPagination />
-            </Paper>
-            <Popup
-                title="User Form"
-                openPopup={openPopup}
-                setOpenPopup={setOpenPopup}
-            >
-                {/* <StudentForm
-                    recordForEdit={recordForEdit}
-                    addOrEdit={addOrEdit}
-                /> */}
-                <UserForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
-            </Popup>
-            <Notification notify={notify} setNotify={setNotify} />
-            <ConfirmDialog
-                confirmDialog={confirmDialog}
-                setConfirmDialog={setConfirmDialog}
-            />
-        </>
+                </div>
+            </div>
+        </div>
     );
 }
+
+export default Users;
