@@ -4,6 +4,7 @@ import LandingPage from './views/LandingPage';
 import LoginPage from './views/LoginPage';
 import Dashboard from './views/Dashboard';
 import SetAssignment from './views/SetAssignment';
+import ViewAssignment from './views/ViewAssignment';
 
 import { useUserState } from './components/context/UserContext';
 
@@ -25,6 +26,7 @@ function App() {
                         return null;
                     }}
                 />
+                <Route path="/assignment" component={ViewAssignment} />
             </Switch>
         </BrowserRouter>
     );
