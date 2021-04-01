@@ -118,7 +118,9 @@ function ViewAssignment(props) {
             return (<LinearProgress/>)
         }
         return   (
-            <AnswerBoiler Key={index} data={val} />
+            <div key={index}>
+                <AnswerBoiler Key={index} data={val} />
+            </div>
         )
     }
 
@@ -180,7 +182,7 @@ function ViewAssignment(props) {
                             <div>
                                 {questionData.map(renderQuestions)}
                             </div>
-                            <div>
+                            <div styles={{display:'flex'}}>
                                 {!submitted ? (
                                     <Grid
                                         container
@@ -196,15 +198,16 @@ function ViewAssignment(props) {
                                             <CircularProgress size={30} />
                                         </Grid>
                                 </Grid>
-                            ) : (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
-                                >
-                                    Submit
-                                </Button>
-                            )}
+                                ) : (
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        type="submit"
+                                        style={{margin:"auto"}}
+                                    >
+                                        Submit
+                                    </Button>
+                                )}
                             </div>
                         </form>
                     </div>
