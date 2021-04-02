@@ -32,7 +32,7 @@ export default function Header() {
                     noWrap
                     className={classes.toolbarTitle}
                 >
-                    This is empty space
+                    {/* This is empty space */}
                 </Typography>
                 <Link to="/student">
                     <Button>Student</Button>

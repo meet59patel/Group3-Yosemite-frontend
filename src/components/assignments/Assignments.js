@@ -20,7 +20,6 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import CloseIcon from '@material-ui/icons/Close';
 import AssignmentForm from './AssignmentForm';
-import { Redirect, useLocation } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -115,7 +114,8 @@ export default function Assignments(props) {
     }, []);
     useEffect(() => {
         fetchAssiList(user);
-    }, [fetchAssiList]);
+        console.log(1);
+    }, [fetchAssiList, user]);
 
     // For table part
     const [filterFn, setFilterFn] = useState({
