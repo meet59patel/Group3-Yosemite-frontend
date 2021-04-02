@@ -58,6 +58,8 @@ async function handleSubmit(e, setSubmitted, setSnackbarOpen, question_paper_id,
         result['studentID'] = user_id;
         result['questionID'] = row._id;
         result['questionPaperID'] = question_paper_id;
+        
+        //default set to 0 and false
         result['marks_by_model'] = 0;
         result['final_marks'] = 0;
         result['is_evaluated'] = false;
@@ -98,7 +100,9 @@ const USER = {
 function ViewAssignment(props) {
     const classes = useStyles();
     const [questionData,setQuestionData] = useState([]);
+    const [questionPaperData, setQuestionPaperData] = useState([]);
     const [submitted, setSubmitted] = useState(true);
+    const [dateString, setDateString] = useState('');
     const [totalMarks, setTotalMarks] = useState(0);
     const [snackbarOpen, setSnackbarOpen] = useState(0); // Control Snackbar
 
@@ -112,6 +116,7 @@ function ViewAssignment(props) {
     //let question_paper_id = props.questionPaperID;
     //let user_id = props.userID
     let question_paper_id = '605f1c24d36f8b94df32f9b6';
+    let question_paper_id_data = {}
     let user_id = '605f16a34323c591389a4c89'; //201801056
     const renderQuestions = (val,index) => {
         if(questionData===[]){
@@ -138,6 +143,43 @@ function ViewAssignment(props) {
         })
         .catch((err) => console.log.err)
     },[])
+
+    useEffect(()=>{
+        axios.get(SERVER_URL+'questionpaper/')
+        .then((response)=>{
+            if(response.status===200){   
+                console.log("Status OK! - questionPaperData")
+                console.log(response.data)
+                addPaperInfo(response.data)
+
+            }
+            else{
+                console.log("ERROR: "+response.status+" , "+response.statusText)
+            }
+        })
+        .catch((err) => console.log.err)
+    },[])
+
+    const addPaperInfo = (data) => {
+        for( let field of data){
+            if(field._id === question_paper_id){
+                question_paper_id_data = field
+                console.log('question_paper_id_data: '+ question_paper_id_data)
+                setQuestionPaperData(question_paper_id_data);
+                break;
+            }
+        }
+    }
+
+    const loadDate = () => {
+        console.log(questionPaperData.submissionDeadline)
+        let date = new Date(questionPaperData.submissionDeadline);
+        console.log(date.toString());
+        setDateString(date.toString());
+    }
+    useEffect(()=>{
+        loadDate();
+    },[questionPaperData])
 
     const checkTotal = () => {
         let sum=0;
@@ -169,10 +211,10 @@ function ViewAssignment(props) {
                     <div>
                         {/* ENTER ASSIGNMENT DESCRIPTION AND OTHER DETAILS BELOW */}
                         <h3>Assignment Description: </h3>
-                        <h3>Subject Name: </h3>
-                        <h3>Faculty ID: </h3>
+                        <h3>Subject Name: {questionPaperData.subjectName}</h3>
+                        <h3>Faculty Name: </h3>
                         <h3>Maximum Marks: {totalMarks}</h3>
-                        <h3>Submission Date: </h3>
+                        <h3>Submission Date: {dateString}</h3>
                         
                         <form
                             onSubmit={(e) => {
@@ -182,7 +224,7 @@ function ViewAssignment(props) {
                             <div>
                                 {questionData.map(renderQuestions)}
                             </div>
-                            <div styles={{display:'flex'}}>
+                            <div style={{display:'flex'}}>
                                 {!submitted ? (
                                     <Grid
                                         container
