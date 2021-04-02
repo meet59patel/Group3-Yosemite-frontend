@@ -5,7 +5,7 @@ import SideMenu from '../../components/SideMenu';
 import Users from '../../components/users/Users';
 import { Route, Switch } from 'react-router';
 import Assignments from '../../components/assignments/Assignments';
-
+import AdminGraphs from '../../components/graphs/adminGraphs';
 const useStyles = makeStyles({
     appMain: {
         paddingLeft: '320px',
@@ -38,6 +38,7 @@ function AdminDashboard(props) {
                         to="/admin/assignments"
                     ></SideMenu.NavButton>
                 </SideMenu>
+                <AdminGraphs />
                 <Users />
                 <Assignments />
             </div>
