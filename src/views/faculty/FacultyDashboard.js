@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
 import Assignments from '../../components/assignments/Assignments';
-
+import FacultyGraphs from '../../components/graphs/facultyGraphs';
 const useStyles = makeStyles({
     appMain: {
         paddingLeft: '320px',
@@ -33,6 +33,7 @@ function AdminDashboard() {
                         active={true}
                     ></SideMenu.NavButton>
                 </SideMenu>
+                <FacultyGraphs />
                 <Assignments />
             </div>
         </div>

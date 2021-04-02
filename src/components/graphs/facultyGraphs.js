@@ -3,45 +3,30 @@ import { Grid } from '@material-ui/core';
 import { Line } from '@reactchartjs/react-chart.js';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import { Bar } from '@reactchartjs/react-chart.js';
+import { Doughnut } from '@reactchartjs/react-chart.js';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 const data1 = {
-    labels: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-    ],
+    labels: ['Evaluated', 'Not Evaluated', 'Did Not Got responses'],
     datasets: [
         {
-            label: '# of Students',
-            data: [5, 7, 8, 12, 17, 18, 20],
-            fill: false,
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgba(255, 99, 132, 0.2)',
-            yAxisID: 'y-axis-1',
-        },
-        {
-            label: '# of No Faculty',
-            data: [2, 2, 5, 7, 7, 8, 8],
-            fill: false,
-            backgroundColor: 'rgb(54, 162, 235)',
-            borderColor: 'rgba(54, 162, 235, 0.2)',
-            yAxisID: 'y-axis-2',
-        },
-        {
-            label: '# of No Admins',
-            data: [1, 1, 1, 2, 2, 2, 2],
-            fill: false,
-            backgroundColor: 'rgba(153, 102, 255, 1)',
-            borderColor: 'rgba(153, 102, 255, 0.2)',
-            yAxisID: 'y-axis-2',
+            label: '# of Submissions',
+            data: [5, 4, 6],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+            ],
+            borderWidth: 1,
         },
     ],
 };
@@ -67,23 +52,27 @@ const data2 = {
 };
 
 const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ['Assignned', 'Submitted', 'Not Submitted'],
     datasets: [
         {
-            label: '# of Tests',
-            data: [12, 19, 3, 5, 15, 3],
+            label: '# of Students',
+            data: [15, 9, 6],
             fill: false,
-            backgroundColor: 'rgb(54, 162, 235)',
-            borderColor: 'rgba(54, 162, 235, 0.2)',
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+            ],
         },
     ],
 };
 
 const options = {
-    animation: {
-        duration: 200, // general animation time
-    },
-    responsive: true,
     scales: {
         yAxes: [
             {
@@ -112,7 +101,7 @@ const options1 = {
         ],
     },
 };
-class AdminGraphs extends React.Component {
+class FacultyGraphs extends React.Component {
     constructor(props) {
         super(props);
         this.changeDataUsers = this.changeDataUsers.bind(this);
@@ -164,7 +153,7 @@ class AdminGraphs extends React.Component {
                                                 marginBottom="0!important"
                                             >
                                                 <Box component="span">
-                                                    No of Tests
+                                                    No of Students
                                                 </Box>
                                             </Box>
                                         </Grid>
@@ -173,7 +162,7 @@ class AdminGraphs extends React.Component {
                             ></CardHeader>
                             <CardContent>
                                 <Box position="relative" height="350px">
-                                    <Line data={data} options={options} />
+                                    <Bar data={data} options={options} />
                                 </Box>
                             </CardContent>
                         </Card>
@@ -201,48 +190,8 @@ class AdminGraphs extends React.Component {
                                                 marginBottom="0!important"
                                             >
                                                 <Box component="span">
-                                                    No of Users
+                                                    No of Submissions
                                                 </Box>
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xs="auto">
-                                            <Box
-                                                justifyContent="flex-end"
-                                                display="flex"
-                                                flexWrap="wrap"
-                                            >
-                                                <Button
-                                                    variant="contained"
-                                                    color={
-                                                        this.state
-                                                            .selectedMetric ===
-                                                        data2
-                                                            ? 'primary'
-                                                            : 'white'
-                                                    }
-                                                    component={Box}
-                                                    marginRight="1rem!important"
-                                                    onClick={
-                                                        this.changeDataUsers
-                                                    }
-                                                >
-                                                    Users
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    color={
-                                                        this.state
-                                                            .selectedMetric ===
-                                                        data1
-                                                            ? 'primary'
-                                                            : 'white'
-                                                    }
-                                                    onClick={
-                                                        this.changeDataNewUsers
-                                                    }
-                                                >
-                                                    New Users
-                                                </Button>
                                             </Box>
                                         </Grid>
                                     </Grid>
@@ -250,10 +199,7 @@ class AdminGraphs extends React.Component {
                             ></CardHeader>
                             <CardContent>
                                 <Box position="relative" height="350px">
-                                    <Line
-                                        data={this.state.selectedMetric}
-                                        options={options1}
-                                    />
+                                    <Doughnut data={data1} />
                                 </Box>
                             </CardContent>
                         </Card>
@@ -264,4 +210,4 @@ class AdminGraphs extends React.Component {
     }
 }
 
-export default AdminGraphs;
+export default FacultyGraphs;
