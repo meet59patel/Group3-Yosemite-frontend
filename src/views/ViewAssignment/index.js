@@ -210,7 +210,7 @@ function ViewAssignment(props) {
                     <h2>Assignment Name: </h2>
                     <div>
                         {/* ENTER ASSIGNMENT DESCRIPTION AND OTHER DETAILS BELOW */}
-                        <h3>Assignment Description: </h3>
+                        <h3>Assignment Description: {questionData.questionPaperDescription}</h3>
                         <h3>Subject Name: {questionPaperData.subjectName}</h3>
                         <h3>Faculty Name: </h3>
                         <h3>Maximum Marks: {totalMarks}</h3>
