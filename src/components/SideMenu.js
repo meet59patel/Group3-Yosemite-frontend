@@ -1,8 +1,7 @@
 import React from 'react';
-import { makeStyles, Button, Avatar } from '@material-ui/core';
+import { makeStyles, Avatar } from '@material-ui/core';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { NavLink } from 'react-router-dom';
-// makeStyles
 
 const useStyles = makeStyles({
     sideMenu: {
@@ -13,7 +12,6 @@ const useStyles = makeStyles({
         left: '0px',
         width: '320px',
         height: '100%',
-        // backgroundColor: "#253053",
     },
     smallProfile: {
         display: 'flex',
@@ -42,43 +40,41 @@ SideMenu.NavButton = function NavButton({ children, text, to }) {
             to={to}
             style={{
                 display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '15px 30px',
+                margin: '15px auto',
                 width: '70%',
                 textDecoration: 'none',
-                alignItems: 'center',
+                color: 'black',
+                borderRadius: '10px',
+                backgroundColor: '#e0e0e0',
+                boxShadow:
+                    '0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%)',
             }}
-            activeStyle={{ background: 'blue', color: 'white' }}
+            activeStyle={{ color: '#fff', backgroundColor: '#1976D2' }}
         >
-            <Button
-                variant="contained"
-                href="#contained-buttons"
-                style={{
-                    padding: '15px 30px',
-                    borderRadius: '10px',
-                    margin: '15px auto',
-                    width: '100%',
-                }}
-            >
-                {text}
-            </Button>
+            {text}
         </NavLink>
     );
 };
 
 SideMenu.BackButton = function BackButton({ children, text, to }) {
     return (
-        <div>
-            <span
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '70px',
-                }}
-            >
-                <KeyboardBackspaceIcon />
-                &nbsp;&nbsp;{text}
-            </span>
-        </div>
+        <NavLink
+            to={to}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: '70px',
+                textDecoration: 'none',
+                color: 'black',
+            }}
+        >
+            <KeyboardBackspaceIcon />
+            &nbsp;&nbsp;{text}
+        </NavLink>
     );
 };
 
@@ -88,7 +84,7 @@ SideMenu.SmallProfile = function SmallProfile({ children, user }) {
         <div className={classes.smallProfile}>
             <Avatar
                 className={classes.userPic}
-                alt={user.userName}
+                alt={user.username}
                 src={user.userPic}
                 style={{
                     height: '140px',
@@ -98,9 +94,9 @@ SideMenu.SmallProfile = function SmallProfile({ children, user }) {
                 }}
             />
             <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                {user.userName}
+                {user.username}
             </div>
-            <div>{user.userEmail}</div>
+            <div>{user.email}</div>
             {children}
         </div>
     );

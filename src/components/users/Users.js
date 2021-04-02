@@ -35,16 +35,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const headCells = [
+const headCellsAdmin = [
     { id: 'username', label: 'User Name' },
     { id: 'email', label: 'Email Address (Personal)' },
     { id: 'role', label: 'Role' },
     { id: 'actions', label: 'Actions', disableSorting: true },
 ];
 
-function Users() {
-    const classes = useStyles();
+const headCellsFaculty = [
+    { id: 'username', label: 'User Name' },
+    { id: 'email', label: 'Email Address (Personal)' },
+    { id: 'role', label: 'Role' },
+];
 
+function Users(props) {
+    const classes = useStyles();
+    const user = props.user;
     // handling modal and notif bar
     const [openPopup, setOpenPopup] = useState(false);
     const [notify, setNotify] = useState({
@@ -86,6 +92,13 @@ function Users() {
             return items;
         },
     });
+
+    const headCells =
+        user.role === 'admin'
+            ? headCellsAdmin
+            : user.role === 'faculty'
+            ? headCellsFaculty
+            : headCellsFaculty;
 
     const {
         TblContainer,
@@ -250,35 +263,41 @@ function Users() {
                                                 <TableCell>
                                                     {item.role}
                                                 </TableCell>
-                                                <TableCell>
-                                                    <Controls.ActionButton
-                                                        color="primary"
-                                                        onClick={() => {
-                                                            openInPopup(item);
-                                                        }}
-                                                    >
-                                                        <EditOutlinedIcon fontSize="small" />
-                                                    </Controls.ActionButton>
-                                                    <Controls.ActionButton
-                                                        color="secondary"
-                                                        onClick={() => {
-                                                            setConfirmDialog({
-                                                                isOpen: true,
-                                                                title:
-                                                                    'Are you sure to delete this user?',
-                                                                subTitle:
-                                                                    "You can't undo this operation",
-                                                                onConfirm: () => {
-                                                                    onDelete(
-                                                                        item.email
-                                                                    );
-                                                                },
-                                                            });
-                                                        }}
-                                                    >
-                                                        <CloseIcon fontSize="small" />
-                                                    </Controls.ActionButton>
-                                                </TableCell>
+                                                {user.role === 'admin' && (
+                                                    <TableCell>
+                                                        <Controls.ActionButton
+                                                            color="primary"
+                                                            onClick={() => {
+                                                                openInPopup(
+                                                                    item
+                                                                );
+                                                            }}
+                                                        >
+                                                            <EditOutlinedIcon fontSize="small" />
+                                                        </Controls.ActionButton>
+                                                        <Controls.ActionButton
+                                                            color="secondary"
+                                                            onClick={() => {
+                                                                setConfirmDialog(
+                                                                    {
+                                                                        isOpen: true,
+                                                                        title:
+                                                                            'Are you sure to delete this user?',
+                                                                        subTitle:
+                                                                            "You can't undo this operation",
+                                                                        onConfirm: () => {
+                                                                            onDelete(
+                                                                                item.email
+                                                                            );
+                                                                        },
+                                                                    }
+                                                                );
+                                                            }}
+                                                        >
+                                                            <CloseIcon fontSize="small" />
+                                                        </Controls.ActionButton>
+                                                    </TableCell>
+                                                )}
                                             </TableRow>
                                         )
                                     )}

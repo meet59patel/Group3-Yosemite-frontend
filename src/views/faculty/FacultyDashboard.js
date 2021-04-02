@@ -1,8 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
+import { useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
-import Assignments from '../../components/assignments/Assignments';
+import Users from '../../components/Users/Users';
+import Assignments from '../../components/Assignments/Assignments';
+import Welcome from '../../components/Welcome';
 
 const useStyles = makeStyles({
     appMain: {
@@ -13,13 +16,16 @@ const useStyles = makeStyles({
 });
 
 const USER = {
+    _id: '605f16fd4323c591389a4c91',
     userPic: '/static/images/avatar/1.jpg',
-    userName: 'Ridham Suvagiya',
-    userEmail: '201801006@daiict.ac.in',
+    username: 'Sam',
+    email: 'sam@daiict.ac.in',
+    role: 'faculty',
 };
 
 function AdminDashboard() {
     const classes = useStyles();
+    const path = useLocation();
 
     return (
         <div>
@@ -28,12 +34,28 @@ function AdminDashboard() {
                 <SideMenu>
                     <SideMenu.SmallProfile user={USER}></SideMenu.SmallProfile>
                     <SideMenu.NavButton
-                        text="Create Assignment"
-                        to="#"
-                        active={true}
+                        text="Users"
+                        to="/faculty/users"
                     ></SideMenu.NavButton>
+                    <SideMenu.NavButton
+                        text="Assignments"
+                        to="/faculty/assignments"
+                    ></SideMenu.NavButton>
+                    {path.pathname !== '/faculty' && (
+                        <SideMenu.BackButton
+                            text="Back"
+                            to="/faculty"
+                        ></SideMenu.BackButton>
+                    )}
                 </SideMenu>
-                <Assignments />
+
+                {path.pathname === '/faculty' && (
+                    <Welcome name={USER.username}></Welcome>
+                )}
+                {path.pathname === '/faculty/users' && <Users user={USER} />}
+                {path.pathname === '/faculty/assignments' && (
+                    <Assignments user={USER} />
+                )}
             </div>
         </div>
     );

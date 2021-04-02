@@ -17,8 +17,10 @@ import {
 import { Search } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import CloseIcon from '@material-ui/icons/Close';
 import AssignmentForm from './AssignmentForm';
+import { Redirect, useLocation } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const headCells = [
+const headCellsAdmin = [
     // { id: 'assId', label: 'Assignment Id' },
     { id: 'subjectName', label: 'Subject Name' },
     { id: 'facultyID', label: 'Faculty ID' },
@@ -47,8 +49,35 @@ const headCells = [
     { id: 'actions', label: 'Actions', disableSorting: true },
 ];
 
-export default function Assignments() {
+const headCellsFaculty = [
+    // { id: 'assId', label: 'Assignment Id' },
+    { id: 'subjectName', label: 'Subject Name' },
+    // { id: 'facultyID', label: 'Faculty ID' },
+    { id: 'submissionDeadline', label: 'Submission Deadline' },
+    { id: 'total', label: 'Total score' },
+    // { id: 'assDate', label: 'Date' },
+    // { id: 'startTime', label: 'Time' },
+    // { id: "duration", label: "Duration" },
+    // { id: 'status', label: 'Status' },
+    { id: 'actions', label: 'Actions', disableSorting: true },
+];
+
+const headCellsStudent = [
+    // { id: 'assId', label: 'Assignment Id' },
+    { id: 'subjectName', label: 'Subject Name' },
+    { id: 'facultyID', label: 'Faculty ID' },
+    { id: 'submissionDeadline', label: 'Submission Deadline' },
+    { id: 'total', label: 'Total score' },
+    // { id: 'assDate', label: 'Date' },
+    // { id: 'startTime', label: 'Time' },
+    // { id: "duration", label: "Duration" },
+    // { id: 'status', label: 'Status' },
+    { id: 'actions', label: 'Actions', disableSorting: true },
+];
+
+export default function Assignments(props) {
     const classes = useStyles();
+    const user = props.user;
 
     // handling modal and notif bar
     const [openPopup, setOpenPopup] = useState(false);
@@ -65,10 +94,13 @@ export default function Assignments() {
 
     // fetch assignment data
     const [assiList, setAssiList] = useState([]);
-    const fetchAssiList = useCallback(() => {
+    const fetchAssiList = useCallback((user) => {
         axios({
             method: 'GET',
-            url: 'https://yosemite-sen.herokuapp.com/questionpaper',
+            url:
+                user.role === 'faculty'
+                    ? `https://yosemite-sen.herokuapp.com/questionpaper/faculty/${user._id}`
+                    : 'https://yosemite-sen.herokuapp.com/questionpaper',
             headers: {},
             params: {
                 language_code: 'en',
@@ -82,7 +114,7 @@ export default function Assignments() {
             });
     }, []);
     useEffect(() => {
-        fetchAssiList();
+        fetchAssiList(user);
     }, [fetchAssiList]);
 
     // For table part
@@ -91,6 +123,14 @@ export default function Assignments() {
             return items;
         },
     });
+
+    const headCells =
+        user.role === 'admin'
+            ? headCellsAdmin
+            : user.role === 'faculty'
+            ? headCellsFaculty
+            : headCellsStudent;
+
     const {
         TblContainer,
         TblHead,
@@ -213,6 +253,10 @@ export default function Assignments() {
             });
     };
 
+    const gotoAssignment = (id) => {
+        console.log(id);
+    };
+
     return (
         <>
             <Paper className={classes.pageContent}>
@@ -245,41 +289,68 @@ export default function Assignments() {
                     <TableBody>
                         {assiList &&
                             recordsAfterPagingAndSorting().map((item) => (
-                                <TableRow key={item.id}>
+                                <TableRow
+                                    key={item._id}
+                                    onClick={() => {
+                                        gotoAssignment(item._id);
+                                    }}
+                                >
                                     {/* <TableCell>{item.assId}</TableCell> */}
                                     <TableCell>{item.subjectName}</TableCell>
-                                    <TableCell>{item.facultyID}</TableCell>
+                                    {(user.role === 'admin' ||
+                                        user.role === 'student') && (
+                                        <TableCell>{item.facultyID}</TableCell>
+                                    )}
                                     <TableCell>
-                                        {/* {item.assDate.slice(0, 10)} */}
-                                        {item.submissionDeadline}
+                                        {item.submissionDeadline.slice(0, 10)}
+                                        {' - '}
+                                        {item.submissionDeadline.slice(11, 19)}
                                     </TableCell>
                                     <TableCell>{item.total}</TableCell>
                                     <TableCell>
-                                        <Controls.ActionButton
-                                            color="primary"
-                                            // onClick={() => {
-                                            //     openInPopup(item);
-                                            // }}
-                                        >
-                                            <EditOutlinedIcon fontSize="small" />
-                                        </Controls.ActionButton>
-                                        <Controls.ActionButton
-                                            color="secondary"
-                                            // onClick={() => {
-                                            //     setConfirmDialog({
-                                            //         isOpen: true,
-                                            //         title:
-                                            //             'Are you sure to delete this Assignment?',
-                                            //         subTitle:
-                                            //             "You can't undo this operation",
-                                            //         onConfirm: () => {
-                                            //             onDelete(item.id);
-                                            //         },
-                                            //     });
-                                            // }}
-                                        >
-                                            <CloseIcon fontSize="small" />
-                                        </Controls.ActionButton>
+                                        {(user.role === 'student' ||
+                                            user.role === 'admin' ||
+                                            user.role === 'faculty') && (
+                                            <Controls.ActionButton
+                                                color="success"
+                                                // onClick={() => {
+                                                //     openInPopup(item);
+                                                // }}
+                                            >
+                                                <OpenInNewIcon fontSize="small" />
+                                            </Controls.ActionButton>
+                                        )}
+                                        {(user.role === 'admin' ||
+                                            user.role === 'faculty') && (
+                                            <Controls.ActionButton
+                                                color="primary"
+                                                // onClick={() => {
+                                                //     openInPopup(item);
+                                                // }}
+                                            >
+                                                <EditOutlinedIcon fontSize="small" />
+                                            </Controls.ActionButton>
+                                        )}
+                                        {(user.role === 'admin' ||
+                                            user.role === 'faculty') && (
+                                            <Controls.ActionButton
+                                                color="secondary"
+                                                // onClick={() => {
+                                                //     setConfirmDialog({
+                                                //         isOpen: true,
+                                                //         title:
+                                                //             'Are you sure to delete this Assignment?',
+                                                //         subTitle:
+                                                //             "You can't undo this operation",
+                                                //         onConfirm: () => {
+                                                //             onDelete(item.id);
+                                                //         },
+                                                //     });
+                                                // }}
+                                            >
+                                                <CloseIcon fontSize="small" />
+                                            </Controls.ActionButton>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -5,7 +5,7 @@ import StudentDashboard from './StudentDashboard';
 function StudentRoutes(props) {
     return (
         <>
-            <Route path={props.match.path} component={StudentDashboard} />
+            <Route path="/" component={StudentDashboard} />
         </>
     );
 }
