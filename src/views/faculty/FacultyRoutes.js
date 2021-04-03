@@ -1,14 +1,21 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
+import AssignmentFaculty from '../Assignment/AssignmentFaculty';
 import FacultyDashboard from './FacultyDashboard';
 
-
-function FacultyRoutes(props) {
+const FacultyRoutes = ({ user }) => {
     return (
         <>
-            <Route path={props.match.path} component={FacultyDashboard} />
+            <Switch>
+                <Route path="/faculty/assignment/:id">
+                    <AssignmentFaculty user={user} />
+                </Route>
+                <Route path="/faculty">
+                    <FacultyDashboard user={user} />
+                </Route>
+            </Switch>
         </>
     );
-}
+};
 
 export default FacultyRoutes;

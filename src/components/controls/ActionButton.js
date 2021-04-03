@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, makeStyles } from "@material-ui/core";
+import React from 'react';
+import { Button, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -8,14 +8,20 @@ const useStyles = makeStyles((theme) => ({
     },
     secondary: {
         backgroundColor: theme.palette.secondary.light,
-        "& .MuiButton-label": {
+        '& .MuiButton-label': {
             color: theme.palette.secondary.main,
         },
     },
     primary: {
         backgroundColor: theme.palette.primary.light,
-        "& .MuiButton-label": {
+        '& .MuiButton-label': {
             color: theme.palette.primary.main,
+        },
+    },
+    success: {
+        backgroundColor: '#dcedc8',
+        '& .MuiButton-label': {
+            color: theme.palette.success.dark,
         },
     },
 }));

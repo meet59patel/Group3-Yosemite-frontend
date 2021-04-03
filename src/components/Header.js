@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
     AppBar,
     Toolbar,
@@ -6,35 +6,35 @@ import {
     IconButton,
     Badge,
     makeStyles,
-} from "@material-ui/core";
-import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import { Link } from 'react-router-dom';
+} from '@material-ui/core';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { Link, Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
     },
     logo: {
-        color: "black",
-        fontSize: "25px",
-        fontWeight: "bolder",
+        color: 'black',
+        fontSize: '25px',
+        fontWeight: 'bolder',
     },
     navlist: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     navitem: {
-        color: "black",
-        fontSize: "15px",
+        color: 'black',
+        fontSize: '15px',
         // backgroundColor: "pink",
-        padding: "10px",
-        margin: "10px",
+        padding: '10px',
+        margin: '10px',
     },
 }));
 
-export default function Header({ children, headerTitle = "" }) {
+export default function Header({ children, headerTitle = '' }) {
     const classes = useStyles();
 
     return (
@@ -42,13 +42,13 @@ export default function Header({ children, headerTitle = "" }) {
             <Toolbar>
                 <Grid container alignItems="center">
                     <Grid item>
-                        <Link to='/'>
+                        <Link to="/">
                             <div className={classes.logo}>Yosemite</div>
                         </Link>
                     </Grid>
                     <Grid item sm>
                         <div className={classes.navlist}>
-                            {headerTitle !== "" ? (
+                            {headerTitle !== '' ? (
                                 <div className={classes.navitem}>
                                     {headerTitle}
                                 </div>
@@ -64,7 +64,10 @@ export default function Header({ children, headerTitle = "" }) {
                             </Badge>
                         </IconButton>
                         <IconButton>
-                            <PowerSettingsNewIcon fontSize="small" />
+                            <PowerSettingsNewIcon
+                                fontSize="small"
+                                onClick={<Redirect to="/" />}
+                            />
                         </IconButton>
                     </Grid>
                 </Grid>

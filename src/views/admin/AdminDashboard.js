@@ -2,9 +2,10 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
+import { Switch, Route, useLocation } from 'react-router-dom';
 import Users from '../../components/users/Users';
-import { Route, Switch } from 'react-router';
-import Assignments from '../../components/assignments/Assignments';
+import AssignmentList from '../../components/assignments/AssignmentList';
+import Welcome from '../../components/Welcome';
 
 const useStyles = makeStyles({
     appMain: {
@@ -14,21 +15,16 @@ const useStyles = makeStyles({
     },
 });
 
-const USER = {
-    userPic: '/static/images/avatar/1.jpg',
-    userName: 'Ridham Suvagiya',
-    userEmail: '201801006@daiict.ac.in',
-};
-
-function AdminDashboard(props) {
+function AdminDashboard({ user }) {
     const classes = useStyles();
+    const path = useLocation();
 
     return (
         <div>
             <Header headerTitle="Admin Dashboard" />
             <div className={classes.appMain}>
                 <SideMenu>
-                    <SideMenu.SmallProfile user={USER}></SideMenu.SmallProfile>
+                    <SideMenu.SmallProfile user={user}></SideMenu.SmallProfile>
                     <SideMenu.NavButton
                         text="Users"
                         to="/admin/users"
@@ -37,9 +33,25 @@ function AdminDashboard(props) {
                         text="Assignments"
                         to="/admin/assignments"
                     ></SideMenu.NavButton>
+                    {path.pathname !== '/admin' && (
+                        <SideMenu.BackButton
+                            text="Back"
+                            to="/admin"
+                        ></SideMenu.BackButton>
+                    )}
                 </SideMenu>
-                <Users />
-                <Assignments />
+
+                <Switch>
+                    <Route path="/admin/users">
+                        <Users user={user} />
+                    </Route>
+                    <Route path="/admin/assignments">
+                        <AssignmentList user={user} />
+                    </Route>
+                    <Route path="/admin">
+                        <Welcome name={user.username}></Welcome>
+                    </Route>
+                </Switch>
             </div>
         </div>
     );
