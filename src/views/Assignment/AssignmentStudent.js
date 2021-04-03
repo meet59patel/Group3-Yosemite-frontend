@@ -4,8 +4,8 @@ import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
 import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 // import AssignmentSubmissions from '../../components/Assignments/AssignmentSubmissions';
-import AssignmentQnA from '../../components/Assignments/AssignmentQnA';
-import AssignmentQuery from '../../components/Assignments/AssignmentQuery';
+import AssignmentQnA from '../../components/assignments/AssignmentQnA';
+import AssignmentQuery from '../../components/assignments/AssignmentQuery';
 import Welcome from '../../components/Welcome';
 
 const useStyles = makeStyles({

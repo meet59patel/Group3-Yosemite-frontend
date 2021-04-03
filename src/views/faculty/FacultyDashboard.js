@@ -3,8 +3,8 @@ import { makeStyles } from '@material-ui/core';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
-import Users from '../../components/Users/Users';
-import AssignmentList from '../../components/Assignments/AssignmentList';
+import Users from '../../components/users/Users';
+import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
 
 const useStyles = makeStyles({
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     },
 });
 
-const FacultyDashboard = ({user}) => {
+const FacultyDashboard = ({ user }) => {
     const classes = useStyles();
     const path = useLocation();
 

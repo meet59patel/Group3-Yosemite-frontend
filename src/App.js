@@ -2,14 +2,14 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import LandingPage from './views/LandingPage';
 import LoginPage from './views/LoginPage';
-import AdminRoutes from './views/Admin/AdminRoutes';
-import FacultyRoutes from './views/Faculty/FacultyRoutes';
+import AdminRoutes from './views/admin/AdminRoutes';
+import FacultyRoutes from './views/faculty/FacultyRoutes';
 import StudentRoutes from './views/Student/StudentRoutes';
 import { CssBaseline, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import SetAssignment from './views/SetAssignment';
 import { useUserState } from './components/context/UserContext';
 import AssignmentFaculty from './views/Assignment/AssignmentFaculty';
-import AdminDashboard from './views/Admin/AdminDashboard';
+import AdminDashboard from './views/admin/AdminDashboard';
 
 const theme = createMuiTheme({
     palette: {

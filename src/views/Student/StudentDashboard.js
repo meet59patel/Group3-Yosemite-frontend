@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
 import { Switch, Route, useLocation } from 'react-router-dom';
-import AssignmentList from '../../components/Assignments/AssignmentList';
+import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
 // import SetAssignment from '../SetAssignment';
 
