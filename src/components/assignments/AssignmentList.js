@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
 import useTable from '../useTable';
 import Controls from '../controls/Controls';
 import Popup from '../Popup';
@@ -20,6 +19,13 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import CloseIcon from '@material-ui/icons/Close';
 import AssignmentForm from './AssignmentForm';
+import { AssignmentService } from '../../services/apis.service';
+import {
+    assiCellsAdmin,
+    assiCellsFaculty,
+    assiCellsStudent,
+} from '../../services/tableHeadCells';
+import {  useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -35,48 +41,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const headCellsAdmin = [
-    // { id: 'assId', label: 'Assignment Id' },
-    { id: 'subjectName', label: 'Subject Name' },
-    { id: 'facultyID', label: 'Faculty ID' },
-    { id: 'submissionDeadline', label: 'Submission Deadline' },
-    { id: 'total', label: 'Total score' },
-    // { id: 'assDate', label: 'Date' },
-    // { id: 'startTime', label: 'Time' },
-    // { id: "duration", label: "Duration" },
-    // { id: 'status', label: 'Status' },
-    { id: 'actions', label: 'Actions', disableSorting: true },
-];
-
-const headCellsFaculty = [
-    // { id: 'assId', label: 'Assignment Id' },
-    { id: 'subjectName', label: 'Subject Name' },
-    // { id: 'facultyID', label: 'Faculty ID' },
-    { id: 'submissionDeadline', label: 'Submission Deadline' },
-    { id: 'total', label: 'Total score' },
-    // { id: 'assDate', label: 'Date' },
-    // { id: 'startTime', label: 'Time' },
-    // { id: "duration", label: "Duration" },
-    // { id: 'status', label: 'Status' },
-    { id: 'actions', label: 'Actions', disableSorting: true },
-];
-
-const headCellsStudent = [
-    // { id: 'assId', label: 'Assignment Id' },
-    { id: 'subjectName', label: 'Subject Name' },
-    { id: 'facultyID', label: 'Faculty ID' },
-    { id: 'submissionDeadline', label: 'Submission Deadline' },
-    { id: 'total', label: 'Total score' },
-    // { id: 'assDate', label: 'Date' },
-    // { id: 'startTime', label: 'Time' },
-    // { id: "duration", label: "Duration" },
-    // { id: 'status', label: 'Status' },
-    { id: 'actions', label: 'Actions', disableSorting: true },
-];
-
-export default function Assignments(props) {
+export default function AssignmentList(props) {
     const classes = useStyles();
     const user = props.user;
+    let history = useHistory();
 
     // handling modal and notif bar
     const [openPopup, setOpenPopup] = useState(false);
@@ -94,27 +62,26 @@ export default function Assignments(props) {
     // fetch assignment data
     const [assiList, setAssiList] = useState([]);
     const fetchAssiList = useCallback((user) => {
-        axios({
-            method: 'GET',
-            url:
-                user.role === 'faculty'
-                    ? `https://yosemite-sen.herokuapp.com/questionpaper/faculty/${user._id}`
-                    : 'https://yosemite-sen.herokuapp.com/questionpaper',
-            headers: {},
-            params: {
-                language_code: 'en',
-            },
-        })
-            .then((response) => {
-                setAssiList(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        if (user.role !== 'faculty') {
+            AssignmentService.getAllAssignments()
+                .then((response) => {
+                    setAssiList(response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            AssignmentService.getAllFacultyAssignments(user._id)
+                .then((response) => {
+                    setAssiList(response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
     }, []);
     useEffect(() => {
         fetchAssiList(user);
-        console.log(1);
     }, [fetchAssiList, user]);
 
     // For table part
@@ -126,10 +93,10 @@ export default function Assignments(props) {
 
     const headCells =
         user.role === 'admin'
-            ? headCellsAdmin
+            ? assiCellsAdmin
             : user.role === 'faculty'
-            ? headCellsFaculty
-            : headCellsStudent;
+            ? assiCellsFaculty
+            : assiCellsStudent;
 
     const {
         TblContainer,
@@ -162,15 +129,7 @@ export default function Assignments(props) {
 
     const addOrEdit = (assignment, resetForm) => {
         if (assignment.id === 0) {
-            axios({
-                method: 'POST',
-                url: 'https://yosemite-sen.herokuapp.com/questions',
-                headers: {},
-                data: assignment,
-                params: {
-                    language_code: 'en',
-                },
-            })
+            AssignmentService.createAssignment(assignment)
                 .then((response) => {
                     setNotify({
                         isOpen: true,
@@ -187,15 +146,7 @@ export default function Assignments(props) {
                     });
                 });
         } else {
-            axios({
-                method: 'PUT',
-                url: `https://yosemite-sen.herokuapp.com/questions/${assignment._id}`,
-                headers: {},
-                data: assignment,
-                params: {
-                    language_code: 'en',
-                },
-            })
+            AssignmentService.updateAssignment(assignment._id, assignment)
                 .then((response) => {
                     setNotify({
                         isOpen: true,
@@ -227,35 +178,30 @@ export default function Assignments(props) {
             ...confirmDialog,
             isOpen: false,
         });
-        axios({
-            method: 'DELETE',
-            url: `https://yosemite-sen.herokuapp.com/questions/${id}`,
-            headers: {},
-            params: {
-                language_code: 'en',
-            },
-        })
-            .then((response) => {
-                setNotify({
-                    isOpen: true,
-                    message: 'Deleted Successfully',
-                    type: 'error',
-                });
-                fetchAssiList();
-            })
-            .catch((error) => {
-                setNotify({
-                    isOpen: true,
-                    message: 'Error to delete',
-                    type: 'error',
-                });
-                console.log(error);
-            });
+
+        console.alert('This opration is not available right now');
+        // AssignmentService.deleteAssignment()
+        //     .then((response) => {
+        //         setNotify({
+        //             isOpen: true,
+        //             message: 'Deleted Successfully',
+        //             type: 'error',
+        //         });
+        //         fetchAssiList();
+        //     })
+        //     .catch((error) => {
+        //         setNotify({
+        //             isOpen: true,
+        //             message: 'Error to delete',
+        //             type: 'error',
+        //         });
+        //         console.log(error);
+        //     });
     };
 
-    const gotoAssignment = (id) => {
-        console.log(id);
-    };
+    // const gotoAssignment = (id) => {
+    //     console.log(id);
+    // };
 
     return (
         <>
@@ -273,28 +219,25 @@ export default function Assignments(props) {
                         }}
                         onChange={handleSearch}
                     />
-                    <Controls.Button
-                        text="Add New"
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        className={classes.newButton}
-                        onClick={() => {
-                            setOpenPopup(true);
-                            setRecordForEdit(null);
-                        }}
-                    />
+                    {user.role !== 'student' && (
+                        <Controls.Button
+                            text="Add New"
+                            variant="outlined"
+                            startIcon={<AddIcon />}
+                            className={classes.newButton}
+                            onClick={() => {
+                                setOpenPopup(true);
+                                setRecordForEdit(null);
+                            }}
+                        />
+                    )}
                 </Toolbar>
                 <TblContainer>
                     <TblHead />
                     <TableBody>
                         {assiList &&
                             recordsAfterPagingAndSorting().map((item) => (
-                                <TableRow
-                                    key={item._id}
-                                    onClick={() => {
-                                        gotoAssignment(item._id);
-                                    }}
-                                >
+                                <TableRow key={item._id}>
                                     {/* <TableCell>{item.assId}</TableCell> */}
                                     <TableCell>{item.subjectName}</TableCell>
                                     {(user.role === 'admin' ||
@@ -313,9 +256,12 @@ export default function Assignments(props) {
                                             user.role === 'faculty') && (
                                             <Controls.ActionButton
                                                 color="success"
-                                                // onClick={() => {
-                                                //     openInPopup(item);
-                                                // }}
+                                                onClick={() => {
+                                                    // console.log(item);
+                                                    history.push(
+                                                        `assignment/${item._id}`
+                                                    );
+                                                }}
                                             >
                                                 <OpenInNewIcon fontSize="small" />
                                             </Controls.ActionButton>
@@ -324,9 +270,9 @@ export default function Assignments(props) {
                                             user.role === 'faculty') && (
                                             <Controls.ActionButton
                                                 color="primary"
-                                                // onClick={() => {
-                                                //     openInPopup(item);
-                                                // }}
+                                                onClick={() => {
+                                                    openInPopup(item);
+                                                }}
                                             >
                                                 <EditOutlinedIcon fontSize="small" />
                                             </Controls.ActionButton>
@@ -335,18 +281,18 @@ export default function Assignments(props) {
                                             user.role === 'faculty') && (
                                             <Controls.ActionButton
                                                 color="secondary"
-                                                // onClick={() => {
-                                                //     setConfirmDialog({
-                                                //         isOpen: true,
-                                                //         title:
-                                                //             'Are you sure to delete this Assignment?',
-                                                //         subTitle:
-                                                //             "You can't undo this operation",
-                                                //         onConfirm: () => {
-                                                //             onDelete(item.id);
-                                                //         },
-                                                //     });
-                                                // }}
+                                                onClick={() => {
+                                                    setConfirmDialog({
+                                                        isOpen: true,
+                                                        title:
+                                                            'Are you sure to delete this Assignment?',
+                                                        subTitle:
+                                                            "You can't undo this operation",
+                                                        onConfirm: () => {
+                                                            onDelete(item.id);
+                                                        },
+                                                    });
+                                                }}
                                             >
                                                 <CloseIcon fontSize="small" />
                                             </Controls.ActionButton>
@@ -365,6 +311,7 @@ export default function Assignments(props) {
             >
                 <AssignmentForm
                     recordForEdit={recordForEdit}
+                    user={user}
                     addOrEdit={addOrEdit}
                 />
             </Popup>

@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Welcome({ children, name }) {
+function Welcome({ children, name = '' }) {
     const classes = useStyles();
 
     return (

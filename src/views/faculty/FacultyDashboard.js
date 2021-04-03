@@ -1,10 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { useLocation } from 'react-router-dom';
+import { Switch, Route, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
 import Users from '../../components/Users/Users';
-import Assignments from '../../components/Assignments/Assignments';
+import AssignmentList from '../../components/Assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
 
 const useStyles = makeStyles({
@@ -15,15 +15,7 @@ const useStyles = makeStyles({
     },
 });
 
-const USER = {
-    _id: '605f16fd4323c591389a4c91',
-    userPic: '/static/images/avatar/1.jpg',
-    username: 'Sam',
-    email: 'sam@daiict.ac.in',
-    role: 'faculty',
-};
-
-function AdminDashboard() {
+const FacultyDashboard = ({user}) => {
     const classes = useStyles();
     const path = useLocation();
 
@@ -32,7 +24,7 @@ function AdminDashboard() {
             <Header headerTitle="Faculty Dashboard" />
             <div className={classes.appMain}>
                 <SideMenu>
-                    <SideMenu.SmallProfile user={USER}></SideMenu.SmallProfile>
+                    <SideMenu.SmallProfile user={user}></SideMenu.SmallProfile>
                     <SideMenu.NavButton
                         text="Users"
                         to="/faculty/users"
@@ -49,16 +41,20 @@ function AdminDashboard() {
                     )}
                 </SideMenu>
 
-                {path.pathname === '/faculty' && (
-                    <Welcome name={USER.username}></Welcome>
-                )}
-                {path.pathname === '/faculty/users' && <Users user={USER} />}
-                {path.pathname === '/faculty/assignments' && (
-                    <Assignments user={USER} />
-                )}
+                <Switch>
+                    <Route path="/faculty/users">
+                        <Users user={user} />
+                    </Route>
+                    <Route path="/faculty/assignments">
+                        <AssignmentList user={user} />
+                    </Route>
+                    <Route path="/faculty">
+                        <Welcome name={user.username}></Welcome>
+                    </Route>
+                </Switch>
             </div>
         </div>
     );
-}
+};
 
-export default AdminDashboard;
+export default FacultyDashboard;
