@@ -1,8 +1,6 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { Line } from '@reactchartjs/react-chart.js';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
 import { Bar } from '@reactchartjs/react-chart.js';
 import { Doughnut } from '@reactchartjs/react-chart.js';
 import Card from '@material-ui/core/Card';
@@ -27,26 +25,6 @@ const data1 = {
                 'rgba(255, 206, 86, 1)',
             ],
             borderWidth: 1,
-        },
-    ],
-};
-const data2 = {
-    labels: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-    ],
-    datasets: [
-        {
-            label: '# of New Users',
-            data: [10, 19, 30, 5, 12, 3, 15],
-            fill: false,
-            backgroundColor: 'rgb(54, 162, 235)',
-            borderColor: 'rgba(54, 162, 235, 0.2)',
         },
     ],
 };
@@ -83,24 +61,7 @@ const options = {
         ],
     },
 };
-const options1 = {
-    scales: {
-        yAxes: [
-            {
-                type: 'linear',
-                display: true,
-                position: 'left',
-                id: 'y-axis-1',
-            },
-            {
-                type: 'linear',
-                display: false,
-                position: 'right',
-                id: 'y-axis-2',
-            },
-        ],
-    },
-};
+
 class FacultyGraphs extends React.Component {
     constructor(props) {
         super(props);
@@ -111,20 +72,6 @@ class FacultyGraphs extends React.Component {
         };
     }
 
-    changeDataUsers(event) {
-        console.log('Users');
-        console.log(this.state.selectedMetric);
-        this.setState({
-            selectedMetric: data1,
-        });
-    }
-    changeDataNewUsers(event) {
-        console.log('New Users');
-        console.log(this.state.selectedMetric);
-        this.setState({
-            selectedMetric: data2,
-        });
-    }
     render() {
         return (
             <Container maxWidth={false} component={Box} mt={10}>
