@@ -63,13 +63,6 @@ const options = {
 };
 
 class FacultyGraphs extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedMetric: data1,
-        };
-    }
-
     render() {
         return (
             <Container maxWidth={false} component={Box} mt={10}>
