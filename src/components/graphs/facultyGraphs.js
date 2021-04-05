@@ -65,8 +65,6 @@ const options = {
 class FacultyGraphs extends React.Component {
     constructor(props) {
         super(props);
-        this.changeDataUsers = this.changeDataUsers.bind(this);
-        this.changeDataNewUsers = this.changeDataNewUsers.bind(this);
         this.state = {
             selectedMetric: data1,
         };

@@ -123,15 +123,11 @@ class AdminGraphs extends React.Component {
     }
 
     changeDataUsers(event) {
-        console.log('Users');
-        console.log(this.state.selectedMetric);
         this.setState({
             selectedMetric: data1,
         });
     }
     changeDataNewUsers(event) {
-        console.log('New Users');
-        console.log(this.state.selectedMetric);
         this.setState({
             selectedMetric: data2,
         });
@@ -218,7 +214,7 @@ class AdminGraphs extends React.Component {
                                                             .selectedMetric ===
                                                         data2
                                                             ? 'primary'
-                                                            : 'white'
+                                                            : 'default'
                                                     }
                                                     component={Box}
                                                     marginRight="1rem!important"
