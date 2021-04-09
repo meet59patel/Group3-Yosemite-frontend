@@ -42,7 +42,6 @@ const FacultyDashboard = ({ user }) => {
                     )}
                 </SideMenu>
 
-                <FacultyGraphs />
                 <Switch>
                     <Route path="/faculty/users">
                         <Users user={user} />
@@ -52,6 +51,7 @@ const FacultyDashboard = ({ user }) => {
                     </Route>
                     <Route path="/faculty">
                         <Welcome name={user.username}></Welcome>
+                        <FacultyGraphs />
                     </Route>
                 </Switch>
             </div>

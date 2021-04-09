@@ -1,24 +1,28 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
+import {
+    Avatar,
+    Button,
+    CssBaseline,
+    TextField,
+    FormControlLabel,
+    Checkbox,
+    Link,
+    Paper,
+    Box,
+    Grid,
+    Typography,
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import GoogleLogin from 'react-google-login';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
     useUserDispatch,
     loginUser,
 } from '../../components/context/UserContext';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
+// const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
 
 function Copyright() {
     return (
@@ -55,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar: {
         margin: theme.spacing(1),
+        marginTop: theme.spacing(15),
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
@@ -64,11 +69,16 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    googleLoginBtn: {
+        marginTop: theme.spacing(5),
+    },
 }));
 
 export default function SignInSide(props) {
     const classes = useStyles();
-    var userDispatch = useUserDispatch();
+    let userDispatch = useUserDispatch();
+    let history = useHistory();
+    let { state } = useLocation();
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -90,7 +100,7 @@ export default function SignInSide(props) {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <form className={classes.form} noValidate>
+                    {/* <form className={classes.form} noValidate>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -143,16 +153,20 @@ export default function SignInSide(props) {
                         <Box mt={5}>
                             <Copyright />
                         </Box>
-                    </form>
+                    </form> */}
 
                     <GoogleLogin
                         clientId={GOOGLE_CLIENT_ID}
                         buttonText="Sign In with Google"
                         onSuccess={(response) => {
-                            loginUser(userDispatch, props.history, response);
+                            loginUser(userDispatch, history, response, state);
                         }}
                         onFailure={console.log}
+                        className={classes.googleLoginBtn}
                     />
+                    <Box mt={3}>
+                        <Copyright />
+                    </Box>
                 </div>
             </Grid>
         </Grid>

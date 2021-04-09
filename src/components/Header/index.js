@@ -23,7 +23,7 @@ export default function Header() {
     return (
         <AppBar position="static" color="primary">
             <Toolbar className={classes.toolbar}>
-                <Button>Yosemite Icon</Button>
+                <h2>Yosemite</h2>
                 <Typography
                     component="h2"
                     variant="h5"
