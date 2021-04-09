@@ -74,11 +74,14 @@ export default function LandingPage() {
                             Log In
                         </Button>
                     </Link>
-                    <Link to="/github" target="_blank">
+                    <a
+                        href="https://github.com/meet59patel/Group3-Yosemite-frontend"
+                        target="_blank"
+                    >
                         <Button variant="contained" className="btn-get-code">
                             GitHub
                         </Button>
-                    </Link>
+                    </a>
                 </Grid>
                 <Grid item md={6} className="hero-img">
                     <img
