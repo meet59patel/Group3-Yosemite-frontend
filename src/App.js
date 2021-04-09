@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React from 'react';
+import {
+    BrowserRouter as Router,
+    Route,
+    Switch,
+    Redirect,
+} from 'react-router-dom';
 import './App.css';
 import LandingPage from './views/LandingPage';
 import LoginPage from './views/LoginPage';
@@ -41,31 +47,31 @@ const theme = createMuiTheme({
 });
 
 const AdminUser = {
-    _id: '605f17024323c591389a4c92',
+    _id: localStorage.getItem('user_id') || '605f17024323c591389a4c92',
     userPic: '/static/images/avatar/1.jpg',
-    username: 'raj',
-    email: 'raj@daiict.ac.in',
-    role: 'admin',
+    username: localStorage.getItem('user_username') || 'raj',
+    email: localStorage.getItem('user_email') || 'raj@daiict.ac.in',
+    role: localStorage.getItem('user_role') || 'admin',
 };
 
 const FacultyUser = {
-    _id: '605f16fd4323c591389a4c91',
+    _id: localStorage.getItem('user_id') || '605f16fd4323c591389a4c91',
     userPic: '/static/images/avatar/1.jpg',
-    username: 'Sam',
-    email: 'sam@daiict.ac.in',
-    role: 'faculty',
+    username: localStorage.getItem('user_username') || 'Sam',
+    email: localStorage.getItem('user_email') || 'sam@daiict.ac.in',
+    role: localStorage.getItem('user_role') || 'faculty',
 };
 
 const StudentUser = {
-    _id: '605f16a34323c591389a4c89',
+    _id: localStorage.getItem('user_id') || '605f16a34323c591389a4c89',
     userPic: '/static/images/avatar/1.jpg',
-    username: '201801056',
-    email: '201801056@daiict.ac.in',
-    role: 'student',
+    username: localStorage.getItem('user_username') || '201801056',
+    email: localStorage.getItem('user_email') || '201801056@daiict.ac.in',
+    role: localStorage.getItem('user_role') || 'student',
 };
 
 function App() {
-    var { isAuthenticated } = useUserState();
+    var { isAuthenticated, role } = useUserState();
 
     return (
         <ThemeProvider theme={theme}>
@@ -76,25 +82,63 @@ function App() {
                         <LandingPage />
                     </Route>
                     <Route path="/login">
-                        <LoginPage />
+                        {isAuthenticated ? (
+                            <Redirect to={`/${role}`} />
+                        ) : (
+                            <LoginPage />
+                        )}
                     </Route>
-                    <Route path="/admin">
+                    <PrivateRoute
+                        path="/admin"
+                        allowedRoles={['admin', 'faculty', 'student']}
+                    >
                         <AdminRoutes user={AdminUser} />
-                    </Route>
-                    <Route path="/faculty">
+                    </PrivateRoute>
+                    <PrivateRoute
+                        path="/faculty"
+                        allowedRoles={['admin', 'faculty', 'student']}
+                    >
                         <FacultyRoutes user={FacultyUser} />
-                    </Route>
-                    <Route path="/student">
+                    </PrivateRoute>
+                    <PrivateRoute
+                        path="/student"
+                        allowedRoles={['admin', 'faculty', 'student']}
+                    >
                         <StudentRoutes user={StudentUser} />
-                    </Route>
+                    </PrivateRoute>
                     <Route path="/setassignment">
                         <SetAssignment />
                     </Route>
-                    <Route path="/assignment" component={ViewAssignment} />
+                    <PrivateRoute
+                        path="/assignment"
+                        allowedRoles={['admin', 'faculty', 'student']}
+                    >
+                        <ViewAssignment />
+                    </PrivateRoute>
                 </Switch>
             </Router>
         </ThemeProvider>
     );
+
+    function PrivateRoute({ children, allowedRoles, ...rest }) {
+        return (
+            <Route
+                {...rest}
+                render={(props) =>
+                    isAuthenticated && allowedRoles.includes(role) ? (
+                        children
+                    ) : (
+                        <Redirect
+                            to={{
+                                pathname: '/login',
+                                state: { from: props.location },
+                            }}
+                        />
+                    )
+                }
+            />
+        );
+    }
 }
 
 export default App;

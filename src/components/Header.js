@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     AppBar,
     Toolbar,
@@ -6,10 +6,17 @@ import {
     IconButton,
     Badge,
     makeStyles,
+    Menu,
+    MenuItem,
+    Button,
 } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
+import { GoogleLogout } from 'react-google-login';
+
+import { useUserDispatch, signOut } from './context/UserContext';
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -36,6 +43,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header({ children, headerTitle = '' }) {
     const classes = useStyles();
+    const [anchorEl, setAnchorEl] = useState(null);
+    let userDispatch = useUserDispatch();
+    let history = useHistory();
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <AppBar position="static" className={classes.root}>
@@ -63,12 +81,40 @@ export default function Header({ children, headerTitle = '' }) {
                                 <NotificationsNoneIcon fontSize="small" />
                             </Badge>
                         </IconButton>
-                        <IconButton>
-                            <PowerSettingsNewIcon
-                                fontSize="small"
-                                onClick={<Redirect to="/" />}
-                            />
-                        </IconButton>
+                        <Button
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                        >
+                            {/* <IconButton
+                                aria-controls="simple-menu"
+                                aria-haspopup="true"
+                                onClick={handleClick}
+                            > */}
+                            <PowerSettingsNewIcon fontSize="small" />
+                            {/* </IconButton> */}
+                        </Button>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem
+                                onClick={() => console.log('Logging out...')}
+                            >
+                                <GoogleLogout
+                                    clientId={GOOGLE_CLIENT_ID}
+                                    buttonText="Log Out"
+                                    onLogoutSuccess={() => {
+                                        signOut(userDispatch, history);
+                                    }}
+                                    onFailure={console.log}
+                                />
+                                {/* Log out */}
+                            </MenuItem>
+                        </Menu>
                     </Grid>
                 </Grid>
             </Toolbar>

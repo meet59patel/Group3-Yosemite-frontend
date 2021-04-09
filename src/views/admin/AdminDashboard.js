@@ -41,7 +41,6 @@ function AdminDashboard({ user }) {
                         ></SideMenu.BackButton>
                     )}
                 </SideMenu>
-                <AdminGraphs />
                 <Switch>
                     <Route path="/admin/users">
                         <Users user={user} />
@@ -51,6 +50,7 @@ function AdminDashboard({ user }) {
                     </Route>
                     <Route path="/admin">
                         <Welcome name={user.username}></Welcome>
+                        <AdminGraphs />
                     </Route>
                 </Switch>
             </div>
