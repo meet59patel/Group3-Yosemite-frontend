@@ -1,21 +1,19 @@
-import React, { useEffect } from "react";
-import { Grid } from "@material-ui/core";
-import Controls from "../controls/Controls";
-import { useForm, Form } from "../useForm";
-import * as userService from "./UserService";
+import React, { useEffect } from 'react';
+import { Grid } from '@material-ui/core';
+import Controls from '../controls/Controls';
+import { useForm, Form } from '../useForm';
 
-const genderItems = [
-    { id: "male", title: "Male" },
-    { id: "female", title: "Female" },
-    { id: "other", title: "Other" },
+const getRoleCollection = () => [
+    { id: 'student', title: 'Student' },
+    { id: 'faculty', title: 'Faculty' },
+    { id: 'admin', title: 'Admin' },
 ];
 
 const initialFValues = {
     id: 0,
-    fullName: "",
-    email: "",
-    gender: "male",
-    departmentId: "",
+    username: '',
+    email: '',
+    role: '',
 };
 
 export default function UserForm(props) {
@@ -23,25 +21,22 @@ export default function UserForm(props) {
 
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
-        if ("fullName" in fieldValues)
-            temp.fullName = fieldValues.fullName
-                ? ""
-                : "This field is required.";
-        if ("email" in fieldValues)
+        if ('username' in fieldValues)
+            temp.username = fieldValues.username
+                ? ''
+                : 'This field is required.';
+        if ('email' in fieldValues)
             temp.email = /$^|.+@.+..+/.test(fieldValues.email)
-                ? ""
-                : "Email is not valid.";
-        if ("departmentId" in fieldValues)
-            temp.departmentId =
-                fieldValues.departmentId.length !== 0
-                    ? ""
-                    : "This field is required.";
+                ? ''
+                : 'Email is not valid.';
+        if ('role' in fieldValues)
+            temp.role = fieldValues.role ? '' : 'This field is required.';
         setErrors({
             ...temp,
         });
 
         if (fieldValues === values)
-            return Object.values(temp).every((x) => x === "");
+            return Object.values(temp).every((x) => x === '');
     };
 
     const {
@@ -72,11 +67,11 @@ export default function UserForm(props) {
             <Grid container>
                 <Grid item xs={6}>
                     <Controls.Input
-                        name="fullName"
-                        label="Full Name"
-                        value={values.fullName}
+                        name="username"
+                        label="User Name"
+                        value={values.username}
                         onChange={handleInputChange}
-                        error={errors.fullName}
+                        error={errors.username}
                     />
                     <Controls.Input
                         name="email"
@@ -87,20 +82,13 @@ export default function UserForm(props) {
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <Controls.RadioGroup
-                        name="gender"
-                        label="Gender"
-                        value={values.gender}
-                        onChange={handleInputChange}
-                        items={genderItems}
-                    />
                     <Controls.Select
-                        name="departmentId"
-                        label="Department"
-                        value={values.departmentId}
+                        name="role"
+                        label="Role"
+                        value={values.role}
                         onChange={handleInputChange}
-                        options={userService.getDepartmentCollection()}
-                        error={errors.departmentId}
+                        options={getRoleCollection()}
+                        error={errors.role}
                     />
 
                     <div>
