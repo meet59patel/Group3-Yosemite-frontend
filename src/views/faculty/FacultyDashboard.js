@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
+import FacultyGraphs from '../../components/graphs/facultyGraphs';
 import Users from '../../components/users/Users';
 import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
@@ -41,6 +42,7 @@ const FacultyDashboard = ({ user }) => {
                     )}
                 </SideMenu>
 
+                <FacultyGraphs />
                 <Switch>
                     <Route path="/faculty/users">
                         <Users user={user} />

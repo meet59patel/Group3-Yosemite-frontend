@@ -6,6 +6,9 @@ import AdminDashboard from './AdminDashboard';
 function AdminRoutes({ user }) {
     return (
         <>
+            {/* <Route path="/" component={AdminDashboard} />
+            <Route path="/users" component={AdminDashboard} />
+            <Route path="/assignments" component={AdminDashboard} /> */}
             <Switch>
                 <Route path="/admin/assignment/:id">
                     <AssignmentAdmin user={user} />
