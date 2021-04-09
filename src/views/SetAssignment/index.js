@@ -100,15 +100,10 @@ export default function SetAssignment() {
 
     return (
         <div className={classes.setAssignment}>
-            <Header />
+            {/* <Header /> */}
             <h1>Set Assignment Page</h1>
             <Grid container>
-                <Grid item md={3} xs={12}>
-                    <h2>Faculty Profile</h2>
-                    <h4>Courses</h4>
-                    Other links
-                </Grid>
-                <Grid item md={9}>
+                <Grid item>
                     <h1>Form</h1>
                     <form
                         onSubmit={(e) => {

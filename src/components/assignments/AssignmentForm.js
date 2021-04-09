@@ -6,7 +6,7 @@ import { useForm, Form } from '../useForm';
 const initialFValues = {
     id: 0,
     subjectName: '',
-    facultyID: '605f1c24d36f8b94df32f9b6',
+    facultyID: '',
     submissionDeadline: new Date(),
     total: 0,
     // subjectId: "",
@@ -17,7 +17,8 @@ const initialFValues = {
 };
 
 export default function AssignmentForm(props) {
-    const { addOrEdit, recordForEdit } = props;
+    const { addOrEdit, recordForEdit, user } = props;
+    initialFValues.facultyID = user._id;
 
     const validate = (fieldValues = values) => {
         let temp = { ...errors };

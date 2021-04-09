@@ -1,11 +1,19 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { Switch, Route } from 'react-router';
 import StudentDashboard from './StudentDashboard';
+import AssignmentStudent from '../Assignment/AssignmentStudent';
 
-function StudentRoutes(props) {
+function StudentRoutes({ user }) {
     return (
         <>
-            <Route path={props.match.path} component={StudentDashboard} />
+            <Switch>
+                <Route path="/student/assignment/:id">
+                    <AssignmentStudent user={user} />
+                </Route>
+                <Route path="/student">
+                    <StudentDashboard user={user} />
+                </Route>
+            </Switch>
         </>
     );
 }

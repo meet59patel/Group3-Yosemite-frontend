@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import useTable from '../useTable';
 import UserForm from './UserForm';
 import Controls from '../controls/Controls';
 import Popup from '../Popup';
 import Notification from '../Notification';
 import ConfirmDialog from '../ConfirmDialog';
-import PeopleOutlineTwoToneIcon from '@material-ui/icons/PeopleOutlineTwoTone';
 import {
     Paper,
     makeStyles,
@@ -16,10 +14,15 @@ import {
     Toolbar,
     InputAdornment,
 } from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+import Search from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import CloseIcon from '@material-ui/icons/Close';
+import { UserService } from '../../services/apis.service';
+import {
+    userCellsAdmin,
+    userCellsFaculty,
+} from '../../services/tableHeadCells';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -35,16 +38,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const headCells = [
-    { id: 'username', label: 'User Name' },
-    { id: 'email', label: 'Email Address (Personal)' },
-    { id: 'role', label: 'Role' },
-    { id: 'actions', label: 'Actions', disableSorting: true },
-];
-
-function Users() {
+function Users(props) {
     const classes = useStyles();
-
+    const user = props.user;
     // handling modal and notif bar
     const [openPopup, setOpenPopup] = useState(false);
     const [notify, setNotify] = useState({
@@ -61,14 +57,7 @@ function Users() {
     // fetching user data
     const [userList, setUserList] = useState([]);
     const fetchUserList = useCallback(() => {
-        axios({
-            method: 'GET',
-            url: 'https://yosemite-sen.herokuapp.com/users',
-            headers: {},
-            params: {
-                language_code: 'en',
-            },
-        })
+        UserService.getAllUsers()
             .then((response) => {
                 setUserList(response.data);
             })
@@ -86,6 +75,13 @@ function Users() {
             return items;
         },
     });
+
+    const headCells =
+        user.role === 'admin'
+            ? userCellsAdmin
+            : user.role === 'faculty'
+            ? userCellsFaculty
+            : userCellsFaculty;
 
     const {
         TblContainer,
@@ -114,15 +110,7 @@ function Users() {
 
     const addOrEdit = (user, resetForm) => {
         if (user.id === 0) {
-            axios({
-                method: 'POST',
-                url: 'https://yosemite-sen.herokuapp.com/users',
-                headers: {},
-                data: user,
-                params: {
-                    language_code: 'en',
-                },
-            })
+            UserService.createUser(user)
                 .then((response) => {
                     setNotify({
                         isOpen: true,
@@ -139,15 +127,7 @@ function Users() {
                     });
                 });
         } else {
-            axios({
-                method: 'PUT',
-                url: `https://yosemite-sen.herokuapp.com/users/${user._id}`,
-                headers: {},
-                data: user,
-                params: {
-                    language_code: 'en',
-                },
-            })
+            UserService.updateUser(user)
                 .then((response) => {
                     setNotify({
                         isOpen: true,
@@ -174,24 +154,18 @@ function Users() {
         setOpenPopup(true);
     };
 
-    const onDelete = (email) => {
+    const onDelete = (id) => {
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false,
         });
-        axios({
-            method: 'DELETE',
-            url: `https://yosemite-sen.herokuapp.com/users/${email}`,
-            headers: {},
-            params: {
-                language_code: 'en',
-            },
-        })
+
+        UserService.deleteUser(id)
             .then((response) => {
                 setNotify({
                     isOpen: true,
                     message: 'Deleted Successfully',
-                    type: 'error',
+                    type: 'success',
                 });
                 fetchUserList();
             })
@@ -250,35 +224,41 @@ function Users() {
                                                 <TableCell>
                                                     {item.role}
                                                 </TableCell>
-                                                <TableCell>
-                                                    <Controls.ActionButton
-                                                        color="primary"
-                                                        onClick={() => {
-                                                            openInPopup(item);
-                                                        }}
-                                                    >
-                                                        <EditOutlinedIcon fontSize="small" />
-                                                    </Controls.ActionButton>
-                                                    <Controls.ActionButton
-                                                        color="secondary"
-                                                        onClick={() => {
-                                                            setConfirmDialog({
-                                                                isOpen: true,
-                                                                title:
-                                                                    'Are you sure to delete this user?',
-                                                                subTitle:
-                                                                    "You can't undo this operation",
-                                                                onConfirm: () => {
-                                                                    onDelete(
-                                                                        item.email
-                                                                    );
-                                                                },
-                                                            });
-                                                        }}
-                                                    >
-                                                        <CloseIcon fontSize="small" />
-                                                    </Controls.ActionButton>
-                                                </TableCell>
+                                                {user.role === 'admin' && (
+                                                    <TableCell>
+                                                        <Controls.ActionButton
+                                                            color="primary"
+                                                            onClick={() => {
+                                                                openInPopup(
+                                                                    item
+                                                                );
+                                                            }}
+                                                        >
+                                                            <EditOutlinedIcon fontSize="small" />
+                                                        </Controls.ActionButton>
+                                                        <Controls.ActionButton
+                                                            color="secondary"
+                                                            onClick={() => {
+                                                                setConfirmDialog(
+                                                                    {
+                                                                        isOpen: true,
+                                                                        title:
+                                                                            'Are you sure to delete this user?',
+                                                                        subTitle:
+                                                                            "You can't undo this operation",
+                                                                        onConfirm: () => {
+                                                                            onDelete(
+                                                                                item.email
+                                                                            );
+                                                                        },
+                                                                    }
+                                                                );
+                                                            }}
+                                                        >
+                                                            <CloseIcon fontSize="small" />
+                                                        </Controls.ActionButton>
+                                                    </TableCell>
+                                                )}
                                             </TableRow>
                                         )
                                     )}
