@@ -7,6 +7,7 @@ import FacultyRoutes from './views/faculty/FacultyRoutes';
 import StudentRoutes from './views/Student/StudentRoutes';
 import { CssBaseline, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import SetAssignment from './views/SetAssignment';
+import ViewAssignment from './views/ViewAssignment';
 import { useUserState } from './components/context/UserContext';
 import AssignmentFaculty from './views/Assignment/AssignmentFaculty';
 import AdminDashboard from './views/admin/AdminDashboard';
@@ -89,6 +90,7 @@ function App() {
                     <Route path="/setassignment">
                         <SetAssignment />
                     </Route>
+                    <Route path="/assignment" component={ViewAssignment} />
                 </Switch>
             </Router>
         </ThemeProvider>
