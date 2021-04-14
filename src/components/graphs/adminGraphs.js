@@ -8,7 +8,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-const data1 = {
+import axios from 'axios';
+let data1 = {
     labels: [
         'Monday',
         'Tuesday',
@@ -21,7 +22,7 @@ const data1 = {
     datasets: [
         {
             label: '# of Students',
-            data: [5, 7, 8, 12, 17, 18, 20],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgba(255, 99, 132, 0.2)',
@@ -29,7 +30,7 @@ const data1 = {
         },
         {
             label: '# of No Faculty',
-            data: [2, 2, 5, 7, 7, 8, 8],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(54, 162, 235)',
             borderColor: 'rgba(54, 162, 235, 0.2)',
@@ -37,7 +38,7 @@ const data1 = {
         },
         {
             label: '# of No Admins',
-            data: [1, 1, 1, 2, 2, 2, 2],
+            data: [],
             fill: false,
             backgroundColor: 'rgba(153, 102, 255, 1)',
             borderColor: 'rgba(153, 102, 255, 0.2)',
@@ -45,7 +46,7 @@ const data1 = {
         },
     ],
 };
-const data2 = {
+let data2 = {
     labels: [
         'Monday',
         'Tuesday',
@@ -66,7 +67,7 @@ const data2 = {
     ],
 };
 
-const data = {
+let data = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
         {
@@ -79,7 +80,7 @@ const data = {
     ],
 };
 
-const options = {
+let options = {
     animation: {
         duration: 200, // general animation time
     },
@@ -94,7 +95,7 @@ const options = {
         ],
     },
 };
-const options1 = {
+let options1 = {
     scales: {
         yAxes: [
             {
@@ -117,9 +118,35 @@ class AdminGraphs extends React.Component {
         super(props);
         this.changeDataUsers = this.changeDataUsers.bind(this);
         this.changeDataNewUsers = this.changeDataNewUsers.bind(this);
+        //this.datafunction = this.datafunction.bind(this);
         this.state = {
             selectedMetric: data1,
+            users: [],
         };
+    }
+    async componentDidMount() {
+        await axios
+            .get(
+                `https://yosemite-sen.herokuapp.com/stats/countOfUserDuringLastWeek`
+            )
+            .then((res) => {
+                const persons = res.data.results;
+                let stu = [],
+                    adm = [],
+                    fac = [];
+                for (var i = 0; i < persons.length; i++) {
+                    stu.push(persons[i].students);
+                    adm.push(persons[i].admins);
+                    fac.push(persons[i].faculties);
+                }
+
+                data1.datasets[0].data = stu;
+                data1.datasets[1].data = fac;
+                data1.datasets[2].data = adm;
+                console.log(stu);
+                console.log(fac);
+                console.log(adm);
+            });
     }
 
     changeDataUsers(event) {
