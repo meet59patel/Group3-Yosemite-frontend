@@ -12,6 +12,7 @@ import {
     TableCell,
     Toolbar,
     InputAdornment,
+    CircularProgress,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
@@ -39,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         right: '10px',
     },
+    loading:{
+        display: 'flex',
+        justifyItems:`center`,
+        alignItems:`center`
+    }
 }));
 
 export default function AssignmentList(props) {
@@ -232,7 +238,7 @@ export default function AssignmentList(props) {
                         />
                     )}
                 </Toolbar>
-                <TblContainer>
+                {assiList.length ? (<TblContainer>
                     <TblHead />
                     <TableBody>
                         {assiList &&
@@ -301,7 +307,11 @@ export default function AssignmentList(props) {
                                 </TableRow>
                             ))}
                     </TableBody>
-                </TblContainer>
+                </TblContainer>):(
+                    <div className={classes.loading}>
+                        <CircularProgress/>
+                    </div>
+                )}
                 <TblPagination />
             </Paper>
             <Popup

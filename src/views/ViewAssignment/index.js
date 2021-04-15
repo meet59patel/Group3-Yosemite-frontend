@@ -40,7 +40,7 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles({
     appMain: {
-        paddingLeft: '320px',
+        paddingLeft: '0',
         width: '100%',
         minHeight: '100vh',
     },
@@ -113,11 +113,11 @@ function ViewAssignment(props) {
 
     //TODO:
     //QuestionPaper id from props but for now i have implemented static url
-    //let question_paper_id = props.questionPaperID;
-    //let user_id = props.userID
-    let question_paper_id = '605f1c24d36f8b94df32f9b6';
+    let question_paper_id = props.questionPaperID;
+    let user_id = props.userID
+    // let question_paper_id = '605f1c24d36f8b94df32f9b6';
     let question_paper_id_data = {}
-    let user_id = '605f16a34323c591389a4c89'; //201801056
+    // let user_id = '605f16a34323c591389a4c89'; //201801056
     const renderQuestions = (val,index) => {
         if(questionData===[]){
             return (<LinearProgress/>)
@@ -198,18 +198,15 @@ function ViewAssignment(props) {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <Header headerTitle="View Assignment" />
+            {/* <Header headerTitle="View Assignment" /> */}
                 <h1 style={{textAlign:'center'}}>View Assignment Page</h1>
             <div className={classes.appMain}>
-                <SideMenu>
-                    <SideMenu.SmallProfile user={USER}></SideMenu.SmallProfile>
-                    
-                </SideMenu>
+                
                 <Paper className={classes.pageContent}>
                     {/* ENTER ASSIGNMENT TITLE BELOW */}
                     <h2>Assignment Name: </h2>
+                        { questionData.length ? (
                     <div>
-                        {/* ENTER ASSIGNMENT DESCRIPTION AND OTHER DETAILS BELOW */}
                         <h3>Assignment Description: {questionData.questionPaperDescription}</h3>
                         <h3>Subject Name: {questionPaperData.subjectName}</h3>
                         <h3>Faculty Name: </h3>
@@ -227,37 +224,41 @@ function ViewAssignment(props) {
                             <div style={{display:'flex'}}>
                                 {!submitted ? (
                                     <Grid
-                                        container
-                                        spacing={3}
-                                        justify="center"
-                                        alignItems="center"
-                                        style={{
-                                            height: '10vh',
+                                    container
+                                    spacing={3}
+                                    justify="center"
+                                    alignItems="center"
+                                    style={{
+                                        height: '10vh',
                                             textAlign: 'center',
                                         }}
-                                    >
+                                        >
                                         <Grid item>
                                             <CircularProgress size={30} />
                                         </Grid>
                                 </Grid>
                                 ) : (
                                     <Button
-                                        variant="contained"
-                                        color="primary"
-                                        type="submit"
-                                        style={{margin:"auto"}}
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
+                                    style={{margin:"auto"}}
                                     >
                                         Submit
                                     </Button>
                                 )}
                             </div>
                         </form>
-                    </div>
+                    </div>):(
+                        <CircularProgress/>
+                    )
+                    }
+                    
                     <Snackbar
                         open={snackbarOpen != 0}
                         autoHideDuration={10000}
                         onClose={handleSnackbarClose}
-                    >
+                        >
                         <Alert
                             onClose={handleSnackbarClose}
                             severity={snackbarOpen > 0 ? 'success' : 'error'}
