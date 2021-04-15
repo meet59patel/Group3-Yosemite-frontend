@@ -124,6 +124,7 @@ class AdminGraphs extends React.Component {
             users: [],
         };
     }
+
     async componentDidMount() {
         await axios
             .get(
@@ -143,6 +144,8 @@ class AdminGraphs extends React.Component {
                 data1.datasets[0].data = stu;
                 data1.datasets[1].data = fac;
                 data1.datasets[2].data = adm;
+                this.changeDataUsers()
+                this.changeDataNewUsers()
                 console.log(stu);
                 console.log(fac);
                 console.log(adm);
@@ -159,6 +162,7 @@ class AdminGraphs extends React.Component {
             selectedMetric: data2,
         });
     }
+
     render() {
         return (
             <Container maxWidth={false} component={Box} mt={10}>
@@ -240,8 +244,8 @@ class AdminGraphs extends React.Component {
                                                         this.state
                                                             .selectedMetric ===
                                                         data2
-                                                            ? 'primary'
-                                                            : 'default'
+                                                            ? 'default'
+                                                            : 'primary'
                                                     }
                                                     component={Box}
                                                     marginRight="1rem!important"
@@ -257,8 +261,8 @@ class AdminGraphs extends React.Component {
                                                         this.state
                                                             .selectedMetric ===
                                                         data1
-                                                            ? 'primary'
-                                                            : 'white'
+                                                            ? 'white'
+                                                            : 'primary'
                                                     }
                                                     onClick={
                                                         this.changeDataNewUsers
