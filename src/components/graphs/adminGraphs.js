@@ -59,7 +59,7 @@ let data2 = {
     datasets: [
         {
             label: '# of New Users',
-            data: [10, 19, 30, 5, 12, 3, 15],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(54, 162, 235)',
             borderColor: 'rgba(54, 162, 235, 0.2)',
@@ -68,11 +68,11 @@ let data2 = {
 };
 
 let data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July'],
     datasets: [
         {
             label: '# of Tests',
-            data: [12, 19, 3, 5, 15, 3],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(54, 162, 235)',
             borderColor: 'rgba(54, 162, 235, 0.2)',
@@ -118,10 +118,10 @@ class AdminGraphs extends React.Component {
         super(props);
         this.changeDataUsers = this.changeDataUsers.bind(this);
         this.changeDataNewUsers = this.changeDataNewUsers.bind(this);
-        //this.datafunction = this.datafunction.bind(this);
+        this.changeDataTests = this.changeDataTests.bind(this);
         this.state = {
             selectedMetric: data1,
-            users: [],
+            tests: data,
         };
     }
 
@@ -144,11 +144,42 @@ class AdminGraphs extends React.Component {
                 data1.datasets[0].data = stu;
                 data1.datasets[1].data = fac;
                 data1.datasets[2].data = adm;
-                this.changeDataUsers()
-                this.changeDataNewUsers()
-                console.log(stu);
-                console.log(fac);
-                console.log(adm);
+                this.changeDataNewUsers();
+                this.changeDataUsers();
+            });
+        await axios
+            .get(
+                `https://yosemite-sen.herokuapp.com/stats/countOfNewUserDuringLastWeek`
+            )
+            .then((res) => {
+                const persons = res.data.results;
+                let results = [];
+                for (var i = 0; i < persons.length; i++) {
+                    var x =
+                        persons[i].students +
+                        persons[i].admins +
+                        persons[i].faculties;
+                    results.push(x);
+                }
+                data2.datasets[0].data = results;
+                this.changeDataNewUsers();
+                this.changeDataUsers();
+            });
+        await axios
+            .get(
+                `https://yosemite-sen.herokuapp.com/stats/assignmentsOfLastWeek`
+            )
+            .then((res) => {
+                const results = res.data.assignments;
+                let assignData = [];
+                for (var i = 0; i < results.length; i++) {
+                    var x = results[i].length;
+                    assignData.push(x);
+                }
+                console.log(this.state.tests.datasets[0].data);
+                data.datasets[0].data = assignData;
+                this.changeDataTests();
+                console.log(this.state.tests.datasets[0].data);
             });
     }
 
@@ -160,6 +191,11 @@ class AdminGraphs extends React.Component {
     changeDataNewUsers(event) {
         this.setState({
             selectedMetric: data2,
+        });
+    }
+    changeDataTests(event) {
+        this.setState({
+            tests: data,
         });
     }
 
@@ -200,7 +236,10 @@ class AdminGraphs extends React.Component {
                             ></CardHeader>
                             <CardContent>
                                 <Box position="relative" height="350px">
-                                    <Line data={data} options={options} />
+                                    <Line
+                                        data={this.state.tests}
+                                        options={options}
+                                    />
                                 </Box>
                             </CardContent>
                         </Card>
