@@ -51,7 +51,7 @@ const FacultyDashboard = ({ user }) => {
                     </Route>
                     <Route path="/faculty">
                         <Welcome name={user.username}></Welcome>
-                        <FacultyGraphs />
+                        <FacultyGraphs user={user} />
                     </Route>
                 </Switch>
             </div>

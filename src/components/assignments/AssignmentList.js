@@ -25,7 +25,8 @@ import {
     assiCellsFaculty,
     assiCellsStudent,
 } from '../../services/tableHeadCells';
-import {  useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import Loding from '../Loding';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -46,6 +47,9 @@ export default function AssignmentList(props) {
     const user = props.user;
     let history = useHistory();
 
+    // handle loding state
+    const [loding, setLoading] = useState(true);
+
     // handling modal and notif bar
     const [openPopup, setOpenPopup] = useState(false);
     const [notify, setNotify] = useState({
@@ -65,6 +69,7 @@ export default function AssignmentList(props) {
         if (user.role !== 'faculty') {
             AssignmentService.getAllAssignments()
                 .then((response) => {
+                    setLoading(false);
                     setAssiList(response.data);
                 })
                 .catch((error) => {
@@ -73,6 +78,7 @@ export default function AssignmentList(props) {
         } else {
             AssignmentService.getAllFacultyAssignments(user._id)
                 .then((response) => {
+                    setLoading(false);
                     setAssiList(response.data);
                 })
                 .catch((error) => {
@@ -232,11 +238,14 @@ export default function AssignmentList(props) {
                         />
                     )}
                 </Toolbar>
-                <TblContainer>
-                    <TblHead />
-                    <TableBody>
-                        {assiList &&
-                            recordsAfterPagingAndSorting().map((item) => (
+
+                {loding ? (
+                    <Loding />
+                ) : (
+                    <TblContainer>
+                        <TblHead />
+                        <TableBody>
+                            {recordsAfterPagingAndSorting().map((item) => (
                                 <TableRow key={item._id}>
                                     {/* <TableCell>{item.assId}</TableCell> */}
                                     <TableCell>{item.subjectName}</TableCell>
@@ -300,8 +309,10 @@ export default function AssignmentList(props) {
                                     </TableCell>
                                 </TableRow>
                             ))}
-                    </TableBody>
-                </TblContainer>
+                        </TableBody>
+                    </TblContainer>
+                )}
+
                 <TblPagination />
             </Paper>
             <Popup

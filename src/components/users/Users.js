@@ -23,6 +23,7 @@ import {
     userCellsAdmin,
     userCellsFaculty,
 } from '../../services/tableHeadCells';
+import Loding from '../Loding';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
 function Users(props) {
     const classes = useStyles();
     const user = props.user;
+
+    // handle loding state
+    const [loding, setLoading] = useState(true);
+
     // handling modal and notif bar
     const [openPopup, setOpenPopup] = useState(false);
     const [notify, setNotify] = useState({
@@ -59,6 +64,7 @@ function Users(props) {
     const fetchUserList = useCallback(() => {
         UserService.getAllUsers()
             .then((response) => {
+                setLoading(false);
                 setUserList(response.data);
             })
             .catch((error) => {
@@ -117,6 +123,7 @@ function Users(props) {
                         message: `Created Successfully`,
                         type: 'success',
                     });
+                    setLoading(true);
                     fetchUserList();
                 })
                 .catch((error) => {
@@ -134,6 +141,7 @@ function Users(props) {
                         message: `Edited Successfully`,
                         type: 'success',
                     });
+                    setLoading(true);
                     fetchUserList();
                 })
                 .catch((error) => {
@@ -167,6 +175,7 @@ function Users(props) {
                     message: 'Deleted Successfully',
                     type: 'success',
                 });
+                setLoading(true);
                 fetchUserList();
             })
             .catch((error) => {
@@ -208,11 +217,14 @@ function Users(props) {
                                 }}
                             />
                         </Toolbar>
-                        <TblContainer>
-                            <TblHead />
-                            <TableBody>
-                                {userList &&
-                                    recordsAfterPagingAndSorting().map(
+
+                        {loding ? (
+                            <Loding />
+                        ) : (
+                            <TblContainer>
+                                <TblHead />
+                                <TableBody>
+                                    {recordsAfterPagingAndSorting().map(
                                         (item) => (
                                             <TableRow key={item._id}>
                                                 <TableCell>
@@ -262,8 +274,9 @@ function Users(props) {
                                             </TableRow>
                                         )
                                     )}
-                            </TableBody>
-                        </TblContainer>
+                                </TableBody>
+                            </TblContainer>
+                        )}
                         <TblPagination />
                     </Paper>
                     <Popup
