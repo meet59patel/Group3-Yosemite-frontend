@@ -88,6 +88,8 @@ let options = {
     scales: {
         yAxes: [
             {
+                type: 'linear',
+                display: true,
                 ticks: {
                     beginAtZero: true,
                 },
@@ -144,7 +146,7 @@ class AdminGraphs extends React.Component {
                 data1.datasets[0].data = stu;
                 data1.datasets[1].data = fac;
                 data1.datasets[2].data = adm;
-                this.changeDataNewUsers();
+                data1 = JSON.parse(JSON.stringify(data1)); // DeepCopy
                 this.changeDataUsers();
             });
         await axios
@@ -162,8 +164,8 @@ class AdminGraphs extends React.Component {
                     results.push(x);
                 }
                 data2.datasets[0].data = results;
+                data2 = JSON.parse(JSON.stringify(data2)); // DeepCopy
                 this.changeDataNewUsers();
-                this.changeDataUsers();
             });
         await axios
             .get(
@@ -176,10 +178,9 @@ class AdminGraphs extends React.Component {
                     var x = results[i].length;
                     assignData.push(x);
                 }
-                console.log(this.state.tests.datasets[0].data);
                 data.datasets[0].data = assignData;
+                data = JSON.parse(JSON.stringify(data)); // DeepCopy
                 this.changeDataTests();
-                console.log(this.state.tests.datasets[0].data);
             });
     }
 
@@ -300,7 +301,7 @@ class AdminGraphs extends React.Component {
                                                         this.state
                                                             .selectedMetric ===
                                                         data1
-                                                            ? 'white'
+                                                            ? 'default'
                                                             : 'primary'
                                                     }
                                                     onClick={
