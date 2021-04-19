@@ -147,7 +147,6 @@ class AdminGraphs extends React.Component {
                 data1.datasets[1].data = fac;
                 data1.datasets[2].data = adm;
                 data1 = JSON.parse(JSON.stringify(data1)); // DeepCopy
-                this.changeDataUsers();
             });
         await axios
             .get(
@@ -165,7 +164,6 @@ class AdminGraphs extends React.Component {
                 }
                 data2.datasets[0].data = results;
                 data2 = JSON.parse(JSON.stringify(data2)); // DeepCopy
-                this.changeDataNewUsers();
             });
         await axios
             .get(
@@ -181,6 +179,8 @@ class AdminGraphs extends React.Component {
                 data.datasets[0].data = assignData;
                 data = JSON.parse(JSON.stringify(data)); // DeepCopy
                 this.changeDataTests();
+                this.changeDataNewUsers();
+                this.changeDataUsers();
             });
     }
 
