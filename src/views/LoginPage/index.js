@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Avatar,
     Button,
@@ -11,6 +11,7 @@ import {
     Box,
     Grid,
     Typography,
+    LinearProgress,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,7 +27,12 @@ const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
 
 function Copyright() {
     return (
-        <Typography variant="body2" color="textSecondary" align="center">
+        <Typography
+            variant="body2"
+            color="textSecondary"
+            align="center"
+            style={{ marginTop: 10 }}
+        >
             {'Copyright © '}
             <Link color="inherit" href="https://yosemite-sen.vercel.app/">
                 Yosemite
@@ -42,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
         height: '100vh',
     },
     image: {
-        backgroundImage: 'url(https://source.unsplash.com/random)',
+        backgroundImage: 'url(https://source.unsplash.com/collection/220381)',
         backgroundRepeat: 'no-repeat',
         backgroundColor:
             theme.palette.type === 'light'
@@ -79,6 +85,7 @@ export default function SignInSide(props) {
     let userDispatch = useUserDispatch();
     let history = useHistory();
     let { state } = useLocation();
+    const [isLoginLoading, setLoginLoading] = useState(false);
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -159,12 +166,17 @@ export default function SignInSide(props) {
                         clientId={GOOGLE_CLIENT_ID}
                         buttonText="Sign In with Google"
                         onSuccess={(response) => {
+                            setLoginLoading(true);
                             loginUser(userDispatch, history, response, state);
                         }}
-                        onFailure={console.log}
+                        onFailure={(err) => {
+                            console.log(err);
+                            setLoginLoading(false);
+                        }}
                         className={classes.googleLoginBtn}
                     />
-                    <Box mt={3}>
+                    <Box>
+                        {isLoginLoading && <LinearProgress />}
                         <Copyright />
                     </Box>
                 </div>
