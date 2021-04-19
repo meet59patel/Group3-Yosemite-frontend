@@ -7,7 +7,7 @@ import AssignmentSubmissions from '../../components/assignments/AssignmentSubmis
 import AssignmentQnA from '../../components/assignments/AssignmentQnA';
 import AssignmentQuery from '../../components/assignments/AssignmentQuery';
 import Welcome from '../../components/Welcome';
-
+import FacultyGraphs from '../../components/graphs/facultyGraphs';
 const useStyles = makeStyles({
     appMain: {
         paddingLeft: '320px',
@@ -71,6 +71,7 @@ function AssignmentFaculty(props) {
                     </Route>
                     <Route path="/faculty">
                         <Welcome>{}</Welcome>
+                        <FacultyGraphs paperId={paperId} />
                     </Route>
                 </Switch>
             </div>

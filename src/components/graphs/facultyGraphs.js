@@ -8,12 +8,13 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-const data1 = {
+import axios from 'axios';
+let data1 = {
     labels: ['Evaluated', 'Not Evaluated', 'Did Not Got responses'],
     datasets: [
         {
             label: '# of Submissions',
-            data: [5, 4, 6],
+            data: [],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -29,7 +30,7 @@ const data1 = {
     ],
 };
 
-const data = {
+let data = {
     labels: ['Assignned', 'Submitted', 'Not Submitted'],
     datasets: [
         {
@@ -50,7 +51,7 @@ const data = {
     ],
 };
 
-const options = {
+let options = {
     scales: {
         yAxes: [
             {
@@ -61,8 +62,37 @@ const options = {
         ],
     },
 };
-
+const apiLink = 'https://yosemite-sen.herokuapp.com/stats/facultyAnswerInfo/';
 class FacultyGraphs extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            students: data,
+            submissions: data1,
+        };
+    }
+    async componentDidMount() {
+        let url = apiLink + this.props.paperId;
+        await axios.get(url).then((res) => {
+            const results = res.data;
+            //console.log(results);
+            data1.datasets[0].data[0] = results.evaluted;
+            data1.datasets[0].data[1] = results.notEvaluted;
+            data1.datasets[0].data[2] =
+                results.assigned - results.evaluted - results.notEvaluted;
+            data1 = JSON.parse(JSON.stringify(data1)); // DeepCopy
+            data.datasets[0].data[0] = results.assigned;
+            data.datasets[0].data[1] = results.evaluted + results.notEvaluted;
+            data.datasets[0].data[2] =
+                results.assigned - results.evaluted - results.notEvaluted;
+            data = JSON.parse(JSON.stringify(data)); // DeepCopy
+            this.setState({
+                students: data,
+                submissions: data1,
+            });
+        });
+    }
     render() {
         return (
             <Container maxWidth={false} component={Box} mt={10}>
@@ -100,7 +130,10 @@ class FacultyGraphs extends React.Component {
                             ></CardHeader>
                             <CardContent>
                                 <Box position="relative" height="350px">
-                                    <Bar data={data} options={options} />
+                                    <Bar
+                                        data={this.state.students}
+                                        options={options}
+                                    />
                                 </Box>
                             </CardContent>
                         </Card>
@@ -137,7 +170,7 @@ class FacultyGraphs extends React.Component {
                             ></CardHeader>
                             <CardContent>
                                 <Box position="relative" height="350px">
-                                    <Doughnut data={data1} />
+                                    <Doughnut data={this.state.submissions} />
                                 </Box>
                             </CardContent>
                         </Card>
