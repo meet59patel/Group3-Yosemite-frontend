@@ -35,7 +35,7 @@ let data = {
     datasets: [
         {
             label: '# of Students',
-            data: [15, 9, 6],
+            data: [],
             fill: false,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
