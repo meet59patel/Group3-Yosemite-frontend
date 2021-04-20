@@ -8,7 +8,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-const data1 = {
+import axios from 'axios';
+let data1 = {
     labels: [
         'Monday',
         'Tuesday',
@@ -21,7 +22,7 @@ const data1 = {
     datasets: [
         {
             label: '# of Students',
-            data: [5, 7, 8, 12, 17, 18, 20],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgba(255, 99, 132, 0.2)',
@@ -29,7 +30,7 @@ const data1 = {
         },
         {
             label: '# of No Faculty',
-            data: [2, 2, 5, 7, 7, 8, 8],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(54, 162, 235)',
             borderColor: 'rgba(54, 162, 235, 0.2)',
@@ -37,7 +38,7 @@ const data1 = {
         },
         {
             label: '# of No Admins',
-            data: [1, 1, 1, 2, 2, 2, 2],
+            data: [],
             fill: false,
             backgroundColor: 'rgba(153, 102, 255, 1)',
             borderColor: 'rgba(153, 102, 255, 0.2)',
@@ -45,7 +46,7 @@ const data1 = {
         },
     ],
 };
-const data2 = {
+let data2 = {
     labels: [
         'Monday',
         'Tuesday',
@@ -58,7 +59,7 @@ const data2 = {
     datasets: [
         {
             label: '# of New Users',
-            data: [10, 19, 30, 5, 12, 3, 15],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(54, 162, 235)',
             borderColor: 'rgba(54, 162, 235, 0.2)',
@@ -66,12 +67,12 @@ const data2 = {
     ],
 };
 
-const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+let data = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July'],
     datasets: [
         {
             label: '# of Tests',
-            data: [12, 19, 3, 5, 15, 3],
+            data: [],
             fill: false,
             backgroundColor: 'rgb(54, 162, 235)',
             borderColor: 'rgba(54, 162, 235, 0.2)',
@@ -79,7 +80,7 @@ const data = {
     ],
 };
 
-const options = {
+let options = {
     animation: {
         duration: 200, // general animation time
     },
@@ -87,6 +88,8 @@ const options = {
     scales: {
         yAxes: [
             {
+                type: 'linear',
+                display: true,
                 ticks: {
                     beginAtZero: true,
                 },
@@ -94,7 +97,7 @@ const options = {
         ],
     },
 };
-const options1 = {
+let options1 = {
     scales: {
         yAxes: [
             {
@@ -117,9 +120,68 @@ class AdminGraphs extends React.Component {
         super(props);
         this.changeDataUsers = this.changeDataUsers.bind(this);
         this.changeDataNewUsers = this.changeDataNewUsers.bind(this);
+        this.changeDataTests = this.changeDataTests.bind(this);
         this.state = {
             selectedMetric: data1,
+            tests: data,
         };
+    }
+
+    async componentDidMount() {
+        await axios
+            .get(
+                `https://yosemite-sen.herokuapp.com/stats/countOfUserDuringLastWeek`
+            )
+            .then((res) => {
+                const persons = res.data.results;
+                let stu = [],
+                    adm = [],
+                    fac = [];
+                for (var i = 0; i < persons.length; i++) {
+                    stu.push(persons[i].students);
+                    adm.push(persons[i].admins);
+                    fac.push(persons[i].faculties);
+                }
+
+                data1.datasets[0].data = stu;
+                data1.datasets[1].data = fac;
+                data1.datasets[2].data = adm;
+                data1 = JSON.parse(JSON.stringify(data1)); // DeepCopy
+            });
+        await axios
+            .get(
+                `https://yosemite-sen.herokuapp.com/stats/countOfNewUserDuringLastWeek`
+            )
+            .then((res) => {
+                const persons = res.data.results;
+                let results = [];
+                for (var i = 0; i < persons.length; i++) {
+                    var x =
+                        persons[i].students +
+                        persons[i].admins +
+                        persons[i].faculties;
+                    results.push(x);
+                }
+                data2.datasets[0].data = results;
+                data2 = JSON.parse(JSON.stringify(data2)); // DeepCopy
+            });
+        await axios
+            .get(
+                `https://yosemite-sen.herokuapp.com/stats/assignmentsOfLastWeek`
+            )
+            .then((res) => {
+                const results = res.data.assignments;
+                let assignData = [];
+                for (var i = 0; i < results.length; i++) {
+                    var x = results[i].length;
+                    assignData.push(x);
+                }
+                data.datasets[0].data = assignData;
+                data = JSON.parse(JSON.stringify(data)); // DeepCopy
+                this.changeDataTests();
+                this.changeDataNewUsers();
+                this.changeDataUsers();
+            });
     }
 
     changeDataUsers(event) {
@@ -132,6 +194,12 @@ class AdminGraphs extends React.Component {
             selectedMetric: data2,
         });
     }
+    changeDataTests(event) {
+        this.setState({
+            tests: data,
+        });
+    }
+
     render() {
         return (
             <Container maxWidth={false} component={Box} mt={10}>
@@ -169,7 +237,10 @@ class AdminGraphs extends React.Component {
                             ></CardHeader>
                             <CardContent>
                                 <Box position="relative" height="350px">
-                                    <Line data={data} options={options} />
+                                    <Line
+                                        data={this.state.tests}
+                                        options={options}
+                                    />
                                 </Box>
                             </CardContent>
                         </Card>
@@ -213,8 +284,8 @@ class AdminGraphs extends React.Component {
                                                         this.state
                                                             .selectedMetric ===
                                                         data2
-                                                            ? 'primary'
-                                                            : 'default'
+                                                            ? 'default'
+                                                            : 'primary'
                                                     }
                                                     component={Box}
                                                     marginRight="1rem!important"
@@ -230,8 +301,8 @@ class AdminGraphs extends React.Component {
                                                         this.state
                                                             .selectedMetric ===
                                                         data1
-                                                            ? 'primary'
-                                                            : 'white'
+                                                            ? 'default'
+                                                            : 'primary'
                                                     }
                                                     onClick={
                                                         this.changeDataNewUsers
