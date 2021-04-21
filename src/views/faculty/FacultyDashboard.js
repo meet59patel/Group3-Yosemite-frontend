@@ -6,6 +6,7 @@ import SideMenu from '../../components/SideMenu';
 import Users from '../../components/users/Users';
 import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
+import FacultyGraphs from '../../components/graphs/facultyGraphs';
 
 const useStyles = makeStyles({
     appMain: {
