@@ -8,8 +8,14 @@ import {
     Button,
     Input,
     InputAdornment,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
     CircularProgress,
     Snackbar,
+    Paper,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
@@ -18,6 +24,7 @@ import AddIcon from '@material-ui/icons/Add';
 // Components
 import Header from '../../components/Header';
 import QuestionBoiler from '../../components/QuestionBoiler';
+import EmailList from '../../components/EmailList';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
 
@@ -87,6 +94,14 @@ export default function SetAssignment() {
     const [form, setForm] = useState([{ id: 'id0' }]);
     const [submitted, setSubmitted] = useState(true); // Control Loader
     const [snackbarOpen, setSnackbarOpen] = useState(0); // Control Snackbar
+    const [dialogOpen, setDialogOpen] = useState(false);    //Control Dialog Message
+
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    }
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    }
 
     const onPressDelete = (id) => {
         console.log(id);
@@ -99,13 +114,14 @@ export default function SetAssignment() {
     };
 
     return (
-        <div className={classes.setAssignment}>
+        <Paper fontWeight="fontWeightRegular" className={classes.setAssignment}>
             {/* <Header /> */}
-            <h1>Set Assignment Page</h1>
+            {/* <h1>Set Assignment Page</h1> */}
             <Grid container>
                 <Grid item>
-                    <h1>Form</h1>
+                    {/* <h1>Form</h1> */}
                     <form
+                        id="Assignment"
                         onSubmit={(e) => {
                             handleSubmit(e, setSubmitted, setSnackbarOpen);
                         }}
@@ -204,12 +220,43 @@ export default function SetAssignment() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    type="submit"
+                                    // type="submit"
+                                    style={{margin:"auto"}}
+                                    onClick={handleDialogOpen}
                                 >
                                     Submit
                                 </Button>
                             )}
                         </div>
+                        <Dialog open={dialogOpen} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">Add Student Email Ids</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Enter the list of Emails to be sent to the students, you can also copy and paste the data from somewhere.
+                                    
+                                    <br/>
+                                    <br/>
+                                    <EmailList />
+                                    Press Submit to send this Assignment
+                                    <br/>
+                                    Press Cancel to reset the list.
+                                </DialogContentText>
+                                
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleDialogClose} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button 
+                                    onClick={handleDialogClose} 
+                                    color="primary"
+                                    type="submit"
+                                    form="Assignment"
+                                    >
+                                    Submit
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </form>
                 </Grid>
             </Grid>
@@ -229,6 +276,6 @@ export default function SetAssignment() {
                         : 'Error submitting form!'}
                 </Alert>
             </Snackbar>
-        </div>
+        </Paper>
     );
 }

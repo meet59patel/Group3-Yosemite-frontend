@@ -7,6 +7,7 @@ import Users from '../../components/users/Users';
 import AdminGraphs from '../../components/graphs/adminGraphs';
 import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
+import SetAssignment from '../SetAssignment';
 
 const useStyles = makeStyles({
     appMain: {
@@ -48,9 +49,12 @@ function AdminDashboard({ user }) {
                     <Route path="/admin/assignments">
                         <AssignmentList user={user} />
                     </Route>
-                    <Route path="/admin">
+                    <Route exact path="/admin">
                         <Welcome name={user.username}></Welcome>
                         <AdminGraphs />
+                    </Route>
+                    <Route exact path="/admin/newassignment">
+                        <SetAssignment />
                     </Route>
                 </Switch>
             </div>

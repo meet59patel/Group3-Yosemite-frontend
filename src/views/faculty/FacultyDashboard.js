@@ -7,6 +7,7 @@ import FacultyGraphs from '../../components/graphs/facultyGraphs';
 import Users from '../../components/users/Users';
 import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
+import SetAssignment from '../SetAssignment';
 
 const useStyles = makeStyles({
     appMain: {
@@ -43,15 +44,18 @@ const FacultyDashboard = ({ user }) => {
                 </SideMenu>
 
                 <Switch>
+                    <Route exact path="/faculty">
+                        <Welcome name={user.username}></Welcome>
+                        <FacultyGraphs />
+                    </Route>
                     <Route path="/faculty/users">
                         <Users user={user} />
                     </Route>
                     <Route path="/faculty/assignments">
                         <AssignmentList user={user} />
                     </Route>
-                    <Route path="/faculty">
-                        <Welcome name={user.username}></Welcome>
-                        <FacultyGraphs />
+                    <Route exact path="/faculty/newassignment">
+                        <SetAssignment />
                     </Route>
                 </Switch>
             </div>

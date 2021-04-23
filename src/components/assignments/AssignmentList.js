@@ -13,6 +13,7 @@ import {
     Toolbar,
     InputAdornment,
     CircularProgress,
+    Grid,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
@@ -26,7 +27,7 @@ import {
     assiCellsFaculty,
     assiCellsStudent,
 } from '../../services/tableHeadCells';
-import {  useHistory } from 'react-router-dom';
+import {  Link, useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -34,16 +35,13 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(3),
     },
     searchInput: {
-        width: '75%',
+        width: '80%',
     },
     newButton: {
-        position: 'absolute',
-        right: '10px',
+        marginLeft:theme.spacing(5)
     },
     loading:{
-        display: 'flex',
-        justifyItems:`center`,
-        alignItems:`center`
+        margin:theme.spacing(5)
     }
 }));
 
@@ -226,16 +224,21 @@ export default function AssignmentList(props) {
                         onChange={handleSearch}
                     />
                     {user.role !== 'student' && (
-                        <Controls.Button
-                            text="Add New"
-                            variant="outlined"
-                            startIcon={<AddIcon />}
-                            className={classes.newButton}
-                            onClick={() => {
-                                setOpenPopup(true);
-                                setRecordForEdit(null);
-                            }}
-                        />
+                        <Link 
+                            to={'/'+user.role+'/newassignment'}
+                        >
+                            <Controls.Button
+                                size="large"
+                                text="Add New"
+                                variant="outlined"
+                                startIcon={<AddIcon />}
+                                className={classes.newButton}
+                                // onClick={() => {
+                                //     setOpenPopup(true);
+                                //     setRecordForEdit(null);
+                                // }}
+                            />
+                        </Link>
                     )}
                 </Toolbar>
                 {assiList.length ? (<TblContainer>
@@ -308,9 +311,17 @@ export default function AssignmentList(props) {
                             ))}
                     </TableBody>
                 </TblContainer>):(
-                    <div className={classes.loading}>
-                        <CircularProgress/>
-                    </div>
+                    <Grid
+                        container
+                        justify="center"
+                        alignItems="center"
+                    >
+                        <Grid item
+                            className={classes.loading}
+                        >
+                            <CircularProgress/>
+                        </Grid>
+                    </Grid>
                 )}
                 <TblPagination />
             </Paper>
