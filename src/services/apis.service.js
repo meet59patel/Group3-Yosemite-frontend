@@ -1,19 +1,22 @@
 import axios from 'axios';
 const API = 'https://yosemite-sen.herokuapp.com';
 
-const userAPI = `${API}/users`;
-const paperAPI = `${API}/questionpaper`;
-const qnaAPI = `${API}/questions`;
-const answerAPI = `${API}/answers`;
+const userAPI = `${API}/user`;
+const assignmentAPI = `${API}/assignment`;
+const submissionAPI = `${API}/submission`;
+const qnaFacultyAPI = `${API}/faculty/qna`;
+const qnaStudentAPI = `${API}/qna`;
+
 const statusAPI = `${API}/stats`;
 
-// const userSchema = new mongoose.Schema({
-//     username: { required, String, unique },
-//     email: { required, String, unique },
+// const userSchema = {
+//     user_name: { required, String },
+//     email: { required, String },
 //     password: { String },
-//     profilepic: { Buffer },
-//     role: { String }
-// }
+//     role: { required, String , enum:['student','faculty','admin']},
+//     profilepic: '',
+//     assignment_list: [],
+// };
 class UserService {
     // GET | Get all Users list
     static getAllUsers = () => {
@@ -23,7 +26,7 @@ class UserService {
         });
     };
 
-    // GET | Get User with email
+    // GET | Get specific User with _id
     static getUser = (id) => {
         return axios({
             method: 'GET',
@@ -31,7 +34,7 @@ class UserService {
         });
     };
 
-    // POST | Create User
+    // POST | Create new User
     static createUser = (user) => {
         return axios({
             method: 'POST',
@@ -41,17 +44,17 @@ class UserService {
         });
     };
 
-    // PUT | Update User
+    // PATCH | Update User data
     static updateUser = (user) => {
         return axios({
-            method: 'PUT',
+            method: 'PATCH',
             url: `${userAPI}/${user._id}`,
             data: user,
             headers: { 'Content-Type': 'application/json' },
         });
     };
 
-    // DELETE | Delete User
+    // DELETE | Delete User with _id
     static deleteUser = (id) => {
         return axios({
             method: 'DELETE',
@@ -60,156 +63,222 @@ class UserService {
     };
 }
 
-// const questionPaperSchema = new mongoose.Schema({
-//     facultyID: { required, 'User'},
-//     questionPaperDescription: { String },
-//     submissionDeadline: { required, Date},
-//     subjectName: { required, String },
-//     total: { Number }
-// }
-// const studentQuestionRelationSchema = new mongoose.Schema({
-//     studentID: { required, 'User' },
-//     questionPaperID: { require, "QuestionPaper" },
-//     isSubmitted: { Boolean, false },
-// }
+// const assignmentSchema = new mongoose.Schema({
+//     assignment_name: { required, String },
+//     subject_name: { required, String },
+//     faculty_id: { required, object_id: 'User' },
+//     total_marks: { Number },
+//     deadline: { required, DATETIME },
+//     is_show: { required, bool,False },
+//     faculty_submission_id: { required, object_id: 'submission' },
+//     submission_list_ids: [ { object_id: 'submission' } ]
+// },
 class AssignmentService {
-    // GET | Get all QuestionPapers
+    // GET | Get all Assignments
     static getAllAssignments = () => {
         return axios({
             method: 'GET',
-            url: `${paperAPI}`,
+            url: `${assignmentAPI}`,
         });
     };
 
-    // POST | Create new QuestionPaper
+    // GET | Get specific Assignment with _id
+    static getAssignment = (id) => {
+        return axios({
+            method: 'GET',
+            url: `${assignmentAPI}/${id}`,
+        });
+    };
+
+    // POST | Create new Assignment
     static createAssignment = (assignment) => {
         return axios({
             method: 'POST',
-            url: `${paperAPI}`,
+            url: `${assignmentAPI}`,
             data: assignment,
             headers: { 'Content-Type': 'application/json' },
         });
     };
 
-    // PUT | Update QuestionPaper
+    // PATCH | Update specific Assignment with _id
     static updateAssignment = (id, assignment) => {
         return axios({
-            method: 'PUT',
-            url: `${paperAPI}/${id}`,
+            method: 'PATCH',
+            url: `${assignmentAPI}/${id}`,
             data: assignment,
             headers: { 'Content-Type': 'application/json' },
         });
     };
 
-    // Todo : DELETE | Delete QuestionPaper
-    // static deleteAssignment = (id) => {
-    //     return axios({
-    //         method: 'DELETE',
-    //         url: `${paperAPI}/${id}`,
-    //     });
-    // };
-
-    // GET | Get all question papers list created by faculty
-    static getAllFacultyAssignments = (id) => {
+    // DELETE | Delete specific Assignment with _id
+    static deleteAssignment = (id) => {
         return axios({
-            method: 'GET',
-            url: `${paperAPI}/faculty/${id}`,
-        });
-    };
-
-    // GET | Get the all question (without answers) using questionPaperId
-    static getAssignmentAllQuestion = (id) => {
-        return axios({
-            method: 'GET',
-            url: `${paperAPI}/${id}`,
+            method: 'DELETE',
+            url: `${assignmentAPI}/${id}`,
         });
     };
 }
 
-// const questionSchema = new mongoose.Schema({
-//     questionPaperID: { required, 'QuestionPaper'},
-//     question: { required, String },
-//     ansByFaculty: { required, String },
+// const submissionSchema = new mongoose.Schema({
+//     user_id: { required, object_id: 'User' },
+//     assignment_id: { required, object_id: 'Assignment' },
 //     marks: { required, Number },
-// }
-class QnAService {
-    // GET | Get the all Questions (with answers)
+//     qna_list: [{ object_id: 'QnA'}],
+// },
+class SubmissionService {
+    // GET | Get the all submission
+    static getAllSubmission = () => {
+        return axios({
+            method: 'GET',
+            url: `${submissionAPI}`,
+        });
+    };
+
+    // GET | Get specific submission with _id
+    static getSubmission = (id) => {
+        return axios({
+            method: 'GET',
+            url: `${submissionAPI}/${id}`,
+        });
+    };
+
+    // POST | Create new submission
+    static createSubmission = (user_id) => {
+        return axios({
+            method: 'POST',
+            url: `${submissionAPI}`,
+            data: { user_id },
+            headers: { 'Content-Type': 'application/json' },
+        });
+    };
+
+    // PATCh | update specific submission with _id
+    static updateSubmission = (id, submission) => {
+        return axios({
+            method: 'PATCH',
+            url: `${submissionAPI}/${id}`,
+            data: submission,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    };
+
+    // DELETE | delete specific submission with _id
+    static deleteSubmission = (id) => {
+        return axios({
+            method: 'DELETE',
+            url: `${submissionAPI}/${id}`,
+        });
+    };
+}
+
+// const qnaFacultySchema = new mongoose.Schema({
+//     question: { String, required },
+//     answer: { String },
+//     marks: { String },
+// });
+class FacultyQnAService {
+    // GET | Get all qna
     static getAllQnA = () => {
         return axios({
             method: 'GET',
-            url: `${qnaAPI}`,
+            url: `${qnaFacultyAPI}`,
         });
     };
 
-    // GET | Get the all Questions (with answers) by QuestionPaperID
-    static getPaperQnA = (id) => {
+    // POST | Create new qna
+    static createQnA = (QnA) => {
+        return axios({
+            method: 'POST',
+            url: `${qnaFacultyAPI}`,
+            data: QnA,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    };
+
+    // GET | Get specific qna with _id
+    static getQnA = (id) => {
         return axios({
             method: 'GET',
-            url: `${qnaAPI}/paperid/${id}`,
+            url: `${qnaFacultyAPI}/${id}`,
         });
     };
 
-    // POST | Create new Question
-    static createQnA = (question) => {
+    // PATCH | update specific qna with _id
+    static updateQnA = (id, QnA) => {
         return axios({
-            method: 'POST',
-            url: `${qnaAPI}`,
-            data: { question },
+            method: 'PATCH',
+            url: `${qnaFacultyAPI}/${id}`,
+            data: QnA,
             headers: { 'Content-Type': 'application/json' },
         });
     };
 
-    // PUT | Update Question
-    static updateQnA = (id, question) => {
+    // DELETE | delete specific qna with _id
+    static deleteQnA = (id) => {
         return axios({
-            method: 'PUT',
-            url: `${qnaAPI}/${id}`,
-            data: { question },
-            headers: { 'Content-Type': 'application/json' },
+            method: 'DELETE',
+            url: `${qnaFacultyAPI}/${id}`,
         });
     };
-
-    //TODO: DELETE | Delete Question
-    // static deleteQnA = (id) => {
-    //     return axios({
-    //         method: 'DELETE',
-    //         url: `${qnaAPI}/${id}`,
-    //     });
-    // };
 }
 
-// const answerSchema = new mongoose.Schema({
-//     studentID: { required, 'User' },
-//     questionID: { required, 'Question' },
-//     questionPaperID: { required, "QuestionPaper" },
-//     ans: { required, String },
-//     marks_by_model: { Number },
-//     final_marks: {Number},
-//     is_evaluted: { Boolean, false },
+// const qnaStudentSchema = new mongoose.Schema({
+//     qna_faculty_id: {
+//         required,
+//         object_id: 'QnAs',
+//     },
+//     answer: { String },
+//     evaluation_status: { String, 'pending' },
+//     model_marks: { Number, 0 },
 //     query_flag: { Boolean, false },
-// }
-class AnsService {
-    // POST | POST for saving answer to a question
-    static createAns = (answer) => {
+//     query_description: {  String },
+//     final_marks: { Number, 0 },
+// });
+class StudentQnAService {
+    // GET | Get all qna
+    static getAllQnA = () => {
+        return axios({
+            method: 'GET',
+            url: `${qnaStudentAPI}`,
+        });
+    };
+
+    // POST | Create new qna
+    static createQnA = (QnA) => {
         return axios({
             method: 'POST',
-            url: `${answerAPI}`,
-            data: answer,
+            url: `${qnaStudentAPI}`,
+            data: QnA,
             headers: { 'Content-Type': 'application/json' },
         });
     };
 
-    // PUT | PUT update answer
-    static createAns = (id, answer) => {
+    // GET | Get specific qna with _id
+    static getQnA = (id) => {
         return axios({
-            method: 'PUT',
-            url: `${answerAPI}/${id}`,
-            data: answer,
+            method: 'GET',
+            url: `${qnaStudentAPI}/${id}`,
+        });
+    };
+
+    // PATCH | update specific qna with _id
+    static updateQnA = (id, QnA) => {
+        return axios({
+            method: 'PATCH',
+            url: `${qnaStudentAPI}/${id}`,
+            data: QnA,
             headers: { 'Content-Type': 'application/json' },
+        });
+    };
+
+    // DELETE | delete specific qna with _id
+    static deleteQnA = (id) => {
+        return axios({
+            method: 'DELETE',
+            url: `${qnaStudentAPI}/${id}`,
         });
     };
 }
-
 class statusService {
     // GET | Get results[i] = No of Users registered on (current - i)th day
     static getRegiUserWeekly = () => {
@@ -257,7 +326,8 @@ class statusService {
 export {
     UserService,
     AssignmentService,
-    QnAService,
-    AnsService,
+    SubmissionService,
+    FacultyQnAService,
+    StudentQnAService,
     statusService,
 };
