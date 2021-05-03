@@ -84,8 +84,8 @@ SideMenu.SmallProfile = function SmallProfile({ children, user }) {
         <div className={classes.smallProfile}>
             <Avatar
                 className={classes.userPic}
-                alt={user.username}
-                src={user.userPic}
+                alt={user.user_name}
+                src={user.profile_pic}
                 style={{
                     height: '140px',
                     width: '140px',
@@ -94,7 +94,7 @@ SideMenu.SmallProfile = function SmallProfile({ children, user }) {
                 }}
             />
             <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                {user.username}
+                {user.user_name}
             </div>
             <div>{user.email}</div>
             {children}
@@ -111,16 +111,22 @@ SideMenu.AssignmentProfile = function AssignmentProfile({
     return (
         <div className={classes.smallProfile} style={{ height: '250px' }}>
             <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                Assignment #{assignment.assId}
+                Assignment
             </div>
-            <div style={{}}>{'Name: ' + assignment.assName}</div>
-            <div style={{}}>
-                {'Date: ' + assignment.assDate + ' ' + assignment.startTime}
+            <div>-------------</div>
+            <div style={{ fontSize: '16px', fontWeight: '600' }}>
+                {'Name: ' + assignment.assignment_name}
             </div>
-            <div style={{}}> {'Duration: ' + assignment.duration + ' min'}</div>
-            {/* <div style={{}}>
-                {"Status: " + status[assignment.statusId - 1].title}
-            </div> */}
+            <div style={{ fontSize: '15px', fontWeight: '600' }}>
+                {'Subject: ' + assignment.subject_name}
+            </div>
+            <div style={{ fontSize: '15px', fontWeight: '600' }}>
+                {'Deadline: ' + assignment.deadline}
+            </div>
+            <div style={{ fontSize: '15px', fontWeight: '600' }}>
+                {' '}
+                {'Show to students: ' + assignment.is_show}
+            </div>
             {children}
         </div>
     );
