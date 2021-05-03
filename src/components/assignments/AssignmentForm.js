@@ -5,10 +5,14 @@ import { useForm, Form } from '../useForm';
 
 const initialFValues = {
     id: 0,
-    subjectName: '',
-    facultyID: '',
-    submissionDeadline: new Date(),
-    total: 0,
+    assignment_name: '',
+    subject_name: '',
+    faculty_id: '',
+    deadline: new Date(),
+    total_marks: 0,
+    is_show: false,
+    faculty_submission_id: '',
+    submission_list_ids: [],
     // subjectId: "",
     // assDate: new Date(),
     // startTime: new Date(),
@@ -18,25 +22,22 @@ const initialFValues = {
 
 export default function AssignmentForm(props) {
     const { addOrEdit, recordForEdit, user } = props;
-    initialFValues.facultyID = user._id;
+    // initialFValues.faculty_id = user._id;
 
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
-        if ('subjectName' in fieldValues)
-            temp.subjectName = fieldValues.subjectName
+        if ('assignment_name' in fieldValues)
+            temp.assignment_name = fieldValues.assignment_name
                 ? ''
                 : 'This field is required.';
-        if ('submissionDeadline' in fieldValues)
-            temp.submissionDeadline = fieldValues.submissionDeadline
+        if ('subject_name' in fieldValues)
+            temp.subject_name = fieldValues.subject_name
                 ? ''
                 : 'This field is required.';
-        if ('total' in fieldValues)
-            temp.total =
-                fieldValues.total.length !== 0 ? '' : 'This field is required.';
-        setErrors({
-            ...temp,
-        });
-
+        if ('deadline' in fieldValues)
+            temp.deadline = fieldValues.deadline
+                ? ''
+                : 'This field is required.';
         if (fieldValues === values)
             return Object.values(temp).every((x) => x === '');
     };
@@ -69,42 +70,48 @@ export default function AssignmentForm(props) {
             <Grid container>
                 <Grid item xs={6}>
                     <Controls.Input
-                        name="subjectName"
-                        label="Subject Name"
-                        value={values.subjectName}
+                        name="assignment_name"
+                        label="Assignment Name"
+                        value={values.assignment_name}
                         onChange={handleInputChange}
-                        error={errors.subjectName}
+                        error={errors.assignment_name}
                     />
                     <Controls.Input
-                        name="total"
-                        label="Total Marks"
-                        value={values.total}
+                        name="subject_name"
+                        label="Subject Name"
+                        value={values.subject_name}
                         onChange={handleInputChange}
-                        error={errors.total}
+                        error={errors.subject_name}
                     />
-                    {/* <Controls.Select
-                        name="statusId"
-                        label="Status"
-                        value={values.facultyID}
-                        onChange={handleInputChange}
-                        options={getFacultyCollection()}
-                        error={errors.facultyID}
-                    /> */}
                 </Grid>
                 <Grid item xs={6}>
                     <Controls.Input
-                        name="facultyID"
+                        name="faculty_id"
                         label="Faculty ID"
-                        value={values.facultyID}
+                        value={values.faculty_id}
                         onChange={handleInputChange}
-                        error={errors.facultyID}
+                        error={errors.faculty_id}
                     />
-                    <Controls.DatePicker
-                        name="submissionDeadline"
+                    <Controls.Checkbox
+                        name="is_show"
+                        label="Show to Student"
+                        value={values.is_show}
+                        onChange={handleInputChange}
+                    />
+                    {/* fixme: dateandtime picker for deadline not working */}
+                    {/* <Controls.DatePicker
+                        name="deadline"
                         label="Submission Deadline"
-                        value={values.submissionDeadline}
+                        value={values.deadline}
                         onChange={handleInputChange}
-                    />
+                    /> */}
+                    {/* <Controls.DateTimePicker
+                        name="deadline"
+                        label="Submission Deadline"
+                        value={values.deadline}
+                        onChange={handleInputChange}
+                    /> */}
+
                     {/* <Controls.TimePicker
                         name="startTime"
                         label="Starting time"
