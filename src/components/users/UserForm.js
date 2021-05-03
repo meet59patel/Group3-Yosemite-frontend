@@ -11,7 +11,7 @@ const getRoleCollection = () => [
 
 const initialFValues = {
     id: 0,
-    username: '',
+    user_name: '',
     email: '',
     role: '',
 };
@@ -21,8 +21,8 @@ export default function UserForm(props) {
 
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
-        if ('username' in fieldValues)
-            temp.username = fieldValues.username
+        if ('user_name' in fieldValues)
+            temp.user_name = fieldValues.user_name
                 ? ''
                 : 'This field is required.';
         if ('email' in fieldValues)
@@ -67,11 +67,11 @@ export default function UserForm(props) {
             <Grid container>
                 <Grid item xs={6}>
                     <Controls.Input
-                        name="username"
+                        name="user_name"
                         label="User Name"
-                        value={values.username}
+                        value={values.user_name}
                         onChange={handleInputChange}
-                        error={errors.username}
+                        error={errors.user_name}
                     />
                     <Controls.Input
                         name="email"

@@ -65,7 +65,7 @@ function Users(props) {
         UserService.getAllUsers()
             .then((response) => {
                 setLoading(false);
-                setUserList(response.data);
+                setUserList(response.data.users);
             })
             .catch((error) => {
                 console.log(error);
@@ -104,7 +104,7 @@ function Users(props) {
                 else
                     return items.filter(
                         (x) =>
-                            x.username.toLowerCase().includes(target.value) ||
+                            x.user_name.toLowerCase().includes(target.value) ||
                             x.email.toLowerCase().includes(target.value) ||
                             x.role.toLowerCase().includes(target.value)
                     );
@@ -190,112 +190,91 @@ function Users(props) {
 
     return (
         <div>
-            <div>
-                <div>
-                    <Paper className={classes.pageContent}>
-                        <Toolbar>
-                            <Controls.Input
-                                label="Search Users"
-                                className={classes.searchInput}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <Search />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                onChange={handleSearch}
-                            />
-                            <Controls.Button
-                                text="Add New"
-                                variant="outlined"
-                                startIcon={<AddIcon />}
-                                className={classes.newButton}
-                                onClick={() => {
-                                    setOpenPopup(true);
-                                    setRecordForEdit(null);
-                                }}
-                            />
-                        </Toolbar>
-
-                        {loding ? (
-                            <Loding />
-                        ) : (
-                            <TblContainer>
-                                <TblHead />
-                                <TableBody>
-                                    {recordsAfterPagingAndSorting().map(
-                                        (item) => (
-                                            <TableRow key={item._id}>
-                                                <TableCell>
-                                                    {item.username}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {item.email}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {item.role}
-                                                </TableCell>
-                                                {user.role === 'admin' && (
-                                                    <TableCell>
-                                                        <Controls.ActionButton
-                                                            color="primary"
-                                                            onClick={() => {
-                                                                openInPopup(
-                                                                    item
-                                                                );
-                                                            }}
-                                                        >
-                                                            <EditOutlinedIcon fontSize="small" />
-                                                        </Controls.ActionButton>
-                                                        <Controls.ActionButton
-                                                            color="secondary"
-                                                            onClick={() => {
-                                                                setConfirmDialog(
-                                                                    {
-                                                                        isOpen: true,
-                                                                        title:
-                                                                            'Are you sure to delete this user?',
-                                                                        subTitle:
-                                                                            "You can't undo this operation",
-                                                                        onConfirm: () => {
-                                                                            onDelete(
-                                                                                item.email
-                                                                            );
-                                                                        },
-                                                                    }
-                                                                );
-                                                            }}
-                                                        >
-                                                            <CloseIcon fontSize="small" />
-                                                        </Controls.ActionButton>
-                                                    </TableCell>
-                                                )}
-                                            </TableRow>
-                                        )
-                                    )}
-                                </TableBody>
-                            </TblContainer>
-                        )}
-                        <TblPagination />
-                    </Paper>
-                    <Popup
-                        title="User Form"
-                        openPopup={openPopup}
-                        setOpenPopup={setOpenPopup}
-                    >
-                        <UserForm
-                            recordForEdit={recordForEdit}
-                            addOrEdit={addOrEdit}
-                        />
-                    </Popup>
-                    <Notification notify={notify} setNotify={setNotify} />
-                    <ConfirmDialog
-                        confirmDialog={confirmDialog}
-                        setConfirmDialog={setConfirmDialog}
+            <Paper className={classes.pageContent}>
+                <Toolbar>
+                    <Controls.Input
+                        label="Search Users"
+                        className={classes.searchInput}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Search />
+                                </InputAdornment>
+                            ),
+                        }}
+                        onChange={handleSearch}
                     />
-                </div>
-            </div>
+                    <Controls.Button
+                        text="Add New"
+                        variant="outlined"
+                        startIcon={<AddIcon />}
+                        className={classes.newButton}
+                        onClick={() => {
+                            setOpenPopup(true);
+                            setRecordForEdit(null);
+                        }}
+                    />
+                </Toolbar>
+
+                {loding ? (
+                    <Loding />
+                ) : (
+                    <TblContainer>
+                        <TblHead />
+                        <TableBody>
+                            {recordsAfterPagingAndSorting().map((item) => (
+                                <TableRow key={item._id}>
+                                    <TableCell>{item.user_name}</TableCell>
+                                    <TableCell>{item.email}</TableCell>
+                                    <TableCell>{item.role}</TableCell>
+                                    {user.role === 'admin' && (
+                                        <TableCell>
+                                            <Controls.ActionButton
+                                                color="primary"
+                                                onClick={() => {
+                                                    openInPopup(item);
+                                                }}
+                                            >
+                                                <EditOutlinedIcon fontSize="small" />
+                                            </Controls.ActionButton>
+                                            <Controls.ActionButton
+                                                color="secondary"
+                                                onClick={() => {
+                                                    setConfirmDialog({
+                                                        isOpen: true,
+                                                        title:
+                                                            'Are you sure to delete this user?',
+                                                        subTitle:
+                                                            "You can't undo this operation",
+                                                        onConfirm: () => {
+                                                            onDelete(item._id);
+                                                        },
+                                                    });
+                                                }}
+                                            >
+                                                <CloseIcon fontSize="small" />
+                                            </Controls.ActionButton>
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </TblContainer>
+                )}
+                <TblPagination />
+            </Paper>
+            <Popup
+                title="User Form"
+                openPopup={openPopup}
+                setOpenPopup={setOpenPopup}
+            >
+                <UserForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
+            </Popup>
+            <Notification notify={notify} setNotify={setNotify} />
+            <ConfirmDialog
+                confirmDialog={confirmDialog}
+                setConfirmDialog={setConfirmDialog}
+            />
         </div>
     );
 }
