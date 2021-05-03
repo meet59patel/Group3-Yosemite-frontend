@@ -115,6 +115,7 @@ function App() {
                     >
                         <ViewAssignment />
                     </PrivateRoute>
+                    <Route component={() => <h1>404 - Not Found!</h1>}></Route>
                 </Switch>
             </Router>
         </ThemeProvider>
