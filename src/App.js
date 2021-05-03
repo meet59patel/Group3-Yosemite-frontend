@@ -46,29 +46,9 @@ const theme = createMuiTheme({
     },
 });
 
-const AdminUser = {
-    _id: localStorage.getItem('user_id') || '605f17024323c591389a4c92',
-    userPic: '/static/images/avatar/1.jpg',
-    username: localStorage.getItem('user_username') || 'raj',
-    email: localStorage.getItem('user_email') || 'raj@daiict.ac.in',
-    role: localStorage.getItem('user_role') || 'admin',
-};
-
-const FacultyUser = {
-    _id: localStorage.getItem('user_id') || '605f16fd4323c591389a4c91',
-    userPic: '/static/images/avatar/1.jpg',
-    username: localStorage.getItem('user_username') || 'Sam',
-    email: localStorage.getItem('user_email') || 'sam@daiict.ac.in',
-    role: localStorage.getItem('user_role') || 'faculty',
-};
-
-const StudentUser = {
-    _id: localStorage.getItem('user_id') || '605f16a34323c591389a4c89',
-    userPic: '/static/images/avatar/1.jpg',
-    username: localStorage.getItem('user_username') || '201801056',
-    email: localStorage.getItem('user_email') || '201801056@daiict.ac.in',
-    role: localStorage.getItem('user_role') || 'student',
-};
+const adminuser_id = '6090160683df8005f242fb61';
+const facultyuser_id = '6090161683df8005f242fb62';
+const studentuser_id = '609015f383df8005f242fb60';
 
 function App() {
     var { isAuthenticated, role } = useUserState();
@@ -92,19 +72,19 @@ function App() {
                         path="/admin"
                         allowedRoles={['admin', 'faculty', 'student']}
                     >
-                        <AdminRoutes user={AdminUser} />
+                        <AdminRoutes user_id={adminuser_id} />
                     </PrivateRoute>
                     <PrivateRoute
                         path="/faculty"
                         allowedRoles={['admin', 'faculty', 'student']}
                     >
-                        <FacultyRoutes user={FacultyUser} />
+                        <FacultyRoutes user_id={facultyuser_id} />
                     </PrivateRoute>
                     <PrivateRoute
                         path="/student"
                         allowedRoles={['admin', 'faculty', 'student']}
                     >
-                        <StudentRoutes user={StudentUser} />
+                        <StudentRoutes user_id={studentuser_id} />
                     </PrivateRoute>
                     <Route path="/setassignment">
                         <SetAssignment />
