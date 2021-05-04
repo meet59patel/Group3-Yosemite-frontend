@@ -1,6 +1,6 @@
 # Yosemite
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## IT314 - Group 3
@@ -27,6 +27,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://meetpatel.github.io/"><img src="https://avatars.githubusercontent.com/u/45785817?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Meet Patel</b></sub></a><br /><a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=meet59patel" title="Code">💻</a> <a href="#infra-meet59patel" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-meet59patel" title="Maintenance">🚧</a> <a href="#projectManagement-meet59patel" title="Project Management">📆</a></td>
+    <td align="center"><a href="https://github.com/Ridham2001"><img src="https://avatars.githubusercontent.com/u/70639096?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ridham2001</b></sub></a><br /><a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=Ridham2001" title="Code">💻</a> <a href="#maintenance-Ridham2001" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 
