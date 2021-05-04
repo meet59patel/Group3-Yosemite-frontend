@@ -9,6 +9,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
+
 let data1 = {
     labels: [
         'Monday',
@@ -115,6 +117,24 @@ let options1 = {
         ],
     },
 };
+
+function simpleStringify(object) {
+    var simpleObject = {};
+    for (var prop in object) {
+        if (!object.hasOwnProperty(prop)) {
+            continue;
+        }
+        if (typeof object[prop] == 'object') {
+            continue;
+        }
+        if (typeof object[prop] == 'function') {
+            continue;
+        }
+        simpleObject[prop] = object[prop];
+    }
+    return JSON.stringify(simpleObject); // returns cleaned up JSON
+}
+
 class AdminGraphs extends React.Component {
     constructor(props) {
         super(props);
@@ -129,9 +149,7 @@ class AdminGraphs extends React.Component {
 
     async componentDidMount() {
         await axios
-            .get(
-                `https://yosemite-sen.herokuapp.com/stats/countOfUserDuringLastWeek`
-            )
+            .get(`${SERVER_URL}stats/countOfUserDuringLastWeek`)
             .then((res) => {
                 const persons = res.data.results;
                 let stu = [],
@@ -146,12 +164,13 @@ class AdminGraphs extends React.Component {
                 data1.datasets[0].data = stu;
                 data1.datasets[1].data = fac;
                 data1.datasets[2].data = adm;
+                // data1 = JSON.parse(simpleStringify(data1)); // DeepCopy
                 data1 = JSON.parse(JSON.stringify(data1)); // DeepCopy
-            });
+                // data1 = clonedeep(data1); // DeepCopy
+            })
+            .catch(console.error);
         await axios
-            .get(
-                `https://yosemite-sen.herokuapp.com/stats/countOfNewUserDuringLastWeek`
-            )
+            .get(`${SERVER_URL}stats/countOfNewUserDuringLastWeek`)
             .then((res) => {
                 const persons = res.data.results;
                 let results = [];
@@ -164,11 +183,12 @@ class AdminGraphs extends React.Component {
                 }
                 data2.datasets[0].data = results;
                 data2 = JSON.parse(JSON.stringify(data2)); // DeepCopy
-            });
+                // data2 = JSON.parse(simpleStringify(data2)); // DeepCopy
+                // data2 = clonedeep(data2);
+            })
+            .catch(console.error);
         await axios
-            .get(
-                `https://yosemite-sen.herokuapp.com/stats/assignmentsOfLastWeek`
-            )
+            .get(`${SERVER_URL}stats/assignmentsOfLastWeek`)
             .then((res) => {
                 const results = res.data.assignments;
                 let assignData = [];
@@ -178,10 +198,13 @@ class AdminGraphs extends React.Component {
                 }
                 data.datasets[0].data = assignData;
                 data = JSON.parse(JSON.stringify(data)); // DeepCopy
+                // data = JSON.parse(simpleStringify(data)); // DeepCopy
+                // data = clonedeep(data);
                 this.changeDataTests();
                 this.changeDataNewUsers();
                 this.changeDataUsers();
-            });
+            })
+            .catch(console.error);
     }
 
     changeDataUsers(event) {
