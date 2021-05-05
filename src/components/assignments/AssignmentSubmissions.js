@@ -104,6 +104,7 @@ export default function AssignmentList(props) {
                             console.log(error);
                         });
                     sub['user_name'] = user.user_name;
+                    sub['user_id'] = user._id;
                     submissions.push(sub);
                 }
                 setSubList(submissions);
@@ -221,11 +222,9 @@ export default function AssignmentList(props) {
                                             <Controls.ActionButton
                                                 color="success"
                                                 onClick={() => {
-                                                    // todo: add link for student submission
-                                                    // console.log(item);
-                                                    // history.push(
-                                                    //     `/faculty/assignment/${submission1.assignment_id}/run`
-                                                    // );
+                                                    history.push(
+                                                        `/faculty/assignment/${assignment_id}/student/${item._id}`
+                                                    );
                                                     setNotify({
                                                         isOpen: true,
                                                         message: `This feature coming soon`,
