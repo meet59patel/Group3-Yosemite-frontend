@@ -22,7 +22,7 @@ const initialFValues = {
 
 export default function AssignmentForm(props) {
     const { addOrEdit, recordForEdit, user } = props;
-    // initialFValues.faculty_id = user._id;
+    initialFValues.faculty_id = user._id;
 
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
@@ -34,10 +34,15 @@ export default function AssignmentForm(props) {
             temp.subject_name = fieldValues.subject_name
                 ? ''
                 : 'This field is required.';
-        if ('deadline' in fieldValues)
-            temp.deadline = fieldValues.deadline
-                ? ''
-                : 'This field is required.';
+        // if ('deadline' in fieldValues)
+        //     temp.deadline = fieldValues.deadline
+        //         ? ''
+        //         : 'This field is required.';
+
+        setErrors({
+            ...temp,
+        });
+
         if (fieldValues === values)
             return Object.values(temp).every((x) => x === '');
     };
@@ -91,6 +96,7 @@ export default function AssignmentForm(props) {
                         value={values.faculty_id}
                         onChange={handleInputChange}
                         error={errors.faculty_id}
+                        disabled={true}
                     />
                     <Controls.Checkbox
                         name="is_show"

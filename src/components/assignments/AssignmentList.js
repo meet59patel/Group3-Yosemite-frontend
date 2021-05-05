@@ -19,7 +19,13 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import CloseIcon from '@material-ui/icons/Close';
 import AssignmentForm from './AssignmentForm';
-import { AssignmentService, SubmissionService } from '../../services/apis.service';
+import {
+    UserService,
+    AssignmentService,
+    SubmissionService,
+    FacultyQnAService,
+    StudentQnAService,
+} from '../../services/apis.service';
 import {
     assiCellsAdmin,
     assiCellsFaculty,
@@ -68,27 +74,40 @@ export default function AssignmentList(props) {
     // todo: for admin show all assignment
     // fetch assignment data
     const [assiList, setAssiList] = useState([]);
-    const fetchAssiList = useCallback((user) => {
-        // if (user.role !== 'faculty') {
-        AssignmentService.getAllAssignments()
-            .then((response) => {
-                setLoading(false);
-                setAssiList(response.data.assignments);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        // }
-        // else {
-        //     AssignmentService.getAllFacultyAssignments(user._id)
-        //         .then((response) => {
-        //             setLoading(false);
-        //             setAssiList(response.data);
-        //         })
-        //         .catch((error) => {
-        //             console.log(error);
-        //         });
-        // }
+    const fetchAssiList = useCallback(async (user) => {
+        if (user) {
+            if (user.role === 'faculty') {
+                await AssignmentService.getFacultyAssignments(user)
+                    .then(async (response) => {
+                        const list = response.data.assignments;
+                        await setAssiList(list);
+                        setLoading(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else if (user.role === 'student') {
+                await AssignmentService.getStudentAssignments(user)
+                    .then(async (response) => {
+                        const list = response.data.assignments;
+                        await setAssiList(list);
+                        setLoading(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                await AssignmentService.getAllAssignments(user)
+                    .then(async (response) => {
+                        const list = response.data.assignments;
+                        await setAssiList(list);
+                        setLoading(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        }
     }, []);
     useEffect(() => {
         fetchAssiList(user);
@@ -101,12 +120,12 @@ export default function AssignmentList(props) {
         },
     });
 
-    const headCells = assiCellsFaculty;
-    // user.role === 'admin'
-    //     ? assiCellsAdmin
-    //     : user.role === 'faculty'
-    //     ? assiCellsFaculty
-    //     : assiCellsStudent;
+    const headCells =
+        user.role === 'admin'
+            ? assiCellsAdmin
+            : user.role === 'faculty'
+            ? assiCellsFaculty
+            : assiCellsStudent;
 
     const {
         TblContainer,
@@ -140,11 +159,15 @@ export default function AssignmentList(props) {
 
     const addOrEdit = async (assignment, resetForm) => {
         // console.log('aasign', assignment);
-        if (assignment.id === 0) {
+        if (assignment.id === 0 && user) {
+            // create new submission
             let new_submission;
-            await SubmissionService.createSubmission(assignment.faculty_id)
+            await SubmissionService.createSubmission({
+                user_id: assignment.faculty_id,
+                assignment_id: assignment.faculty_id,
+            })
                 .then((response) => {
-                    console.log('res', response.data);
+                    // console.log('res', response.data);
                     new_submission = response.data.submission;
                 })
                 .catch((error) => {
@@ -154,9 +177,8 @@ export default function AssignmentList(props) {
                         type: 'error',
                     });
                 });
-            // console.log('new subm', new_submission);
             assignment.faculty_submission_id = new_submission._id;
-            // console.log('new aasign', assignment);
+            let new_assignment_id;
             await AssignmentService.createAssignment(assignment)
                 .then((response) => {
                     setNotify({
@@ -164,15 +186,50 @@ export default function AssignmentList(props) {
                         message: `Created Successfully`,
                         type: 'success',
                     });
+                    // console.log('createAssignment response', response.data);
+                    new_assignment_id = response.data.assignment._id;
                     fetchAssiList();
                 })
                 .catch((error) => {
+                    console.log('error to create new assi', error);
                     setNotify({
                         isOpen: true,
                         message: 'Error to Create',
                         type: 'error',
                     });
                 });
+
+            // console.log('created aasign', new_assignment_id);
+            // update submission's assignment id to real once
+            await SubmissionService.updateSubmission(new_submission._id, {
+                assignment_id: new_assignment_id,
+            })
+                .then((response) => {
+                    // console.log(
+                    //     'update assignment id to submission',
+                    //     response.data
+                    // );
+                    // studentSubmission = response.data.submission;
+                })
+                .catch((error) => {
+                    console.log('error to create sub for stu', error);
+                });
+
+            //  add new submission id to user data
+            await UserService.updateUser(user._id, {
+                push_assisub_id: new_submission._id,
+            })
+                .then((response) => {
+                    console.log(
+                        'added submission id to users list',
+                        response.data
+                    );
+                })
+                .catch((error) => {
+                    console.log('error to create sub for stu', error);
+                });
+            fetchAssiList(user);
+            console.log('finallly created');
         } else {
             await AssignmentService.updateAssignment(assignment._id, assignment)
                 .then((response) => {
@@ -181,7 +238,7 @@ export default function AssignmentList(props) {
                         message: `Edited Successfully`,
                         type: 'success',
                     });
-                    fetchAssiList();
+                    fetchAssiList(user);
                 })
                 .catch((error) => {
                     setNotify({
@@ -191,6 +248,7 @@ export default function AssignmentList(props) {
                     });
                 });
         }
+        fetchAssiList(user);
         resetForm();
         setRecordForEdit(null);
         setOpenPopup(false);
@@ -201,20 +259,90 @@ export default function AssignmentList(props) {
         setOpenPopup(true);
     };
 
-    const onDelete = async (id) => {
+    const onDelete = async (assignment) => {
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false,
         });
+        console.log('delete assignmnet requested');
+        // delete all student submittion
+        for (let sub_id of assignment.submission_list_ids) {
+            // delete all submissions qna
+            // first fetch sub
+            let submission;
+            await SubmissionService.getSubmission(sub_id)
+                .then((response) => {
+                    submission = response.data;
+                    console.log('fetched student submission');
+                })
+                .catch((error) => {
+                    console.log('error to find sub', error);
+                });
+            // then delete all qna
+            for (let qna_id of submission.qna_list_ids) {
+                StudentQnAService.deleteQnA(qna_id)
+                    .then((response) => {
+                        console.log('delete qna from student submission');
+                    })
+                    .catch((error) => {
+                        console.log('error to delete qna', error);
+                    });
+            }
+            console.log('all student qna delete');
 
-        await AssignmentService.deleteAssignment(id)
+            // then remove this from student
+            await UserService.updateUser(submission.user_id, {
+                remove_assisub_id: submission._id,
+            })
+                .then((response) => {
+                    console.log('remove submission id from student list');
+                })
+                .catch((error) => {
+                    console.log('error to update user', error);
+                });
+        }
+
+        // delete all qna from faculty
+        // first fetch faculty sub
+        let fsubmission;
+        await SubmissionService.getSubmission(assignment.faculty_submission_id)
+            .then((response) => {
+                fsubmission = response.data;
+                console.log('faculty submission fetched');
+            })
+            .catch((error) => {
+                console.log('error to find sub', error);
+            });
+        // delete all qna from faculty qna
+        for (let qna_id of fsubmission.qna_list_ids) {
+            FacultyQnAService.deleteQnA(qna_id)
+                .then((response) => {
+                    console.log('faculty qna deleted');
+                })
+                .catch((error) => {
+                    console.log('error to delete qna', error);
+                });
+        }
+        // then remove this from faculty
+        await UserService.updateUser(assignment.faculty_id, {
+            remove_assisub_id: fsubmission._id,
+        })
+            .then((response) => {
+                console.log('remove submission id from faculty list');
+            })
+            .catch((error) => {
+                console.log('error to update user', error);
+            });
+
+        // delete assignment
+        await AssignmentService.deleteAssignment(assignment._id)
             .then((response) => {
                 setNotify({
                     isOpen: true,
                     message: 'Deleted Successfully',
-                    type: 'error',
+                    type: 'success',
                 });
-                fetchAssiList();
+                console.log('assignment deleted successfully');
             })
             .catch((error) => {
                 setNotify({
@@ -224,11 +352,9 @@ export default function AssignmentList(props) {
                 });
                 console.log(error);
             });
+        console.log('finallly delete complete assignment');
+        fetchAssiList(user);
     };
-
-    // const gotoAssignment = (id) => {
-    //     console.log(id);
-    // };
 
     return (
         <>
@@ -260,81 +386,96 @@ export default function AssignmentList(props) {
                     )}
                 </Toolbar>
 
-                {loding ? (
+                {loding && assiList ? (
                     <Loding />
                 ) : (
                     <TblContainer>
                         <TblHead />
                         <TableBody>
-                            {recordsAfterPagingAndSorting().map((item) => (
-                                <TableRow key={item._id}>
-                                    <TableCell>
-                                        {item.assignment_name}
-                                    </TableCell>
-                                    <TableCell>{item.subject_name}</TableCell>
-                                    {/* {(user.role === 'admin' ||
-                                        user.role === 'student') && (
-                                            )} */}
-                                    <TableCell>{item.faculty_id}</TableCell>
-                                    {/* <TableCell>
+                            {assiList &&
+                                recordsAfterPagingAndSorting().map((item) => (
+                                    <TableRow key={item._id}>
+                                        <TableCell>
+                                            {item.assignment_name}
+                                        </TableCell>
+                                        <TableCell>
+                                            {item.subject_name}
+                                        </TableCell>
+                                        {(user.role === 'admin' ||
+                                            user.role === 'student') && (
+                                            <TableCell>
+                                                {item.faculty_id}
+                                            </TableCell>
+                                        )}
+                                        {/* <TableCell>
                                         {item.deadline.slice(0, 10)}
                                         {' - '}
                                         {item.deadline.slice(11, 19)}
                                     </TableCell> */}
-                                    <TableCell>{item.total_marks}</TableCell>
-                                    <TableCell>
-                                        {item.is_show ? 'Open' : 'Hidden'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {/* {(user.role === 'student' ||
-                                            user.role === 'admin' ||
-                                            user.role === 'faculty') && ( */}
-                                        <Controls.ActionButton
-                                            color="success"
-                                            onClick={() => {
-                                                // console.log(item);
-                                                history.push(
-                                                    `assignment/${item._id}`
-                                                );
-                                            }}
-                                        >
-                                            <OpenInNewIcon fontSize="small" />
-                                        </Controls.ActionButton>
-                                        {/* )} */}
-                                        {/* {(user.role === 'admin' ||
-                                            user.role === 'faculty') && ( */}
-                                        <Controls.ActionButton
-                                            color="primary"
-                                            onClick={() => {
-                                                openInPopup(item);
-                                            }}
-                                        >
-                                            <EditOutlinedIcon fontSize="small" />
-                                        </Controls.ActionButton>
-                                        {/* )} */}
-                                        {/* {(user.role === 'admin' ||
-                                            user.role === 'faculty') && ( */}
-                                        <Controls.ActionButton
-                                            color="secondary"
-                                            onClick={() => {
-                                                setConfirmDialog({
-                                                    isOpen: true,
-                                                    title:
-                                                        'Are you sure to delete this Assignment?',
-                                                    subTitle:
-                                                        "You can't undo this operation",
-                                                    onConfirm: () => {
-                                                        onDelete(item._id);
-                                                    },
-                                                });
-                                            }}
-                                        >
-                                            <CloseIcon fontSize="small" />
-                                        </Controls.ActionButton>
-                                        {/* )} */}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                        {(user.role === 'admin' ||
+                                            user.role === 'faculty') && (
+                                            <TableCell>
+                                                {item.total_marks}
+                                            </TableCell>
+                                        )}
+
+                                        {(user.role === 'admin' ||
+                                            user.role === 'faculty') && (
+                                            <TableCell>
+                                                {item.is_show
+                                                    ? 'Open'
+                                                    : 'Hidden'}
+                                            </TableCell>
+                                        )}
+                                        <TableCell>
+                                            {(user.role === 'student' ||
+                                                user.role === 'admin' ||
+                                                user.role === 'faculty') && (
+                                                <Controls.ActionButton
+                                                    color="success"
+                                                    onClick={() => {
+                                                        history.push(
+                                                            `assignment/${item._id}`
+                                                        );
+                                                    }}
+                                                >
+                                                    <OpenInNewIcon fontSize="small" />
+                                                </Controls.ActionButton>
+                                            )}
+                                            {(user.role === 'admin' ||
+                                                user.role === 'faculty') && (
+                                                <Controls.ActionButton
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        openInPopup(item);
+                                                    }}
+                                                >
+                                                    <EditOutlinedIcon fontSize="small" />
+                                                </Controls.ActionButton>
+                                            )}
+                                            {(user.role === 'admin' ||
+                                                user.role === 'faculty') && (
+                                                <Controls.ActionButton
+                                                    color="secondary"
+                                                    onClick={() => {
+                                                        setConfirmDialog({
+                                                            isOpen: true,
+                                                            title:
+                                                                'Are you sure to delete this Assignment?',
+                                                            subTitle:
+                                                                "You can't undo this operation",
+                                                            onConfirm: () => {
+                                                                onDelete(item);
+                                                            },
+                                                        });
+                                                    }}
+                                                >
+                                                    <CloseIcon fontSize="small" />
+                                                </Controls.ActionButton>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                         </TableBody>
                     </TblContainer>
                 )}
