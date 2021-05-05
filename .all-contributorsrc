@@ -1,0 +1,57 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "meet59patel",
+      "name": "Meet Patel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45785817?v=4",
+      "profile": "https://meetpatel.github.io/",
+      "contributions": [
+        "code",
+        "infra",
+        "maintenance",
+        "projectManagement"
+      ]
+    },
+    {
+      "login": "Ridham2001",
+      "name": "Ridham2001",
+      "avatar_url": "https://avatars.githubusercontent.com/u/70639096?v=4",
+      "profile": "https://github.com/Ridham2001",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "bhagyesh15",
+      "name": "bhagyesh15",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60236996?v=4",
+      "profile": "https://github.com/bhagyesh15",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "jamruthsai",
+      "name": "jamruthsai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58519334?v=4",
+      "profile": "https://github.com/jamruthsai",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Group3-Yosemite-frontend",
+  "projectOwner": "meet59patel",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

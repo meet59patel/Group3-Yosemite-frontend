@@ -62,13 +62,15 @@ function loginUser(dispatch, history, response, routerState) {
     console.log(response.profileObj.email);
 
     axios
-        .get(`${SERVER_URL}users/${response.profileObj.email}`)
+        .get(`${SERVER_URL}users/email/${response.profileObj.email}`)
         .then((result) => {
             console.log(result.data);
             const userData = result.data;
             const link =
                 (routerState && routerState.from) || `/${userData.role}`;
-            if (userData.role === 'admin') {
+            if (!userData._id) {
+                createUserAndLogin(response.profileObj, dispatch, history);
+            } else if (userData.role === 'admin') {
                 dispatch({ type: 'LOGIN_SUCCESS_ADMIN' });
                 setUserDataLocalStorage(userData);
                 // localStorage.setItem('user_role', userData.role);
@@ -90,6 +92,9 @@ function loginUser(dispatch, history, response, routerState) {
                 // User Role not defined. Handle profile creation
                 history.push('/login');
             }
+        })
+        .catch((err) => {
+            console.log(err);
         });
 }
 
@@ -101,7 +106,7 @@ function signOut(dispatch, history) {
 
 function setUserDataLocalStorage(userData) {
     localStorage.setItem('user_id', userData._id);
-    localStorage.setItem('user_username', userData.username);
+    localStorage.setItem('user_username', userData.user_name);
     localStorage.setItem('user_email', userData.email);
     localStorage.setItem('user_role', userData.role);
 }
@@ -112,4 +117,21 @@ function deleteUserDataLocalStorage() {
     localStorage.removeItem('user_username');
     localStorage.removeItem('user_email');
     localStorage.removeItem('user_role');
+}
+
+function createUserAndLogin(OAuthResponse, dispatch, history) {
+    axios
+        .post(`${SERVER_URL}users/`, {
+            user_name: OAuthResponse.name,
+            email: OAuthResponse.email,
+            role: 'student',
+        })
+        .then((res) => {
+            dispatch({ type: 'LOGIN_SUCCESS_STUDENT' });
+            setUserDataLocalStorage(res.data.user);
+            history.replace('/student');
+        })
+        .catch((e) => {
+            console.error(e);
+        });
 }
