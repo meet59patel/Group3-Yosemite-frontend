@@ -71,7 +71,7 @@ const FacultyDashboard = ({ user_id }) => {
                             <AssignmentList user={user} />
                         </Route>
                         <Route path="/faculty">
-                            <Welcome name={user.username}></Welcome>
+                            <Welcome name={user.user_name}></Welcome>
                         </Route>
                     </Switch>
                 </div>

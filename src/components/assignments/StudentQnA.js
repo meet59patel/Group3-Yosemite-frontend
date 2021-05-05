@@ -405,26 +405,27 @@ const StudentQnA = (props) => {
         setAnswer({ ...answer, [id]: e.target.value });
     };
 
-    // const onSingleSaveAnswer = async (e, ind, id) => {
-    //     await StudentQnAService.updateQnA(id, { answer: answer[id] })
-    //         .then((response) => {
-    //             console.log('qna ', id, ' submitted');
-    //         })
-    //         .catch((error) => {
-    //             console.log('error qna ', id, ' not submitted');
-    //         });
-    //     console.log(qnaList);
-    //     let oldQnAind = qnaList.findIndex(function (qna) {
-    //         return qna._id === id;
-    //     });
-    //     console.log(oldQnAind);
-    //     let newQnAList = qnaList;
-    //     newQnAList[oldQnAind].answer = answer[id];
-    //     setQnAList(newQnAList);
-    //     // onChange(e.target.value);
-    //     console.log('qnaList[oldQnAind].answer', qnaList[oldQnAind].answer);
-    //     console.log('answer[id]', answer[id]);
-    // };
+    const onSingleSaveAnswer = async (e, ind, id) => {
+        await StudentQnAService.updateQnA(id, { answer: answer[id] })
+            .then((response) => {
+                console.log('qna ', id, ' submitted');
+            })
+            .catch((error) => {
+                console.log('error qna ', id, ' not submitted');
+            });
+        console.log(qnaList);
+        let oldQnAind = qnaList.findIndex(function (qna) {
+            return qna._id === id;
+        });
+        console.log(oldQnAind);
+        let newQnAList = qnaList;
+        newQnAList[oldQnAind].answer = answer[id];
+        setQnAList(newQnAList);
+        setAnswer(JSON.parse(JSON.stringify(answer)));
+        // onChange(e.target.value);
+        console.log('qnaList[oldQnAind].answer', qnaList[oldQnAind].answer);
+        console.log('answer[id]', answer[id]);
+    };
 
     const onSaveAnswer = async () => {
         // console.log('save called');
@@ -585,6 +586,7 @@ const StudentQnA = (props) => {
                                                 }}
                                             />
                                             {user.role === 'student' && (
+                                              <>
                                                 <Controls.Button
                                                     text="Raise Query"
                                                     variant="outlined"
@@ -606,6 +608,30 @@ const StudentQnA = (props) => {
                                                         float: 'right',
                                                     }}
                                                 />
+                                                <Controls.Button
+                                                    text="Save"
+                                                    variant="outlined"
+                                                    startIcon={<SaveAltIcon />}
+                                                    className={classes.newButton}
+                                                    disabled={
+                                                        qna.answer ===
+                                                        answer[qna._id]
+                                                    }
+                                                    onClick={(e) => {
+                                                        onSingleSaveAnswer(
+                                                            e,
+                                                            ind,
+                                                            qna._id
+                                                        );
+                                                    }}
+                                                    style={{
+                                                        width: 'auto',
+                                                        marginBottom: '15px',
+                                                        position: 'relative',
+                                                        float: 'right',
+                                                    }}
+                                                />
+                                                </>
                                             )}
                                             {user.role === 'faculty' &&
                                                 qna.query_flag && (
@@ -623,30 +649,7 @@ const StudentQnA = (props) => {
                                                             : 'Query pending'}
                                                     </h2>
                                                 )}
-                                            {/* this is not working properly */}
-                                            {/* <Controls.Button
-                                                text="Save"
-                                                variant="outlined"
-                                                startIcon={<SaveAltIcon />}
-                                                className={classes.newButton}
-                                                disabled={
-                                                    qna.answer ===
-                                                    answer[qna._id]
-                                                }
-                                                onClick={(e) => {
-                                                    onSingleSaveAnswer(
-                                                        e,
-                                                        ind,
-                                                        qna._id
-                                                    );
-                                                }}
-                                                style={{
-                                                    width: 'auto',
-                                                    marginBottom: '15px',
-                                                    position: 'relative',
-                                                    float: 'right',
-                                                }}
-                                            /> */}
+                                            
                                         </div>
                                         {qna.query_flag && (
                                             <div
@@ -661,12 +664,6 @@ const StudentQnA = (props) => {
                                                     padding: '20px',
                                                 }}
                                             >
-                                                {/* <hr
-                                                    style={{
-                                                        backgroundColor: 'red',
-                                                        marginBottom: '20px',
-                                                    }}
-                                                /> */}
                                                 <Controls.Input
                                                     name="query_description"
                                                     label="Query Description"

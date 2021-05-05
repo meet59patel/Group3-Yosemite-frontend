@@ -66,12 +66,12 @@ function App() {
                             <LoginPage />
                         )}
                     </Route>
-                    {/* <PrivateRoute
+                    <PrivateRoute
                         path="/admin"
                         allowedRoles={['admin', 'faculty', 'student']}
                     >
                         <AdminRoutes user_id={adminuser_id} />
-                    </PrivateRoute> */}
+                    </PrivateRoute>
                     <PrivateRoute
                         path="/faculty"
                         allowedRoles={['admin', 'faculty', 'student']}

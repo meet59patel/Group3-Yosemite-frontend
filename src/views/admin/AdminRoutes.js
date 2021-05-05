@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import AssignmentAdmin from '../Assignment/AssignmentAdmin';
 import AdminDashboard from './AdminDashboard';
 
-function AdminRoutes({ user }) {
+function AdminRoutes({ user_id }) {
     return (
         <>
             {/* <Route path="/" component={AdminDashboard} />
@@ -11,10 +11,10 @@ function AdminRoutes({ user }) {
             <Route path="/assignments" component={AdminDashboard} /> */}
             <Switch>
                 <Route path="/admin/assignment/:id">
-                    <AssignmentAdmin user={user} />
+                    <AssignmentAdmin user_id={user_id} />
                 </Route>
                 <Route path="/admin">
-                    <AdminDashboard user={user} />
+                    <AdminDashboard user_id={user_id} />
                 </Route>
             </Switch>
             {/* <Route path='/users' component={AdminDashboard} />

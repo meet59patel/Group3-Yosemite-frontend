@@ -73,7 +73,7 @@ class FacultyGraphs extends React.Component {
         };
     }
     async componentDidMount() {
-        let url = apiLink + this.props.paperId;
+        let url = apiLink + this.props.assignment_id;
         await axios.get(url).then((res) => {
             const results = res.data;
             //console.log(results);

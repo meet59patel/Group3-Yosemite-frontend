@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
@@ -7,6 +7,7 @@ import Users from '../../components/users/Users';
 import AdminGraphs from '../../components/graphs/adminGraphs';
 import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
+import { UserService } from '../../services/apis.service';
 
 const useStyles = makeStyles({
     appMain: {
@@ -16,9 +17,26 @@ const useStyles = makeStyles({
     },
 });
 
-function AdminDashboard({ user }) {
+function AdminDashboard({ user_id }) {
     const classes = useStyles();
     const path = useLocation();
+
+    // fetch user
+    const [user, setUser] = useState([]);
+    const fetchUser = useCallback(() => {
+        UserService.getUser(user_id)
+            .then((res) => {
+                // console.log(res.data);
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [user_id]);
+
+    useEffect(() => {
+        fetchUser(user_id);
+    }, [fetchUser, user_id]);
 
     return (
         <div>
@@ -49,7 +67,7 @@ function AdminDashboard({ user }) {
                         <AssignmentList user={user} />
                     </Route>
                     <Route path="/admin">
-                        <Welcome name={user.username}></Welcome>
+                        <Welcome name={user.user_name}></Welcome>
                         <AdminGraphs />
                     </Route>
                 </Switch>
