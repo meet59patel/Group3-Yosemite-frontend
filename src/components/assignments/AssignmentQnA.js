@@ -11,6 +11,7 @@ import ConfirmDialog from '../ConfirmDialog';
 import {
     FacultyQnAService,
     SubmissionService,
+    AssignmentService,
 } from '../../services/apis.service';
 import { useHistory } from 'react-router-dom';
 import { useForm, Form } from '../useForm';
@@ -38,7 +39,7 @@ const AssignmentQnA = (props) => {
     // handle loding state
     const [loding, setLoading] = useState(true);
 
-    // handling modal and notif bar
+    // handling modal and notif
     const [openPopup, setOpenPopup] = useState(false);
     const [notify, setNotify] = useState({
         isOpen: false,
@@ -94,6 +95,17 @@ const AssignmentQnA = (props) => {
                     qnas.push(qna);
                 }
                 setQnAList(qnas);
+                // update to assignemnt total
+                await AssignmentService.updateAssignment(assignment._id, {
+                    total_marks: submission.marks,
+                })
+                    .then((response) => {})
+                    .catch((error) => {
+                        console.log(
+                            'Error to update total marks at assignment',
+                            error
+                        );
+                    });
                 setLoading(false);
             }
         },
@@ -128,7 +140,7 @@ const AssignmentQnA = (props) => {
                     console.log(error);
                 });
 
-            // remove qna id from submission's qna list
+            // add qna id from submission's qna list
             console.log('add sub', submission1);
             await SubmissionService.updateSubmission(submissionId, {
                 push_qna_list_ids: new_qna_id,
@@ -137,6 +149,7 @@ const AssignmentQnA = (props) => {
             })
                 .then((response) => {
                     console.log('submission"s qna added done');
+                    setSubmission1(response.data.submission);
                     setNotify({
                         isOpen: true,
                         message: `added Successfully`,
@@ -153,9 +166,6 @@ const AssignmentQnA = (props) => {
                 });
 
             // todo: add this qna from all submission of this assignment
-
-            // fetch data again after update
-            fetchQnAList();
         } else {
             // first fetch old qna, to get old marks
             let qnaOld;
@@ -193,6 +203,7 @@ const AssignmentQnA = (props) => {
                     parseInt(qna.marks, 10),
             })
                 .then((response) => {
+                    setSubmission1(response.data.submission);
                     setNotify({
                         isOpen: true,
                         message: `edited Successfully`,
@@ -209,10 +220,18 @@ const AssignmentQnA = (props) => {
                 });
 
             // todo: add this qna from all submission of this assignment
-
-            // fetch data again after update
-            fetchQnAList();
         }
+
+        // fetch data again after update
+        fetchQnAList();
+
+        // update to assignemnt total
+        // await AssignmentService.updateAssignment({
+        //     total_marks: submission1.marks,
+        // }).catch((error) => {
+        //     console.log('Error', error);
+        // });
+
         resetForm();
         setRecordForEdit(null);
         setOpenPopup(false);
@@ -256,6 +275,7 @@ const AssignmentQnA = (props) => {
         })
             .then((response) => {
                 console.log('submission"s qna del done :(');
+                setSubmission1(response.data.submission);
                 setNotify({
                     isOpen: true,
                     message: 'Deleted Successfully',
@@ -272,6 +292,12 @@ const AssignmentQnA = (props) => {
             });
 
         // todo: remove this qna from all submission of this assignment
+        // update to assignemnt total
+        // await AssignmentService.updateAssignment({
+        //     total_marks: submission1.marks,
+        // }).catch((error) => {
+        //     console.log('Error', error);
+        // });
 
         // fetch data again after update
         fetchQnAList();
@@ -294,6 +320,7 @@ const AssignmentQnA = (props) => {
                         }}
                     />
                 </Toolbar>
+                <hr />
                 {submission1.qna_list_ids && (
                     <h2>Total Questions : {submission1.qna_list_ids.length}</h2>
                 )}
@@ -306,45 +333,73 @@ const AssignmentQnA = (props) => {
                         {qnaList.length ? (
                             qnaList.map((qna, ind) => {
                                 return (
-                                    <div
+                                    <Paper
                                         key={qna._id}
                                         style={{
-                                            margin: '10px 0',
+                                            margin: '20px 0',
                                             padding: '20px 10px',
                                             border: '1px solid black',
                                         }}
                                     >
-                                        <h2>
-                                            {ind + 1} : {qna.question} ({' '}
-                                            {qna.marks} marks )
-                                        </h2>
-                                        <p>Answer : {qna.answer}</p>
+                                        <Controls.Input
+                                            name="question"
+                                            label={'Question ' + (ind + 1)}
+                                            value={qna.question}
+                                            style={{
+                                                width: '100%',
+                                                marginBottom: '20px',
+                                            }}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                            multiline
+                                        />
+                                        <br />
+                                        <Controls.Input
+                                            name="answer"
+                                            label="answer"
+                                            value={qna.answer}
+                                            style={{
+                                                width: '100%',
+                                                marginBottom: '20px',
+                                            }}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                            multiline
+                                            rows={3}
+                                            rowsMax={50}
+                                        />
                                         <div>
-                                            <Controls.ActionButton
-                                                color="success"
-                                                onClick={() => {
-                                                    history.push(
-                                                        `assignment/${qna._id}`
-                                                    );
+                                            <Controls.Input
+                                                name="marks"
+                                                label="Total Marks"
+                                                value={qna.marks}
+                                                style={{
+                                                    width: '100px',
+                                                    marginBottom: '20px',
                                                 }}
-                                            >
-                                                <OpenInNewIcon fontSize="small" />
-                                            </Controls.ActionButton>
-                                            <Controls.ActionButton
-                                                color="primary"
-                                                onClick={() => {
-                                                    openInPopup(qna);
+                                                InputProps={{
+                                                    readOnly: true,
                                                 }}
-                                            >
-                                                <EditOutlinedIcon fontSize="small" />
-                                            </Controls.ActionButton>
+                                            />
+
                                             <Controls.ActionButton
                                                 color="secondary"
+                                                style={{
+                                                    padding: '10px 15px',
+                                                    margin: '5px',
+                                                    textTransform: 'none',
+                                                    float: 'right',
+                                                }}
+                                                startIcon={
+                                                    <CloseIcon fontSize="small" />
+                                                }
                                                 onClick={() => {
                                                     setConfirmDialog({
                                                         isOpen: true,
                                                         title:
-                                                            'Are you sure to delete this Assignment?',
+                                                            'Are you sure to delete this Question?',
                                                         subTitle:
                                                             "You can't undo this operation",
                                                         onConfirm: () => {
@@ -353,10 +408,27 @@ const AssignmentQnA = (props) => {
                                                     });
                                                 }}
                                             >
-                                                <CloseIcon fontSize="small" />
+                                                {'Delete'}
+                                            </Controls.ActionButton>
+                                            <Controls.ActionButton
+                                                color="primary"
+                                                onClick={() => {
+                                                    openInPopup(qna);
+                                                }}
+                                                style={{
+                                                    padding: '10px 15px',
+                                                    margin: '5px',
+                                                    textTransform: 'none',
+                                                    float: 'right',
+                                                }}
+                                                startIcon={
+                                                    <EditOutlinedIcon fontSize="small" />
+                                                }
+                                            >
+                                                {'Edit'}
                                             </Controls.ActionButton>
                                         </div>
-                                    </div>
+                                    </Paper>
                                 );
                             })
                         ) : (
