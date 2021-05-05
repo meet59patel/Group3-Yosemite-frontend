@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import AssignmentList from '../../components/assignments/AssignmentList';
 import Welcome from '../../components/Welcome';
-// import SetAssignment from '../SetAssignment';
+import { UserService } from '../../services/apis.service';
 
 const useStyles = makeStyles({
     appMain: {
@@ -15,17 +15,26 @@ const useStyles = makeStyles({
     },
 });
 
-// const USER = {
-//     _id: '605f16a34323c591389a4c89',
-//     userPic: '/static/images/avatar/1.jpg',
-//     username: '201801056',
-//     email: '201801056@daiict.ac.in',
-//     role: 'student',
-// };
-
-function StudentDashboard({ user }) {
+function StudentDashboard({ user_id }) {
     const classes = useStyles();
     const path = useLocation();
+
+    // fetch user
+    const [user, setUser] = useState([]);
+    const fetchUser = useCallback(() => {
+        // console.log(user_id);
+        UserService.getUser(user_id)
+            .then((res) => {
+                console.log(res.data);
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [user_id]);
+    useEffect(() => {
+        fetchUser(user_id);
+    }, [fetchUser, user_id]);
 
     return (
         <div>
@@ -45,20 +54,13 @@ function StudentDashboard({ user }) {
                     )}
                 </SideMenu>
                 <Switch>
-                    {/* <Route path="/admin/users">
-                        <Users user={user} />
-                    </Route> */}
                     <Route path="/student/assignments">
                         <AssignmentList user={user} />
                     </Route>
                     <Route path="/student">
-                        <Welcome name={user.username}></Welcome>
+                        <Welcome name={user.user_name}></Welcome>
                     </Route>
                 </Switch>
-
-                {/* {path.pathname === '/student/assignments' && (
-                    <SetAssignment user={user} />
-                )} */}
             </div>
         </div>
     );

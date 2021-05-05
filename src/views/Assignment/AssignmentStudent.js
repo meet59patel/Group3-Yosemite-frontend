@@ -4,9 +4,10 @@ import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
 import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 // import AssignmentSubmissions from '../../components/Assignments/AssignmentSubmissions';
-import AssignmentQnA from '../../components/assignments/AssignmentQnA';
-import AssignmentQuery from '../../components/assignments/AssignmentQuery';
+import StudentQnA from '../../components/assignments/StudentQnA';
+import StudentQuery from '../../components/assignments/StudentQuery';
 import Welcome from '../../components/Welcome';
+import { UserService, AssignmentService } from '../../services/apis.service';
 
 const useStyles = makeStyles({
     appMain: {
@@ -16,51 +17,86 @@ const useStyles = makeStyles({
     },
 });
 
-const ASSIGNMENT = {
-    assId: '123',
-    assName: 'abc',
-    assDate: '2021-03-19',
-    startTime: '17:30',
-    duration: '60', //in minutes
-    statusId: '1',
-};
-
 function AssignmentStudent(props) {
     const classes = useStyles();
+    const { user_id } = props;
     const path = useLocation();
     const { id } = useParams();
-    const { user } = props;
-    const paperId = id;
+    const assignment_id = id;
+
+    // fetch user
+    const [user, setUser] = useState([]);
+    const fetchUser = useCallback(() => {
+        // console.log(user_id);
+        UserService.getUser(user_id)
+            .then((res) => {
+                // console.log(res.data);
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [user_id]);
+    useEffect(() => {
+        fetchUser(user_id);
+    }, [fetchUser, user_id]);
+
+    // fetch assignment
+    const [assignment, setAssignment] = useState([]);
+    const fetchAssignment = useCallback(() => {
+        // console.log('user from assi stude', user);
+        AssignmentService.getAssignment(assignment_id)
+            .then((res) => {
+                // console.log(res.data);
+                setAssignment(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [assignment_id]);
+    useEffect(() => {
+        fetchAssignment(assignment_id);
+    }, [fetchAssignment, assignment_id]);
 
     return (
         <div>
             <Header headerTitle="Assignment 123 Submissions" />
             <div className={classes.appMain}>
                 <SideMenu>
-                    <SideMenu.AssignmentProfile assignment={ASSIGNMENT} />
+                    <SideMenu.AssignmentProfile assignment={assignment} />
                     <SideMenu.NavButton
                         text="Question Paper"
-                        to={`/student/assignment/${paperId}/run`}
+                        to={`/student/assignment/${assignment_id}/run`}
                     ></SideMenu.NavButton>
-                    <SideMenu.NavButton
+                    {/* TODO: put query list */}
+                    {/* <SideMenu.NavButton
                         text="Query"
-                        to={`/student/assignment/${paperId}/qur`}
-                    ></SideMenu.NavButton>
+                        to={`/student/assignment/${assignment_id}/qur`}
+                    ></SideMenu.NavButton> */}
                     <SideMenu.BackButton
                         text="Back"
                         to={
-                            path.pathname === `/student/assignment/${paperId}`
+                            path.pathname ===
+                            `/student/assignment/${assignment_id}`
                                 ? '/student/assignments'
-                                : `/student/assignment/${paperId}`
+                                : `/student/assignment/${assignment_id}`
                         }
                     ></SideMenu.BackButton>
                 </SideMenu>
                 <Switch>
-                    <Route path="/student/assignment/:paperId/run">
-                        <AssignmentQnA paperId={paperId} user={user} />
+                    <Route path="/student/assignment/:assignment_id/run">
+                        <StudentQnA
+                            assignment_id={assignment_id}
+                            user={user}
+                            assignment={assignment}
+                        />
                     </Route>
-                    <Route path="/student/assignment/:paperId/qur">
-                        <AssignmentQuery paperId={paperId} user={user} />
+                    <Route path="/student/assignment/:assignment_id/qur">
+                        <StudentQuery
+                            assignment_id={assignment_id}
+                            user={user}
+                            assignment={assignment}
+                        />
                     </Route>
                     <Route path="/student">
                         <Welcome>
