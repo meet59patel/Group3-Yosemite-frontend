@@ -1,6 +1,6 @@
 # Yosemite
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## IT314 - Group 3
@@ -36,6 +36,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/uditmeena179"><img src="https://avatars.githubusercontent.com/u/79006762?v=4?s=100" width="100px;" alt=""/><br /><sub><b>uditmeena179</b></sub></a><br /><a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=uditmeena179" title="Code">💻</a> <a href="#data-uditmeena179" title="Data">🔣</a> <a href="#example-uditmeena179" title="Examples">💡</a> <a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=uditmeena179" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/Archit20000"><img src="https://avatars.githubusercontent.com/u/62255087?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Archit20000</b></sub></a><br /><a href="#tool-Archit20000" title="Tools">🔧</a> <a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=Archit20000" title="Code">💻</a> <a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=Archit20000" title="Documentation">📖</a></td>
   </tr>
 </table>
 
