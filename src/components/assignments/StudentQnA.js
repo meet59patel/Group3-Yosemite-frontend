@@ -362,26 +362,27 @@ const StudentQnA = (props) => {
         setAnswer({ ...answer, [id]: e.target.value });
     };
 
-    // const onSingleSaveAnswer = async (e, ind, id) => {
-    //     await StudentQnAService.updateQnA(id, { answer: answer[id] })
-    //         .then((response) => {
-    //             console.log('qna ', id, ' submitted');
-    //         })
-    //         .catch((error) => {
-    //             console.log('error qna ', id, ' not submitted');
-    //         });
-    //     console.log(qnaList);
-    //     let oldQnAind = qnaList.findIndex(function (qna) {
-    //         return qna._id === id;
-    //     });
-    //     console.log(oldQnAind);
-    //     let newQnAList = qnaList;
-    //     newQnAList[oldQnAind].answer = answer[id];
-    //     setQnAList(newQnAList);
-    //     // onChange(e.target.value);
-    //     console.log('qnaList[oldQnAind].answer', qnaList[oldQnAind].answer);
-    //     console.log('answer[id]', answer[id]);
-    // };
+    const onSingleSaveAnswer = async (e, ind, id) => {
+        await StudentQnAService.updateQnA(id, { answer: answer[id] })
+            .then((response) => {
+                console.log('qna ', id, ' submitted');
+            })
+            .catch((error) => {
+                console.log('error qna ', id, ' not submitted');
+            });
+        console.log(qnaList);
+        let oldQnAind = qnaList.findIndex(function (qna) {
+            return qna._id === id;
+        });
+        console.log(oldQnAind);
+        let newQnAList = qnaList;
+        newQnAList[oldQnAind].answer = answer[id];
+        setQnAList(newQnAList);
+        setAnswer(JSON.parse(JSON.stringify(answer)));
+        // onChange(e.target.value);
+        console.log('qnaList[oldQnAind].answer', qnaList[oldQnAind].answer);
+        console.log('answer[id]', answer[id]);
+    };
 
     const onSaveAnswer = async () => {
         // console.log('save called');
@@ -535,8 +536,7 @@ const StudentQnA = (props) => {
                                                     float: 'right',
                                                 }}
                                             />
-                                            {/* this is not working properly */}
-                                            {/* <Controls.Button
+                                            <Controls.Button
                                                 text="Save"
                                                 variant="outlined"
                                                 startIcon={<SaveAltIcon />}
@@ -558,7 +558,7 @@ const StudentQnA = (props) => {
                                                     position: 'relative',
                                                     float: 'right',
                                                 }}
-                                            /> */}
+                                            />
                                         </div>
                                         {qna.query_flag && (
                                             <div>

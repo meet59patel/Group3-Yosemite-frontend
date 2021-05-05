@@ -43,7 +43,7 @@ function AssignmentFaculty(props) {
 
     return (
         <div>
-            <Header headerTitle="Assignment 123 Submissions" />
+            <Header headerTitle={`${assignment.assignment_name} Submissions`} />
             {assignment && (
                 <div className={classes.appMain}>
                     <SideMenu>
