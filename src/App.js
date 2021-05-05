@@ -15,8 +15,6 @@ import { CssBaseline, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import SetAssignment from './views/SetAssignment';
 import ViewAssignment from './views/ViewAssignment';
 import { useUserState } from './components/context/UserContext';
-import AssignmentFaculty from './views/Assignment/AssignmentFaculty';
-import AdminDashboard from './views/admin/AdminDashboard';
 
 const theme = createMuiTheme({
     palette: {
@@ -46,9 +44,9 @@ const theme = createMuiTheme({
     },
 });
 
-const adminuser_id = '6090160683df8005f242fb61';
-const facultyuser_id = '6090161683df8005f242fb62';
-const studentuser_id = '609015f383df8005f242fb60';
+const adminuser_id = '609069b9c770cc0c8b395496';
+const facultyuser_id = '609069c8c770cc0c8b395497';
+const studentuser_id = '609069eac770cc0c8b395498';
 
 function App() {
     var { isAuthenticated, role } = useUserState();
@@ -68,12 +66,12 @@ function App() {
                             <LoginPage />
                         )}
                     </Route>
-                    <PrivateRoute
+                    {/* <PrivateRoute
                         path="/admin"
                         allowedRoles={['admin', 'faculty', 'student']}
                     >
                         <AdminRoutes user_id={adminuser_id} />
-                    </PrivateRoute>
+                    </PrivateRoute> */}
                     <PrivateRoute
                         path="/faculty"
                         allowedRoles={['admin', 'faculty', 'student']}
