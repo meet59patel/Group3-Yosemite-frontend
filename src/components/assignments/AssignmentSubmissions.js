@@ -46,6 +46,13 @@ export default function AssignmentList(props) {
 
     // handle loding state
     const [loding, setLoading] = useState(true);
+    // handling modal and notif
+    // const [openPopup, setOpenPopup] = useState(false);
+    const [notify, setNotify] = useState({
+        isOpen: false,
+        message: '',
+        type: '',
+    });
 
     // const [submissionId, setSubmissionId] = useState('');
     const [submission1, setSubmission1] = useState();
@@ -137,9 +144,9 @@ export default function AssignmentList(props) {
                 if (target.value === '') return items;
                 else
                     return items.filter(
-                        (x) =>
-                            x.user_name.toLowerCase().includes(target.value) ||
-                            x.marks.toLowerCase().includes(target.value)
+                        (x) => console.log(x)
+                        // x.user_name.toLowerCase().includes(target.value) ||
+                        // x.marks.toLowerCase().includes(target.value)
                     );
             },
         });
@@ -150,8 +157,30 @@ export default function AssignmentList(props) {
             <Paper className={classes.pageContent}>
                 <Toolbar>
                     <h1>Assignment Submissions</h1>
+                    <br />
+                    <Controls.ActionButton
+                        color="success"
+                        onClick={() => {
+                            // todo: add link for student submission
+                            // console.log(item);
+                            // history.push(
+                            //     `/faculty/assignment/${submission1.assignment_id}/run`
+                            // );
+                            setNotify({
+                                isOpen: true,
+                                message: `This feature coming soon`,
+                                type: 'error',
+                            });
+                        }}
+                        style={{
+                            position: 'absolute',
+                            right: '10px',
+                        }}
+                    >
+                        Evaluate All
+                    </Controls.ActionButton>
                 </Toolbar>
-                <Toolbar>
+                {/* <Toolbar>
                     <hr />
                 </Toolbar>
                 <Toolbar>
@@ -167,7 +196,7 @@ export default function AssignmentList(props) {
                         }}
                         onChange={handleSearch}
                     />
-                </Toolbar>
+                </Toolbar> */}
 
                 {loding ? (
                     <Loding />
@@ -195,8 +224,13 @@ export default function AssignmentList(props) {
                                                     // todo: add link for student submission
                                                     // console.log(item);
                                                     // history.push(
-                                                    //     `assignment/${item._id}`
+                                                    //     `/faculty/assignment/${submission1.assignment_id}/run`
                                                     // );
+                                                    setNotify({
+                                                        isOpen: true,
+                                                        message: `This feature coming soon`,
+                                                        type: 'error',
+                                                    });
                                                 }}
                                             >
                                                 <OpenInNewIcon fontSize="small" />
@@ -212,6 +246,7 @@ export default function AssignmentList(props) {
                 )}
                 <TblPagination />
             </Paper>
+            <Notification notify={notify} setNotify={setNotify} />
         </>
     );
 }
