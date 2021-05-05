@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import Header from '../../components/Header';
 import SideMenu from '../../components/SideMenu';
@@ -7,6 +7,7 @@ import AssignmentSubmissions from '../../components/assignments/AssignmentSubmis
 import AssignmentQnA from '../../components/assignments/AssignmentQnA';
 import AssignmentQuery from '../../components/assignments/AssignmentQuery';
 import Welcome from '../../components/Welcome';
+import { AssignmentService } from '../../services/apis.service';
 
 const useStyles = makeStyles({
     appMain: {
@@ -16,58 +17,79 @@ const useStyles = makeStyles({
     },
 });
 
-const ASSIGNMENT = {
-    assId: '123',
-    assName: 'abc',
-    assDate: '2021-03-19',
-    startTime: '17:30',
-    duration: '60', //in minutes
-    statusId: '1',
-};
-
 function AssignmentAdmin(props) {
     const classes = useStyles();
     const path = useLocation();
     const { id } = useParams();
     const { user } = props;
-    const paperId = id;
+    const assignment_id = id;
+
+    // fetch assignment
+    const [assignment, setAssignment] = useState([]);
+    const fetchAssignment = useCallback(() => {
+        // console.log(assignment_id);
+        AssignmentService.getAssignment(assignment_id)
+            .then((res) => {
+                // console.log(res.data);
+                setAssignment(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [assignment_id]);
+    useEffect(() => {
+        fetchAssignment(assignment_id);
+    }, [fetchAssignment, assignment_id]);
 
     return (
         <div>
-            <Header headerTitle="Assignment 123 Submissions" />
+            <Header headerTitle={`${assignment.assignment_name} Submissions`} />
             <div className={classes.appMain}>
                 <SideMenu>
-                    <SideMenu.AssignmentProfile assignment={ASSIGNMENT} />
+                    <SideMenu.AssignmentProfile assignment={assignment} />
                     <SideMenu.NavButton
                         text="QnA"
-                        to={`/admin/assignment/${paperId}/qna`}
+                        to={`/admin/assignment/${assignment_id}/qna`}
                     ></SideMenu.NavButton>
                     <SideMenu.NavButton
                         text="Query"
-                        to={`/admin/assignment/${paperId}/qur`}
+                        to={`/admin/assignment/${assignment_id}/qur`}
                     ></SideMenu.NavButton>
                     <SideMenu.NavButton
                         text="Submission"
-                        to={`/admin/assignment/${paperId}/sub`}
+                        to={`/admin/assignment/${assignment_id}/sub`}
                     ></SideMenu.NavButton>
                     <SideMenu.BackButton
                         text="Back"
                         to={
-                            path.pathname === `/admin/assignment/${paperId}`
+                            path.pathname ===
+                            `/admin/assignment/${assignment_id}`
                                 ? '/admin/assignments'
-                                : `/admin/assignment/${paperId}`
+                                : `/admin/assignment/${assignment_id}`
                         }
                     ></SideMenu.BackButton>
                 </SideMenu>
                 <Switch>
-                    <Route path="/admin/assignment/:paperId/qna">
-                        <AssignmentQnA paperId={paperId} user={user} />
+                    <Route path="/admin/assignment/:assignment_id/qna">
+                        <AssignmentQnA
+                            assignment_id={assignment_id}
+                            user={user}
+                            assignment={assignment}
+                        />
                     </Route>
-                    <Route path="/admin/assignment/:paperId/qur">
-                        <AssignmentQuery paperId={paperId} user={user} />
+                    <Route path="/admin/assignment/:assignment_id/qur">
+                        <AssignmentQuery
+                            assignment_id={assignment_id}
+                            user={user}
+                            assignment={assignment}
+                        />
                     </Route>
-                    <Route path="/admin/assignment/:paperId/sub">
-                        <AssignmentSubmissions paperId={paperId} user={user} />
+                    <Route path="/admin/assignment/:assignment_id/sub">
+                        <AssignmentSubmissions
+                            assignment_id={assignment_id}
+                            user={user}
+                            assignment={assignment}
+                        />
                     </Route>
                     <Route path="/admin">
                         <Welcome>{}</Welcome>

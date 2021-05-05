@@ -118,23 +118,6 @@ let options1 = {
     },
 };
 
-function simpleStringify(object) {
-    var simpleObject = {};
-    for (var prop in object) {
-        if (!object.hasOwnProperty(prop)) {
-            continue;
-        }
-        if (typeof object[prop] == 'object') {
-            continue;
-        }
-        if (typeof object[prop] == 'function') {
-            continue;
-        }
-        simpleObject[prop] = object[prop];
-    }
-    return JSON.stringify(simpleObject); // returns cleaned up JSON
-}
-
 class AdminGraphs extends React.Component {
     constructor(props) {
         super(props);
@@ -160,13 +143,12 @@ class AdminGraphs extends React.Component {
                     adm.push(persons[i].admins);
                     fac.push(persons[i].faculties);
                 }
-
                 data1.datasets[0].data = stu;
                 data1.datasets[1].data = fac;
                 data1.datasets[2].data = adm;
-                // data1 = JSON.parse(simpleStringify(data1)); // DeepCopy
+
                 data1 = JSON.parse(JSON.stringify(data1)); // DeepCopy
-                // data1 = clonedeep(data1); // DeepCopy
+                this.changeDataUsers();
             })
             .catch(console.error);
         await axios
@@ -183,8 +165,7 @@ class AdminGraphs extends React.Component {
                 }
                 data2.datasets[0].data = results;
                 data2 = JSON.parse(JSON.stringify(data2)); // DeepCopy
-                // data2 = JSON.parse(simpleStringify(data2)); // DeepCopy
-                // data2 = clonedeep(data2);
+                this.changeDataNewUsers();
             })
             .catch(console.error);
         await axios
@@ -198,13 +179,17 @@ class AdminGraphs extends React.Component {
                 }
                 data.datasets[0].data = assignData;
                 data = JSON.parse(JSON.stringify(data)); // DeepCopy
-                // data = JSON.parse(simpleStringify(data)); // DeepCopy
-                // data = clonedeep(data);
+            })
+            .then(() => {
                 this.changeDataTests();
                 this.changeDataNewUsers();
                 this.changeDataUsers();
             })
             .catch(console.error);
+
+        this.changeDataTests();
+        this.changeDataUsers();
+        this.changeDataNewUsers();
     }
 
     changeDataUsers(event) {
