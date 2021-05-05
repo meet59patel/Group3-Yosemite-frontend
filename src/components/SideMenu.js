@@ -113,16 +113,18 @@ SideMenu.AssignmentProfile = function AssignmentProfile({
             <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
                 Assignment
             </div>
-            <div>-------------</div>
+            <div>
+                <hr />
+            </div>
             <div style={{ fontSize: '16px', fontWeight: '600' }}>
                 {'Name: ' + assignment.assignment_name}
             </div>
             <div style={{ fontSize: '15px', fontWeight: '600' }}>
                 {'Subject: ' + assignment.subject_name}
             </div>
-            <div style={{ fontSize: '15px', fontWeight: '600' }}>
+            {/* <div style={{ fontSize: '15px', fontWeight: '600' }}>
                 {'Deadline: ' + assignment.deadline}
-            </div>
+            </div> */}
             <div style={{ fontSize: '15px', fontWeight: '600' }}>
                 {' '}
                 {'Show to students: ' + assignment.is_show}
