@@ -227,7 +227,7 @@ function Users(props) {
                                     <TableCell>{item.user_name}</TableCell>
                                     <TableCell>{item.email}</TableCell>
                                     <TableCell>{item.role}</TableCell>
-                                    {user.role === 'admin' && (
+                                    {(user.role === 'admin' || user.role === 'faculty') && (
                                         <TableCell>
                                             <Controls.ActionButton
                                                 color="primary"
