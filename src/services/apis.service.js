@@ -1,5 +1,6 @@
 import axios from 'axios';
-const API = 'https://yosemite-sen.herokuapp.com';
+// const API = 'https://yosemite-sen.herokuapp.com';
+const API = 'http://localhost:8000';
 
 const userAPI = `${API}/user`;
 const assignmentAPI = `${API}/assignment`;
@@ -45,10 +46,10 @@ class UserService {
     };
 
     // PATCH | Update User data
-    static updateUser = (user) => {
+    static updateUser = (user_id, user) => {
         return axios({
             method: 'PATCH',
-            url: `${userAPI}/${user._id}`,
+            url: `${userAPI}/${user_id}`,
             data: user,
             headers: { 'Content-Type': 'application/json' },
         });
@@ -75,10 +76,27 @@ class UserService {
 // },
 class AssignmentService {
     // GET | Get all Assignments
-    static getAllAssignments = () => {
+    static getAllAssignments = (user) => {
         return axios({
             method: 'GET',
             url: `${assignmentAPI}`,
+            data: user,
+        });
+    };
+
+    // GET | Get all faculty Assignments
+    static getFacultyAssignments = (user) => {
+        return axios({
+            method: 'GET',
+            url: `${assignmentAPI}/faculty/${user._id}`,
+        });
+    };
+
+    // GET | Get all faculty Assignments
+    static getStudentAssignments = (user) => {
+        return axios({
+            method: 'GET',
+            url: `${assignmentAPI}/student`,
         });
     };
 
@@ -143,11 +161,11 @@ class SubmissionService {
     };
 
     // POST | Create new submission
-    static createSubmission = (user_id) => {
+    static createSubmission = (submission) => {
         return axios({
             method: 'POST',
             url: `${submissionAPI}`,
-            data: { user_id },
+            data: submission,
             headers: { 'Content-Type': 'application/json' },
         });
     };
