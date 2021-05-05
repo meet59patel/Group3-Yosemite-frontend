@@ -60,7 +60,7 @@ function AssignmentStudent(props) {
 
     return (
         <div>
-            <Header headerTitle="Assignment 123 Submissions" />
+            <Header headerTitle="Assignment Submissions" />
             <div className={classes.appMain}>
                 <SideMenu>
                     <SideMenu.AssignmentProfile assignment={assignment} />

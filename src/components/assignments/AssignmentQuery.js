@@ -231,10 +231,10 @@ const AssignmentQuery = (props) => {
             // fetchQnAList();
         } else {
             // edit qna in database
-            console.log('edit query', qna);
+            // console.log('edit query', qna);
             await StudentQnAService.updateQnA(qna._id, {
                 query_solved: true,
-                is_evaluated: true,
+                evaluation_status: 'done',
                 final_marks: qna.final_marks,
             })
                 .then((response) => {
@@ -407,7 +407,7 @@ const initialQueryValues = {
     solution: '',
     answer: '',
     marks: '',
-    is_evaluated: false,
+    evaluation_status: 'pending',
     model_marks: 0,
     query_flag: true,
     query_description: '',
@@ -525,9 +525,9 @@ const QueryForm = (props) => {
                         name="model_marks"
                         label="Model Marks"
                         value={
-                            values.is_evaluated
+                            values.evaluation_status === 'done'
                                 ? values.model_marks
-                                : 'Not evaluated'
+                                : values.evaluation_status
                         }
                         onChange={handleInputChange}
                         style={{

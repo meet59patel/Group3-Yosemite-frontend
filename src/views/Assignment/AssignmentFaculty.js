@@ -6,9 +6,10 @@ import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 import AssignmentSubmissions from '../../components/assignments/AssignmentSubmissions';
 import AssignmentQnA from '../../components/assignments/AssignmentQnA';
 import AssignmentQuery from '../../components/assignments/AssignmentQuery';
+import StudentQnA from '../../components/assignments/StudentQnA';
 import Welcome from '../../components/Welcome';
 import FacultyGraphs from '../../components/graphs/facultyGraphs';
-import { AssignmentService } from '../../services/apis.service';
+import { UserService, AssignmentService } from '../../services/apis.service';
 const useStyles = makeStyles({
     appMain: {
         paddingLeft: '320px',
@@ -21,8 +22,25 @@ function AssignmentFaculty(props) {
     const classes = useStyles();
     const path = useLocation();
     const { id } = useParams();
-    const { user } = props;
+    const { user_id } = props;
     const assignment_id = id;
+
+    // fetch user
+    const [user, setUser] = useState([]);
+    const fetchUser = useCallback(() => {
+        // console.log(user_id);
+        UserService.getUser(user_id)
+            .then((res) => {
+                // console.log(res.data);
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [user_id]);
+    useEffect(() => {
+        fetchUser(user_id);
+    }, [fetchUser, user_id]);
 
     // fetch assignment
     const [assignment, setAssignment] = useState([]);
@@ -87,6 +105,13 @@ function AssignmentFaculty(props) {
                         </Route>
                         <Route path="/faculty/assignment/:assignment_id/sub">
                             <AssignmentSubmissions
+                                assignment_id={assignment_id}
+                                user={user}
+                                assignment={assignment}
+                            />
+                        </Route>
+                        <Route path="/faculty/assignment/:assignment_id/student/:student_submission_id">
+                            <StudentQnA
                                 assignment_id={assignment_id}
                                 user={user}
                                 assignment={assignment}
