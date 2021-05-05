@@ -1,6 +1,6 @@
 # Yosemite
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## IT314 - Group 3
@@ -33,6 +33,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/rhlshah"><img src="https://avatars.githubusercontent.com/u/45811662?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Rahil Shah</b></sub></a><br /><a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=rhlshah" title="Code">💻</a> <a href="#ideas-rhlshah" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-rhlshah" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/arkaprabha10"><img src="https://avatars.githubusercontent.com/u/44334390?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Arkaprabha Banerjee</b></sub></a><br /><a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=arkaprabha10" title="Code">💻</a> <a href="#ideas-arkaprabha10" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-arkaprabha10" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/kartavishah14"><img src="https://avatars.githubusercontent.com/u/62076264?v=4?s=100" width="100px;" alt=""/><br /><sub><b>kartavishah14</b></sub></a><br /><a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=kartavishah14" title="Code">💻</a> <a href="#data-kartavishah14" title="Data">🔣</a> <a href="#example-kartavishah14" title="Examples">💡</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/uditmeena179"><img src="https://avatars.githubusercontent.com/u/79006762?v=4?s=100" width="100px;" alt=""/><br /><sub><b>uditmeena179</b></sub></a><br /><a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=uditmeena179" title="Code">💻</a> <a href="#data-uditmeena179" title="Data">🔣</a> <a href="#example-uditmeena179" title="Examples">💡</a> <a href="https://github.com/meet59patel/Group3-Yosemite-frontend/commits?author=uditmeena179" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
