@@ -23,7 +23,7 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import SpeedIcon from '@material-ui/icons/Speed';
 import LayersOutlinedIcon from '@material-ui/icons/LayersOutlined';
 import CardMedia from '@material-ui/core/CardMedia';
-import ScrollUpButton from 'react-scroll-up-button';
+// import ScrollUpButton from 'react-scroll-up-button';
 import { Link } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 const useStyles = makeStyles((theme) => ({
@@ -583,7 +583,7 @@ export default function LandingPage() {
                     </Card>
                 </Grid>
             </Grid>
-            <ScrollUpButton />
+            {/* <ScrollUpButton /> */}
         </div>
     );
 }
