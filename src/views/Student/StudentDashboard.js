@@ -44,6 +44,7 @@ function StudentDashboard({ user_id }) {
                         ? '> ' + path.pathname.slice(9) + ' list'
                         : ''
                 } `}
+                user={user}
             />
             <div className={classes.appMain}>
                 <SideMenu>

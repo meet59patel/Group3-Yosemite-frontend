@@ -46,6 +46,7 @@ const FacultyDashboard = ({ user_id }) => {
                         ? '> ' + path.pathname.slice(9) + ' list'
                         : ''
                 } `}
+                user={user}
 
                 // {`Faculty Dashboard ${
                 //     path.pathname !== '/faculty'
@@ -77,7 +78,7 @@ const FacultyDashboard = ({ user_id }) => {
 
                     <Switch>
                         <Route path="/faculty/users">
-                            {console.log('user route from fac',user)}
+                            {console.log('user route from fac', user)}
                             <Users user={user} role={user.role} />
                         </Route>
                         <Route path="/faculty/assignments">

@@ -46,6 +46,7 @@ function AdminDashboard({ user_id }) {
                         ? '> ' + path.pathname.slice(7) + ' list'
                         : ''
                 } `}
+                user={user}
             />
             <div className={classes.appMain}>
                 <SideMenu>
