@@ -586,51 +586,61 @@ const StudentQnA = (props) => {
                                                 }}
                                             />
                                             {user.role === 'student' && (
-                                              <>
-                                                <Controls.Button
-                                                    text="Raise Query"
-                                                    variant="outlined"
-                                                    startIcon={
-                                                        <BorderColorIcon />
-                                                    }
-                                                    className={
-                                                        classes.newButton
-                                                    }
-                                                    disabled={qna.query_flag}
-                                                    onClick={() => {
-                                                        openInPopup(qna);
-                                                    }}
-                                                    style={{
-                                                        width: 'auto',
-                                                        marginBottom: '15px',
-                                                        position: 'relative',
-                                                        // margin: '0',
-                                                        float: 'right',
-                                                    }}
-                                                />
-                                                <Controls.Button
-                                                    text="Save"
-                                                    variant="outlined"
-                                                    startIcon={<SaveAltIcon />}
-                                                    className={classes.newButton}
-                                                    disabled={
-                                                        qna.answer ===
-                                                        answer[qna._id]
-                                                    }
-                                                    onClick={(e) => {
-                                                        onSingleSaveAnswer(
-                                                            e,
-                                                            ind,
-                                                            qna._id
-                                                        );
-                                                    }}
-                                                    style={{
-                                                        width: 'auto',
-                                                        marginBottom: '15px',
-                                                        position: 'relative',
-                                                        float: 'right',
-                                                    }}
-                                                />
+                                                <>
+                                                    <Controls.Button
+                                                        text="Raise Query"
+                                                        variant="outlined"
+                                                        startIcon={
+                                                            <BorderColorIcon />
+                                                        }
+                                                        className={
+                                                            classes.newButton
+                                                        }
+                                                        disabled={
+                                                            qna.query_flag
+                                                        }
+                                                        onClick={() => {
+                                                            openInPopup(qna);
+                                                        }}
+                                                        style={{
+                                                            width: 'auto',
+                                                            marginBottom:
+                                                                '15px',
+                                                            position:
+                                                                'relative',
+                                                            // margin: '0',
+                                                            float: 'right',
+                                                        }}
+                                                    />
+                                                    <Controls.Button
+                                                        text="Save"
+                                                        variant="outlined"
+                                                        startIcon={
+                                                            <SaveAltIcon />
+                                                        }
+                                                        className={
+                                                            classes.newButton
+                                                        }
+                                                        disabled={
+                                                            qna.answer ===
+                                                            answer[qna._id]
+                                                        }
+                                                        onClick={(e) => {
+                                                            onSingleSaveAnswer(
+                                                                e,
+                                                                ind,
+                                                                qna._id
+                                                            );
+                                                        }}
+                                                        style={{
+                                                            width: 'auto',
+                                                            marginBottom:
+                                                                '15px',
+                                                            position:
+                                                                'relative',
+                                                            float: 'right',
+                                                        }}
+                                                    />
                                                 </>
                                             )}
                                             {user.role === 'faculty' &&
@@ -649,7 +659,6 @@ const StudentQnA = (props) => {
                                                             : 'Query pending'}
                                                     </h2>
                                                 )}
-                                            
                                         </div>
                                         {qna.query_flag && (
                                             <div
@@ -852,7 +861,7 @@ const QueryForm = (props) => {
     return (
         <Form onSubmit={handleSubmit} style={{ width: '700px' }}>
             <Grid container>
-                {values.role === 'faculty' ? (
+                {values.role === 'faculty' || values.role === 'admin' ? (
                     <>
                         <Controls.Input
                             name="question"

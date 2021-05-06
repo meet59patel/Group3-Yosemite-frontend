@@ -95,16 +95,16 @@ export default function AssignmentList(props) {
                         .catch((error) => {
                             console.log(error);
                         });
-                    let user;
+                    let user1;
                     await UserService.getUser(sub.user_id)
                         .then((response) => {
-                            user = response.data;
+                            user1 = response.data;
                         })
                         .catch((error) => {
                             console.log(error);
                         });
-                    sub['user_name'] = user.user_name;
-                    sub['user_id'] = user._id;
+                    sub['user_name'] = user1.user_name;
+                    sub['user_id'] = user1._id;
                     submissions.push(sub);
                 }
                 setSubList(submissions);
@@ -199,12 +199,9 @@ export default function AssignmentList(props) {
                     />
                 </Toolbar> */}
 
-                {loding ? (
-                    <Loding />
-                ) : (
+                {loding === false && user ? (
                     <TblContainer>
                         <TblHead />
-                        {console.log('List', subList)}
                         <TableBody>
                             {subList.length ? (
                                 recordsAfterPagingAndSorting().map((item) => (
@@ -223,7 +220,7 @@ export default function AssignmentList(props) {
                                                 color="success"
                                                 onClick={() => {
                                                     history.push(
-                                                        `/faculty/assignment/${assignment_id}/student/${item._id}`
+                                                        `/${user.role}/assignment/${assignment_id}/student/${item._id}`
                                                     );
                                                     setNotify({
                                                         isOpen: true,
@@ -242,6 +239,8 @@ export default function AssignmentList(props) {
                             )}
                         </TableBody>
                     </TblContainer>
+                ) : (
+                    <Loding />
                 )}
                 <TblPagination />
             </Paper>
