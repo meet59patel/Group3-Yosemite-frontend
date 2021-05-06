@@ -2,6 +2,7 @@
     width: 100%;
     height: 70vh;
     background: #37517e;
+    color: #fff;
 }
 
 #hero h1 {
@@ -46,6 +47,7 @@ a:link {
 }
 
 #hero .btn-get-code:hover {
+    color: #fff;
     background: #1c2022;
 }
 #hero .animated {
