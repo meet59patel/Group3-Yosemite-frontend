@@ -77,7 +77,8 @@ const FacultyDashboard = ({ user_id }) => {
 
                     <Switch>
                         <Route path="/faculty/users">
-                            <Users user={user} />
+                            {console.log('user route from fac',user)}
+                            <Users user={user} role={user.role} />
                         </Route>
                         <Route path="/faculty/assignments">
                             <AssignmentList user={user} />

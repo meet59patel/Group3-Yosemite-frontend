@@ -67,7 +67,7 @@ function AdminDashboard({ user_id }) {
                 </SideMenu>
                 <Switch>
                     <Route path="/admin/users">
-                        <Users user={user} />
+                        <Users user={user} role={user.role} />
                     </Route>
                     <Route path="/admin/assignments">
                         <AssignmentList user={user} />

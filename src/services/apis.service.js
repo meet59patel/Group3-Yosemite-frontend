@@ -27,6 +27,13 @@ class UserService {
         });
     };
 
+    static getRoleUsers = (role) => {
+        return axios({
+            method: 'GET',
+            url: `${userAPI}/role/${role}`,
+        });
+    };
+
     // GET | Get specific User with _id
     static getUser = (id) => {
         return axios({
