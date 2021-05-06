@@ -148,8 +148,7 @@ export default function AssignmentList(props) {
                             x.subject_name
                                 .toLowerCase()
                                 .includes(target.value) ||
-                            x.faculty_id.toLowerCase().includes(target.value) ||
-                            x.deadline.toLowerCase().includes(target.value)
+                            x.faculty_id.toLowerCase().includes(target.value)
                     );
             },
         });
