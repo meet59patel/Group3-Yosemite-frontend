@@ -1,9 +1,21 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Paper, Toolbar, Grid, makeStyles } from '@material-ui/core';
+import {
+    Paper,
+    Toolbar,
+    Button,
+    Grid,
+    makeStyles,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import CloseIcon from '@material-ui/icons/Close';
+import SendIcon from '@material-ui/icons/Send';
 import Controls from '../controls/Controls';
 import Popup from '../Popup';
 import Notification from '../Notification';
@@ -16,6 +28,10 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useForm, Form } from '../useForm';
 import Loding from '../Loding';
+import EmailList from '../EmailList';
+import axios from 'axios';
+
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
 
 const useStyles = makeStyles((theme) => ({
     pageContent: {
@@ -28,6 +44,10 @@ const useStyles = makeStyles((theme) => ({
     newButton: {
         position: 'absolute',
         right: '10px',
+    },
+    emailButton: {
+        position: 'absolute',
+        left: '10px',
     },
 }));
 
@@ -54,6 +74,9 @@ const AssignmentQnA = (props) => {
 
     const [submissionId, setSubmissionId] = useState('');
     const [submission1, setSubmission1] = useState(false);
+
+    // Email Dialogue
+    const [openEmailPopup, setOpenEmailPopup] = useState(false);
 
     // fetch qna list data
     const [qnaList, setQnAList] = useState([]);
@@ -432,7 +455,7 @@ const AssignmentQnA = (props) => {
                                 );
                             })
                         ) : (
-                            <h1>You not creat any QnA</h1>
+                            <h1>No QnA Found</h1>
                         )}
                         <Toolbar>
                             <div style={{ margin: 'auto' }}>
@@ -450,6 +473,16 @@ const AssignmentQnA = (props) => {
                                         margin: '0',
                                     }}
                                 />
+                                <Controls.Button
+                                    text="Send Email"
+                                    variant="outlined"
+                                    endIcon={<SendIcon />}
+                                    color="primary"
+                                    className={classes.emailButton}
+                                    onClick={() => {
+                                        setOpenEmailPopup(true);
+                                    }}
+                                />
                             </div>
                         </Toolbar>
                     </div>
@@ -462,6 +495,68 @@ const AssignmentQnA = (props) => {
             >
                 <QnAForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
             </Popup>
+
+            <Dialog
+                open={openEmailPopup}
+                onClose={() => {
+                    setOpenEmailPopup(false);
+                }}
+                aria-labelledby="form-dialog-title"
+            >
+                <DialogTitle id="form-dialog-title">
+                    Add Student Email Ids
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Enter the list of Emails to be sent to the students, you
+                        can also copy and paste the data from somewhere.
+                        <br />
+                        <br />
+                        <EmailList />
+                        Press Submit to send this Assignment
+                        <br />
+                        Press Cancel to reset the list.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => {
+                            setOpenEmailPopup(false);
+                        }}
+                        color="primary"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            console.log('Sending mail...');
+                            setOpenEmailPopup(false);
+                            axios
+                                .post(`${SERVER_URL}emails/`, {
+                                    emails: ['201801415@daiict.ac.in'],
+                                })
+                                .then((res) => {
+                                    console.log(res);
+                                    setNotify({
+                                        isOpen: true,
+                                        message: `Email Sent Successfully`,
+                                        type: 'success',
+                                    });
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                });
+                            // <ADD Snackbar of email success>
+                        }}
+                        color="primary"
+                        type="submit"
+                        form="Assignment"
+                    >
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <Notification notify={notify} setNotify={setNotify} />
             <ConfirmDialog
                 confirmDialog={confirmDialog}
