@@ -38,7 +38,13 @@ function StudentDashboard({ user_id }) {
 
     return (
         <div>
-            <Header headerTitle="Student Dashboard" />
+            <Header
+                headerTitle={`Student Dashboard ${
+                    path.pathname.length > 9
+                        ? '> ' + path.pathname.slice(9) + ' list'
+                        : ''
+                } `}
+            />
             <div className={classes.appMain}>
                 <SideMenu>
                     <SideMenu.SmallProfile user={user}></SideMenu.SmallProfile>
@@ -48,7 +54,7 @@ function StudentDashboard({ user_id }) {
                     ></SideMenu.NavButton>
                     {path.pathname !== '/student' && (
                         <SideMenu.BackButton
-                            text="Back"
+                            text="Dashboard"
                             to="/student"
                         ></SideMenu.BackButton>
                     )}

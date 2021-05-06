@@ -60,7 +60,19 @@ function AssignmentStudent(props) {
 
     return (
         <div>
-            <Header headerTitle="Assignment Submissions" />
+            <Header
+                headerTitle={`Student > Assignment > ${
+                    assignment.assignment_name
+                } ${
+                    path.pathname.length > 44
+                        ? path.pathname.slice(45) === 'run'
+                            ? '> Questions'
+                            : path.pathname.slice(45) === 'sub'
+                            ? '> Submission list'
+                            : '> Query list'
+                        : '> Dashboard'
+                } `}
+            />
             <div className={classes.appMain}>
                 <SideMenu>
                     <SideMenu.AssignmentProfile assignment={assignment} />
@@ -74,7 +86,7 @@ function AssignmentStudent(props) {
                         to={`/student/assignment/${assignment_id}/qur`}
                     ></SideMenu.NavButton> */}
                     <SideMenu.BackButton
-                        text="Back"
+                        text="Assignment list"
                         to={
                             path.pathname ===
                             `/student/assignment/${assignment_id}`
