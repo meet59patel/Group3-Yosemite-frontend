@@ -40,7 +40,19 @@ const FacultyDashboard = ({ user_id }) => {
 
     return (
         <div>
-            <Header headerTitle="Faculty Dashboard" />
+            <Header
+                headerTitle={`Faculty Dashboard ${
+                    path.pathname.length > 9
+                        ? '> ' + path.pathname.slice(9) + ' list'
+                        : ''
+                } `}
+
+                // {`Faculty Dashboard ${
+                //     path.pathname !== '/faculty'
+                //         ? ('> ' + path.pathname.slice(9) + 'list')
+
+                //  : ''`}
+            />
             {user && (
                 <div className={classes.appMain}>
                     <SideMenu>
@@ -57,7 +69,7 @@ const FacultyDashboard = ({ user_id }) => {
                         ></SideMenu.NavButton>
                         {path.pathname !== '/faculty' && (
                             <SideMenu.BackButton
-                                text="Back"
+                                text="Dashboard"
                                 to="/faculty"
                             ></SideMenu.BackButton>
                         )}

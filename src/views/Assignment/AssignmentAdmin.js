@@ -6,8 +6,9 @@ import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 import AssignmentSubmissions from '../../components/assignments/AssignmentSubmissions';
 import AssignmentQnA from '../../components/assignments/AssignmentQnA';
 import AssignmentQuery from '../../components/assignments/AssignmentQuery';
+import StudentQnA from '../../components/assignments/StudentQnA';
 import Welcome from '../../components/Welcome';
-import { AssignmentService } from '../../services/apis.service';
+import { UserService, AssignmentService } from '../../services/apis.service';
 
 const useStyles = makeStyles({
     appMain: {
@@ -21,8 +22,25 @@ function AssignmentAdmin(props) {
     const classes = useStyles();
     const path = useLocation();
     const { id } = useParams();
-    const { user } = props;
+    const { user_id } = props;
     const assignment_id = id;
+
+    // fetch user
+    const [user, setUser] = useState([]);
+    const fetchUser = useCallback(() => {
+        // console.log(user_id);
+        UserService.getUser(user_id)
+            .then((res) => {
+                // console.log(res.data);
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [user_id]);
+    useEffect(() => {
+        fetchUser(user_id);
+    }, [fetchUser, user_id]);
 
     // fetch assignment
     const [assignment, setAssignment] = useState([]);
@@ -43,7 +61,19 @@ function AssignmentAdmin(props) {
 
     return (
         <div>
-            <Header headerTitle={`${assignment.assignment_name} Submissions`} />
+            <Header
+                headerTitle={`Admin > Assignment > ${
+                    assignment.assignment_name
+                } ${
+                    path.pathname.length > 44
+                        ? path.pathname.slice(45) === 'qna'
+                            ? '> QnA list'
+                            : path.pathname.slice(45) === 'sub'
+                            ? '> Submission list'
+                            : '> Query list'
+                        : '> Dashboard'
+                } `}
+            />
             <div className={classes.appMain}>
                 <SideMenu>
                     <SideMenu.AssignmentProfile assignment={assignment} />
@@ -60,7 +90,12 @@ function AssignmentAdmin(props) {
                         to={`/admin/assignment/${assignment_id}/sub`}
                     ></SideMenu.NavButton>
                     <SideMenu.BackButton
-                        text="Back"
+                        text={
+                            path.pathname ===
+                            `/admin/assignment/${assignment_id}`
+                                ? 'All assignment'
+                                : 'Assignment dashboard'
+                        }
                         to={
                             path.pathname ===
                             `/admin/assignment/${assignment_id}`
@@ -86,6 +121,13 @@ function AssignmentAdmin(props) {
                     </Route>
                     <Route path="/admin/assignment/:assignment_id/sub">
                         <AssignmentSubmissions
+                            assignment_id={assignment_id}
+                            user={user}
+                            assignment={assignment}
+                        />
+                    </Route>
+                    <Route path="/admin/assignment/:assignment_id/student/:student_submission_id">
+                        <StudentQnA
                             assignment_id={assignment_id}
                             user={user}
                             assignment={assignment}

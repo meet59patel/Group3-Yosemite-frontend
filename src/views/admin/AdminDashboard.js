@@ -40,7 +40,13 @@ function AdminDashboard({ user_id }) {
 
     return (
         <div>
-            <Header headerTitle="Admin Dashboard" />
+            <Header
+                headerTitle={`Admin Dashboard ${
+                    path.pathname.length > 7
+                        ? '> ' + path.pathname.slice(7) + ' list'
+                        : ''
+                } `}
+            />
             <div className={classes.appMain}>
                 <SideMenu>
                     <SideMenu.SmallProfile user={user}></SideMenu.SmallProfile>
@@ -54,7 +60,7 @@ function AdminDashboard({ user_id }) {
                     ></SideMenu.NavButton>
                     {path.pathname !== '/admin' && (
                         <SideMenu.BackButton
-                            text="Back"
+                            text="Dashboard"
                             to="/admin"
                         ></SideMenu.BackButton>
                     )}
