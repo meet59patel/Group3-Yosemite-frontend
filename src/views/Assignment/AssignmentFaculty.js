@@ -73,6 +73,8 @@ function AssignmentFaculty(props) {
                             : '> Query list'
                         : '> Dashboard'
                 } `}
+                user={user}
+
             />
             {assignment && (
                 <div className={classes.appMain}>

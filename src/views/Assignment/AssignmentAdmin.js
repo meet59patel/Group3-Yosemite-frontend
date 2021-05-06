@@ -73,6 +73,8 @@ function AssignmentAdmin(props) {
                             : '> Query list'
                         : '> Dashboard'
                 } `}
+                user={user}
+
             />
             <div className={classes.appMain}>
                 <SideMenu>
