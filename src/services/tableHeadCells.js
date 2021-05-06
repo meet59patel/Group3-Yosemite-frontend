@@ -12,6 +12,13 @@ const userCellsFaculty = [
     { id: 'user_name', label: 'User Name' },
     { id: 'email', label: 'Email Address (Personal)' },
     { id: 'role', label: 'Role' },
+    // { id: 'actions', label: 'Actions', disableSorting: true },
+];
+
+const userCellsStudent = [
+    { id: 'user_name', label: 'User Name' },
+    { id: 'email', label: 'Email Address (Personal)' },
+    { id: 'role', label: 'Role' },
     { id: 'actions', label: 'Actions', disableSorting: true },
 ];
 
@@ -78,6 +85,7 @@ const qurCellsFaculty = [
 export {
     userCellsFaculty,
     userCellsAdmin,
+    userCellsStudent,
     assiCellsStudent,
     assiCellsFaculty,
     assiCellsAdmin,

@@ -22,6 +22,7 @@ import { UserService } from '../../services/apis.service';
 import {
     userCellsAdmin,
     userCellsFaculty,
+    userCellsStudent,
 } from '../../services/tableHeadCells';
 import Loding from '../Loding';
 
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Users(props) {
     const classes = useStyles();
-    const user = props.user;
+    const { role, user } = props;
 
     // handle loding state
     const [loding, setLoading] = useState(true);
@@ -61,19 +62,34 @@ function Users(props) {
 
     // fetching user data
     const [userList, setUserList] = useState([]);
-    const fetchUserList = useCallback(() => {
-        UserService.getAllUsers()
-            .then((response) => {
-                setLoading(false);
-                setUserList(response.data.users);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, []);
+    const fetchUserList = useCallback(async () => {
+        if (role !== undefined) {
+            console.log('role', role);
+            if (role === 'faculty') {
+                await UserService.getRoleUsers('student')
+                    .then((response) => {
+                        setUserList(response.data.users);
+                        setLoading(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+            if (role === 'admin') {
+                await UserService.getAllUsers()
+                    .then((response) => {
+                        setUserList(response.data.users);
+                        setLoading(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        }
+    }, [role]);
     useEffect(() => {
         fetchUserList();
-    }, [fetchUserList]);
+    }, [fetchUserList, role]);
 
     // For table part
     const [filterFn, setFilterFn] = useState({
@@ -87,7 +103,7 @@ function Users(props) {
             ? userCellsAdmin
             : user.role === 'faculty'
             ? userCellsFaculty
-            : userCellsFaculty;
+            : userCellsStudent;
 
     const {
         TblContainer,
@@ -114,9 +130,9 @@ function Users(props) {
 
     const [recordForEdit, setRecordForEdit] = useState(null);
 
-    const addOrEdit = (user, resetForm) => {
+    const addOrEdit = async (user, resetForm) => {
         if (user.id === 0) {
-            UserService.createUser(user)
+            await UserService.createUser(user)
                 .then((response) => {
                     setNotify({
                         isOpen: true,
@@ -134,7 +150,7 @@ function Users(props) {
                     });
                 });
         } else {
-            UserService.updateUser(user)
+            await UserService.updateUser(user._id, user)
                 .then((response) => {
                     setNotify({
                         isOpen: true,
@@ -162,20 +178,20 @@ function Users(props) {
         setOpenPopup(true);
     };
 
-    const onDelete = (id) => {
+    const onDelete = async (id) => {
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false,
         });
 
-        UserService.deleteUser(id)
+        await UserService.deleteUser(id)
             .then((response) => {
                 setNotify({
                     isOpen: true,
                     message: 'Deleted Successfully',
                     type: 'success',
                 });
-                setLoading(true);
+                setLoading(false);
                 fetchUserList();
             })
             .catch((error) => {
@@ -204,16 +220,18 @@ function Users(props) {
                         }}
                         onChange={handleSearch}
                     />
-                    <Controls.Button
-                        text="Add New"
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        className={classes.newButton}
-                        onClick={() => {
-                            setOpenPopup(true);
-                            setRecordForEdit(null);
-                        }}
-                    />
+                    {role === 'admin' && (
+                        <Controls.Button
+                            text="Add New"
+                            variant="outlined"
+                            startIcon={<AddIcon />}
+                            className={classes.newButton}
+                            onClick={() => {
+                                setOpenPopup(true);
+                                setRecordForEdit(null);
+                            }}
+                        />
+                    )}
                 </Toolbar>
 
                 {loding ? (
@@ -227,7 +245,7 @@ function Users(props) {
                                     <TableCell>{item.user_name}</TableCell>
                                     <TableCell>{item.email}</TableCell>
                                     <TableCell>{item.role}</TableCell>
-                                    {(user.role === 'admin' || user.role === 'faculty') && (
+                                    {role === 'admin' && (
                                         <TableCell>
                                             <Controls.ActionButton
                                                 color="primary"
