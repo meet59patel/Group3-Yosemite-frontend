@@ -19,6 +19,7 @@ import {
     AssignmentService,
     SubmissionService,
     FacultyQnAService,
+    AutoEvaluationService,
     UserService,
 } from '../../services/apis.service';
 import { subCellsFaculty } from '../../services/tableHeadCells';
@@ -153,6 +154,12 @@ export default function AssignmentList(props) {
         });
     };
 
+    const sendNlpEvaluation = async (assi_id) => {
+        console.log('assi_id', assi_id);
+        await AutoEvaluationService.evaluateAssignment(assi_id);
+        fetchSubList(user, assignment_id);
+    };
+
     return (
         <>
             <Paper className={classes.pageContent}>
@@ -167,10 +174,11 @@ export default function AssignmentList(props) {
                             // history.push(
                             //     `/faculty/assignment/${submission1.assignment_id}/run`
                             // );
+                            sendNlpEvaluation(submission1.assignment_id);
                             setNotify({
                                 isOpen: true,
-                                message: `This feature coming soon`,
-                                type: 'error',
+                                message: `Added to Queue for Evaluating`,
+                                type: 'success',
                             });
                         }}
                         style={{
@@ -222,11 +230,6 @@ export default function AssignmentList(props) {
                                                     history.push(
                                                         `/${user.role}/assignment/${assignment_id}/student/${item._id}`
                                                     );
-                                                    setNotify({
-                                                        isOpen: true,
-                                                        message: `This feature coming soon`,
-                                                        type: 'error',
-                                                    });
                                                 }}
                                             >
                                                 <OpenInNewIcon fontSize="small" />
