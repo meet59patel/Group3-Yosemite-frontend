@@ -1,6 +1,6 @@
 import axios from 'axios';
-// const API = 'https://yosemite-sen.herokuapp.com';
-const API = 'http://localhost:8000';
+const API = 'https://yosemite-sen.herokuapp.com';
+// const API = 'http://localhost:8000';
 
 const userAPI = `${API}/users`;
 const assignmentAPI = `${API}/assignment`;
