@@ -1,14 +1,37 @@
 import axios from 'axios';
-const API = 'https://yosemite-sen.herokuapp.com';
-// const API = 'http://localhost:8000';
+// const API = 'https://yosemite-sen.herokuapp.com';
+const API = 'http://localhost:8000';
 
 const userAPI = `${API}/users`;
 const assignmentAPI = `${API}/assignment`;
 const submissionAPI = `${API}/submission`;
 const qnaFacultyAPI = `${API}/faculty/qna`;
 const qnaStudentAPI = `${API}/qna`;
-
+const autoEvaluationAPI = `${API}/evaluate`;
 const statusAPI = `${API}/stats`;
+
+class AutoEvaluationService {
+    static evaluateAssignment = (assi_id) => {
+        return axios({
+            method: 'GET',
+            url: `${autoEvaluationAPI}/assi/${assi_id}`,
+        });
+    };
+
+    static evaluateSubmission = (fac_sub_id, sub_id) => {
+        return axios({
+            method: 'GET',
+            url: `${autoEvaluationAPI}/sub/${fac_sub_id}/${sub_id}`,
+        });
+    };
+
+    static evaluateQuestion = (fac_sub_id, sub_id, qna_id) => {
+        return axios({
+            method: 'GET',
+            url: `${autoEvaluationAPI}/qna/${fac_sub_id}/${sub_id}/${qna_id}`,
+        });
+    };
+}
 
 // const userSchema = {
 //     user_name: { required, String },
@@ -354,5 +377,6 @@ export {
     SubmissionService,
     FacultyQnAService,
     StudentQnAService,
+    AutoEvaluationService,
     statusService,
 };

@@ -16,6 +16,7 @@ import {
     SubmissionService,
     FacultyQnAService,
     StudentQnAService,
+    AutoEvaluationService,
 } from '../../services/apis.service';
 import { useHistory, useParams } from 'react-router-dom';
 import { useForm, Form } from '../useForm';
@@ -59,6 +60,7 @@ const StudentQnA = (props) => {
 
     // fetch faculty submission and qna
     const [facultySubmission1, setFacultySubmission1] = useState();
+    const [facultySubmissionId, setFacultySubmissionId] = useState();
     // fetch faculty qna list data
     let qnaFacultyList1;
     const [qnaFacultyList, setQnAFacultyList] = useState();
@@ -76,6 +78,7 @@ const StudentQnA = (props) => {
                     .then(async (response) => {
                         submission = response.data;
                         setFacultySubmission1(submission);
+                        setFacultySubmissionId(submission._id);
                         // console.log('faculty sub', submission);
                     })
                     .catch((error) => {
@@ -140,7 +143,7 @@ const StudentQnA = (props) => {
                 let studentSubmission;
 
                 if (student_submission_id) {
-                    console.log('catched');
+                    // console.log('catched');
                     let tmp_sub;
                     await SubmissionService.getSubmission(student_submission_id)
                         .then((response) => {
@@ -327,7 +330,7 @@ const StudentQnA = (props) => {
         } else {
             // edit qna in database
             if (qna.role === 'faculty') {
-                console.log('facu call');
+                // console.log('facu call');
                 await StudentQnAService.updateQnA(qna._id, {
                     query_solved: true,
                     evaluation_status: 'done',
@@ -349,7 +352,7 @@ const StudentQnA = (props) => {
                         console.log(error);
                     });
             } else {
-                console.log('stu call');
+                // console.log('stu call');
                 await StudentQnAService.updateQnA(qna._id, {
                     query_description: qna.query_description,
                     query_flag: true,
@@ -462,321 +465,447 @@ const StudentQnA = (props) => {
         }
     };
 
+    const sendNlpEvaluationSubmission = async (fac_sub_id, sub_id) => {
+        // console.log('fac_sub_id', fac_sub_id);
+        // console.log('sub_id', sub_id);
+        await AutoEvaluationService.evaluateSubmission(fac_sub_id, sub_id)
+            .then((response) => {
+                setNotify({
+                    isOpen: true,
+                    message: response.message,
+                    type: response.type,
+                });
+            })
+            .catch((error) => {
+                setNotify({
+                    isOpen: true,
+                    message: error.message,
+                    type: error.type,
+                });
+            });
+        // fetchSubList(user, assignment_id);
+    };
+
+    const sendNlpEvaluationQuestion = async (fac_sub_id, sub_id, qna_id) => {
+        // console.log('fac_sub_id', fac_sub_id);
+        // console.log('sub_id', sub_id);
+        // console.log('sub_id', qna_id);
+        await AutoEvaluationService.evaluateQuestion(fac_sub_id, sub_id, qna_id)
+            .then((response) => {
+                console.log(response);
+                setNotify({
+                    isOpen: true,
+                    message: response.data.message,
+                    type: response.data.type,
+                });
+            })
+            .catch((error) => {
+                setNotify({
+                    isOpen: true,
+                    message: error.message,
+                    type: error.type,
+                });
+            });
+        // fetchSubList(user, assignment_id);
+    };
+
     return (
         <>
             <Paper className={classes.pageContent}>
-                <Toolbar>
-                    {user.role === 'student' ? (
-                        <h1 style={{ color: '#333', margin: 'auto' }}>
-                            Assignment {assignment.assignment_name}
-                        </h1>
-                    ) : (
-                        <h2 style={{ color: 'grey', margin: 'auto' }}>
-                            Your are Watching
-                            <span style={{ color: 'black' }}>
-                                {' '}
-                                Student's submission{' '}
-                            </span>{' '}
-                            of{' '}
-                            <span style={{ color: 'black' }}>
-                                {assignment.assignment_name}
-                            </span>
-                        </h2>
-                    )}
-                </Toolbar>
-                <hr />
-                {/* {console.log('out studentSubmission1', studentSubmission1)}
-                {console.log('out answer', answer)}
-                {console.log('out qnaFacultyList', qnaFacultyList)}
-                {console.log('out loding', loding)} */}
-
                 {loding && qnaFacultyList && answer && studentSubmission1 ? (
-                    <div>
-                        <h3 style={{ color: '#333' }}>
-                            Total Questions :{' '}
-                            {facultySubmission1.qna_list_ids.length}
-                        </h3>
-                        <h3 style={{ color: '#333' }}>
-                            Total Marks : {facultySubmission1.marks}
-                        </h3>
-                        <hr />
-                        {qnaList.length &&
-                            qnaFacultyList &&
-                            qnaList.map((qna, ind) => {
-                                return (
-                                    <Paper
-                                        key={qna._id}
+                    <>
+                        <Toolbar>
+                            {user.role === 'student' ? (
+                                <h1 style={{ color: '#333', margin: 'auto' }}>
+                                    Assignment {assignment.assignment_name}
+                                </h1>
+                            ) : (
+                                <>
+                                    <h2
                                         style={{
-                                            margin: '20px 0',
-                                            padding: '20px 10px',
-                                            border: '1px solid black',
+                                            color: 'grey',
+                                            // margin: 'auto',
                                         }}
                                     >
-                                        {/* {console.log('student qna', qna)} */}
-                                        <Controls.Input
-                                            name="question"
-                                            label={'Question ' + (ind + 1)}
-                                            value={
-                                                qnaFacultyList[
-                                                    qna.qna_faculty_id
-                                                ].question
-                                            }
+                                        Your are Watching
+                                        <span style={{ color: 'black' }}>
+                                            {' '}
+                                            Student's submission{' '}
+                                        </span>{' '}
+                                        of{' '}
+                                        <span style={{ color: 'black' }}>
+                                            {assignment.assignment_name}
+                                        </span>
+                                    </h2>
+                                    <Controls.ActionButton
+                                        color="success"
+                                        onClick={() => {
+                                            sendNlpEvaluationSubmission(
+                                                facultySubmission1._id,
+                                                studentSubmission1._id
+                                            );
+                                            setNotify({
+                                                isOpen: true,
+                                                message: `Submittion Added to Queue for Evaluating`,
+                                                type: 'success',
+                                            });
+                                        }}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '10px',
+                                            textTransform: 'none',
+                                        }}
+                                    >
+                                        Evaluate this Submission
+                                    </Controls.ActionButton>
+                                </>
+                            )}
+                        </Toolbar>
+                        <hr />
+                        {/* {console.log('out studentSubmission1', studentSubmission1)}
+                        {console.log('out answer', answer)}
+                        {console.log('out qnaFacultyList', qnaFacultyList)}
+                        {console.log('out loding', loding)} */}
+
+                        <div>
+                            <h3 style={{ color: '#333' }}>
+                                Total Questions :{' '}
+                                {facultySubmission1.qna_list_ids.length}
+                            </h3>
+                            <h3 style={{ color: '#333' }}>
+                                Total Marks : {facultySubmission1.marks}
+                            </h3>
+                            <hr />
+                            {qnaList.length &&
+                                qnaFacultyList &&
+                                qnaList.map((qna, ind) => {
+                                    {
+                                        /* console.log('qna stu', qna); */
+                                    }
+                                    {
+                                        /* console.log('qna facu', qna.qna_faculty_id); */
+                                    }
+                                    return (
+                                        <Paper
+                                            key={qna._id}
                                             style={{
-                                                width: '100%',
-                                                marginBottom: '20px',
+                                                margin: '20px 0',
+                                                padding: '20px 10px',
+                                                border: '1px solid black',
                                             }}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                            multiline
-                                        />
-                                        <br />
-                                        <Controls.Input
-                                            name="answer"
-                                            label="answer"
-                                            value={answer[qna._id]}
-                                            onChange={(e) => {
-                                                handleAnswerChange(e, qna._id);
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                marginBottom: '20px',
-                                            }}
-                                            InputProps={{
-                                                readOnly:
-                                                    user.role !== 'student',
-                                            }}
-                                            multiline
-                                            rows={3}
-                                            rowsMax={50}
-                                        />
-                                        <div>
+                                        >
+                                            {/* {console.log('student qna', qna)} */}
                                             <Controls.Input
-                                                name="marks"
-                                                label="Total Marks"
+                                                name="question"
+                                                label={'Question ' + (ind + 1)}
                                                 value={
                                                     qnaFacultyList[
                                                         qna.qna_faculty_id
-                                                    ].marks
+                                                    ].question
                                                 }
                                                 style={{
-                                                    width: '100px',
+                                                    width: '100%',
                                                     marginBottom: '20px',
                                                 }}
                                                 InputProps={{
                                                     readOnly: true,
                                                 }}
+                                                multiline
                                             />
+                                            <br />
                                             <Controls.Input
-                                                name="model_marks"
-                                                label="Model Marks"
-                                                value={
-                                                    qna.evaluation_status ===
-                                                    'done'
-                                                        ? qna.model_marks
-                                                        : qna.evaluation_status
-                                                }
+                                                name="answer"
+                                                label="answer"
+                                                value={answer[qna._id]}
+                                                onChange={(e) => {
+                                                    handleAnswerChange(
+                                                        e,
+                                                        qna._id
+                                                    );
+                                                }}
                                                 style={{
-                                                    width: '130px',
+                                                    width: '100%',
                                                     marginBottom: '20px',
-                                                    marginLeft: '20px',
                                                 }}
                                                 InputProps={{
-                                                    readOnly: true,
+                                                    readOnly:
+                                                        user.role !== 'student',
+                                                }}
+                                                multiline
+                                                rows={3}
+                                                rowsMax={50}
+                                            />
+                                            <div>
+                                                <Controls.Input
+                                                    name="marks"
+                                                    label="Total Marks"
+                                                    value={
+                                                        qnaFacultyList[
+                                                            qna.qna_faculty_id
+                                                        ].marks
+                                                    }
+                                                    style={{
+                                                        width: '100px',
+                                                        marginBottom: '20px',
+                                                    }}
+                                                    InputProps={{
+                                                        readOnly: true,
+                                                    }}
+                                                />
+                                                <Controls.Input
+                                                    name="model_marks"
+                                                    label="Model Marks"
+                                                    value={
+                                                        qna.evaluation_status ===
+                                                        'done'
+                                                            ? qna.model_marks
+                                                            : qna.evaluation_status
+                                                    }
+                                                    style={{
+                                                        width: '130px',
+                                                        marginBottom: '20px',
+                                                        marginLeft: '20px',
+                                                    }}
+                                                    InputProps={{
+                                                        readOnly: true,
+                                                    }}
+                                                />
+                                                {user.role === 'student' && (
+                                                    <>
+                                                        <Controls.Button
+                                                            text="Raise Query"
+                                                            variant="outlined"
+                                                            startIcon={
+                                                                <BorderColorIcon />
+                                                            }
+                                                            className={
+                                                                classes.newButton
+                                                            }
+                                                            disabled={
+                                                                qna.query_flag
+                                                            }
+                                                            onClick={() => {
+                                                                openInPopup(
+                                                                    qna
+                                                                );
+                                                            }}
+                                                            style={{
+                                                                width: 'auto',
+                                                                marginBottom:
+                                                                    '15px',
+                                                                position:
+                                                                    'relative',
+                                                                // margin: '0',
+                                                                float: 'right',
+                                                            }}
+                                                        />
+                                                        <Controls.Button
+                                                            text="Save"
+                                                            variant="outlined"
+                                                            startIcon={
+                                                                <SaveAltIcon />
+                                                            }
+                                                            className={
+                                                                classes.newButton
+                                                            }
+                                                            disabled={
+                                                                qna.answer ===
+                                                                answer[qna._id]
+                                                            }
+                                                            onClick={(e) => {
+                                                                onSingleSaveAnswer(
+                                                                    e,
+                                                                    ind,
+                                                                    qna._id
+                                                                );
+                                                            }}
+                                                            style={{
+                                                                width: 'auto',
+                                                                marginBottom:
+                                                                    '15px',
+                                                                position:
+                                                                    'relative',
+                                                                float: 'right',
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                                {user.role === 'faculty' && (
+                                                    <>
+                                                        <Controls.ActionButton
+                                                            color="success"
+                                                            onClick={() => {
+                                                                sendNlpEvaluationQuestion(
+                                                                    facultySubmission1._id,
+                                                                    studentSubmission1._id,
+                                                                    qna._id
+                                                                );
+                                                                setNotify({
+                                                                    isOpen: true,
+                                                                    message: `QnA Added to Queue for Evaluating`,
+                                                                    type:
+                                                                        'success',
+                                                                });
+                                                            }}
+                                                            style={{
+                                                                float: 'right',
+                                                                marginTop:
+                                                                    '18px',
+                                                                textTransform:
+                                                                    'none',
+                                                            }}
+                                                        >
+                                                            Evaluate this QnA
+                                                        </Controls.ActionButton>
+                                                        {qna.query_flag && (
+                                                            <h2
+                                                                style={{
+                                                                    float:
+                                                                        'right',
+                                                                    marginTop:
+                                                                        '28px',
+                                                                    marginRight:
+                                                                        '20px',
+                                                                    color: qna.query_solved
+                                                                        ? 'green'
+                                                                        : 'red',
+                                                                    fontSize:
+                                                                        '15px',
+                                                                }}
+                                                            >
+                                                                {qna.query_solved
+                                                                    ? 'Marks updated'
+                                                                    : 'Query pending'}
+                                                            </h2>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
+                                            {qna.query_flag && (
+                                                <div
+                                                    style={{
+                                                        background: qna.query_solved
+                                                            ? 'rgba(228,245,212,0.4)'
+                                                            : 'rgba(255,204,203,0.4)',
+                                                        border: qna.query_solved
+                                                            ? '1px solid green'
+                                                            : '1px solid red',
+                                                        borderRadius: '7px',
+                                                        padding: '20px',
+                                                    }}
+                                                >
+                                                    <Controls.Input
+                                                        name="query_description"
+                                                        label="Query Description"
+                                                        value={
+                                                            qna.query_description
+                                                        }
+                                                        style={{
+                                                            width: '60%',
+                                                        }}
+                                                        InputProps={{
+                                                            readOnly: true,
+                                                        }}
+                                                    />
+                                                    {user.role !==
+                                                        'student' && (
+                                                        <Controls.ActionButton
+                                                            // color="success"
+                                                            onClick={() => {
+                                                                let newItem = qna;
+                                                                newItem[
+                                                                    'question'
+                                                                ] =
+                                                                    qnaFacultyList[
+                                                                        qna.qna_faculty_id
+                                                                    ].question;
+                                                                newItem[
+                                                                    'solution'
+                                                                ] =
+                                                                    qnaFacultyList[
+                                                                        qna.qna_faculty_id
+                                                                    ].answer;
+                                                                newItem[
+                                                                    'marks'
+                                                                ] =
+                                                                    qnaFacultyList[
+                                                                        qna.qna_faculty_id
+                                                                    ].marks;
+                                                                newItem[
+                                                                    'role'
+                                                                ] = user.role;
+                                                                openInPopup(
+                                                                    qna
+                                                                );
+                                                            }}
+                                                            style={{
+                                                                float: 'right',
+                                                                padding: '12px',
+                                                                marginLeft:
+                                                                    '10px',
+                                                                backgroundColor:
+                                                                    '#555',
+                                                                color: 'white',
+                                                            }}
+                                                        >
+                                                            <OpenInNewIcon fontSize="small" />{' '}
+                                                            Open
+                                                        </Controls.ActionButton>
+                                                    )}
+                                                    <Controls.Input
+                                                        name="final_marks"
+                                                        label="Final Marks"
+                                                        value={
+                                                            qna.query_solved
+                                                                ? qna.final_marks
+                                                                : 'Query not Checked'
+                                                        }
+                                                        style={{
+                                                            width: '180px',
+                                                            float: 'right',
+                                                        }}
+                                                        InputProps={{
+                                                            readOnly: true,
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Paper>
+                                    );
+                                })}
+                            {user.role === 'student' && (
+                                <>
+                                    <hr />
+                                    <Toolbar>
+                                        <div
+                                            style={{
+                                                margin: 'auto',
+                                                marginTop: '20px',
+                                            }}
+                                        >
+                                            <Controls.Button
+                                                text="Save Assignment"
+                                                variant="outlined"
+                                                startIcon={<SaveAltIcon />}
+                                                className={classes.newButton}
+                                                onClick={() => {
+                                                    onSaveAnswer();
+                                                }}
+                                                style={{
+                                                    position: 'relative',
+                                                    margin: '0',
+                                                    color: '#0D47A1',
+                                                    backgroundColor: '#BBDEFB',
+                                                    fontSize: '20px',
+                                                    padding: '20px 50px',
                                                 }}
                                             />
-                                            {user.role === 'student' && (
-                                                <>
-                                                    <Controls.Button
-                                                        text="Raise Query"
-                                                        variant="outlined"
-                                                        startIcon={
-                                                            <BorderColorIcon />
-                                                        }
-                                                        className={
-                                                            classes.newButton
-                                                        }
-                                                        disabled={
-                                                            qna.query_flag
-                                                        }
-                                                        onClick={() => {
-                                                            openInPopup(qna);
-                                                        }}
-                                                        style={{
-                                                            width: 'auto',
-                                                            marginBottom:
-                                                                '15px',
-                                                            position:
-                                                                'relative',
-                                                            // margin: '0',
-                                                            float: 'right',
-                                                        }}
-                                                    />
-                                                    <Controls.Button
-                                                        text="Save"
-                                                        variant="outlined"
-                                                        startIcon={
-                                                            <SaveAltIcon />
-                                                        }
-                                                        className={
-                                                            classes.newButton
-                                                        }
-                                                        disabled={
-                                                            qna.answer ===
-                                                            answer[qna._id]
-                                                        }
-                                                        onClick={(e) => {
-                                                            onSingleSaveAnswer(
-                                                                e,
-                                                                ind,
-                                                                qna._id
-                                                            );
-                                                        }}
-                                                        style={{
-                                                            width: 'auto',
-                                                            marginBottom:
-                                                                '15px',
-                                                            position:
-                                                                'relative',
-                                                            float: 'right',
-                                                        }}
-                                                    />
-                                                </>
-                                            )}
-                                            {user.role === 'faculty' &&
-                                                qna.query_flag && (
-                                                    <h2
-                                                        style={{
-                                                            float: 'right',
-                                                            marginRight: '20px',
-                                                            color: qna.query_solved
-                                                                ? 'green'
-                                                                : 'red',
-                                                        }}
-                                                    >
-                                                        {qna.query_solved
-                                                            ? 'Marks updated'
-                                                            : 'Query pending'}
-                                                    </h2>
-                                                )}
                                         </div>
-                                        {qna.query_flag && (
-                                            <div
-                                                style={{
-                                                    background: qna.query_solved
-                                                        ? 'rgba(228,245,212,0.4)'
-                                                        : 'rgba(255,204,203,0.4)',
-                                                    border: qna.query_solved
-                                                        ? '1px solid green'
-                                                        : '1px solid red',
-                                                    borderRadius: '7px',
-                                                    padding: '20px',
-                                                }}
-                                            >
-                                                <Controls.Input
-                                                    name="query_description"
-                                                    label="Query Description"
-                                                    value={
-                                                        qna.query_description
-                                                    }
-                                                    style={{
-                                                        width: '60%',
-                                                    }}
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                />
-                                                {user.role !== 'student' && (
-                                                    <Controls.ActionButton
-                                                        // color="success"
-                                                        onClick={() => {
-                                                            let newItem = qna;
-                                                            newItem[
-                                                                'question'
-                                                            ] =
-                                                                qnaFacultyList[
-                                                                    qna.qna_faculty_id
-                                                                ].question;
-                                                            newItem[
-                                                                'solution'
-                                                            ] =
-                                                                qnaFacultyList[
-                                                                    qna.qna_faculty_id
-                                                                ].answer;
-                                                            newItem['marks'] =
-                                                                qnaFacultyList[
-                                                                    qna.qna_faculty_id
-                                                                ].marks;
-                                                            newItem['role'] =
-                                                                user.role;
-                                                            openInPopup(qna);
-                                                        }}
-                                                        style={{
-                                                            float: 'right',
-                                                            padding: '12px',
-                                                            marginLeft: '10px',
-                                                            backgroundColor:
-                                                                '#555',
-                                                            color: 'white',
-                                                        }}
-                                                    >
-                                                        <OpenInNewIcon fontSize="small" />{' '}
-                                                        Open
-                                                    </Controls.ActionButton>
-                                                )}
-                                                <Controls.Input
-                                                    name="final_marks"
-                                                    label="Final Marks"
-                                                    value={
-                                                        qna.query_solved
-                                                            ? qna.final_marks
-                                                            : 'Query not Checked'
-                                                    }
-                                                    style={{
-                                                        width: '180px',
-                                                        float: 'right',
-                                                    }}
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
-                                    </Paper>
-                                );
-                            })}
-                        {user.role === 'student' && (
-                            <>
-                                <hr />
-                                <Toolbar>
-                                    <div
-                                        style={{
-                                            margin: 'auto',
-                                            marginTop: '20px',
-                                        }}
-                                    >
-                                        <Controls.Button
-                                            text="Save Assignment"
-                                            variant="outlined"
-                                            startIcon={<SaveAltIcon />}
-                                            className={classes.newButton}
-                                            onClick={() => {
-                                                onSaveAnswer();
-                                            }}
-                                            style={{
-                                                position: 'relative',
-                                                margin: '0',
-                                                color: '#0D47A1',
-                                                backgroundColor: '#BBDEFB',
-                                                fontSize: '20px',
-                                                padding: '20px 50px',
-                                            }}
-                                        />
-                                    </div>
-                                </Toolbar>
-                            </>
-                        )}
-                    </div>
+                                    </Toolbar>
+                                </>
+                            )}
+                        </div>
+                    </>
                 ) : (
                     <Loding />
                 )}
