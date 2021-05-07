@@ -156,8 +156,21 @@ export default function AssignmentList(props) {
 
     const sendNlpEvaluation = async (assi_id) => {
         console.log('assi_id', assi_id);
-        await AutoEvaluationService.evaluateAssignment(assi_id);
-        fetchSubList(user, assignment_id);
+        await AutoEvaluationService.evaluateAssignment(assi_id)
+            .then((response) => {
+                setNotify({
+                    isOpen: true,
+                    message: `Edited Successfully`,
+                    type: 'success',
+                });
+            })
+            .catch((error) => {
+                setNotify({
+                    isOpen: true,
+                    message: 'Error to Edit',
+                    type: 'error',
+                });
+            });
     };
 
     return (
@@ -169,21 +182,17 @@ export default function AssignmentList(props) {
                     <Controls.ActionButton
                         color="success"
                         onClick={() => {
-                            // todo: add link for student submission
-                            // console.log(item);
-                            // history.push(
-                            //     `/faculty/assignment/${submission1.assignment_id}/run`
-                            // );
-                            sendNlpEvaluation(submission1.assignment_id);
                             setNotify({
                                 isOpen: true,
                                 message: `Added to Queue for Evaluating`,
                                 type: 'success',
                             });
+                            sendNlpEvaluation(submission1.assignment_id);
                         }}
                         style={{
                             position: 'absolute',
                             right: '10px',
+                            textTransform: 'none',
                         }}
                     >
                         Evaluate All
